@@ -2,7 +2,7 @@
 
 NOTE: This bot was made for use on Portuguese Wikipedia, so all instructions and comments are in Portuguese. Feel free to contact me if you have any questions.
 
-Código-fonte utilizado nas operações do robô [[User:RenomeiaBot]] na Wikipédia em Português. Sua função é auxiliar no processamento dos pedidos em [[Wikipédia:Renomeação de conta]].
+Código-fonte utilizado nas operações do robô [[User:RenomeiaBot]] na Wikipédia em Português. Sua função é auxiliar no processamento dos pedidos em [[Wikipédia:Renomeação de conta]]..
 
 ## Instruções
 1) Renomear "globals_sample.php" para "globals.php" e preenchê-lo conforme necessário;
