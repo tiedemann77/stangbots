@@ -2,7 +2,7 @@
 
 NOTE: This bot was made for use on Portuguese Wikipedia, so all instructions and comments are in Portuguese. Feel free to contact me if you have any questions.
 
-Código base utilizado nas operações do robô [[User:VerificaBot]] na Wikipédia em Português. Há três scripts diferentes:
+Código-fonte utilizado nas operações do robô [[User:VerificaBot]] na Wikipédia em Português. Há três scripts diferentes:
 
 * Script 1: responsável pela remoção dos pedidos concluídos de [[Wikipédia:Pedidos a verificadores]], além da adição dos mesmos em [[Wikipédia:Pedidos a verificadores/Recentes]];
 * Script 2: responsável pela remoção dos pedidos antigos de [[Wikipédia:Pedidos a verificadores/Recentes]] e arquivamento na respectiva página do mês;
