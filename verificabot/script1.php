@@ -8,7 +8,7 @@
 require_once("includes/globals.php");
 
 // Requer funções básicas
-require_once("../../common.php");
+require_once(__DIR__ . "/../common.php");
 
 // Requer funções para esse script em específico
 require_once("includes/functions_1.php");

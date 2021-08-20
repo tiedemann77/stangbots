@@ -31,7 +31,7 @@ $maxlag = 4;
 date_default_timezone_set('UTC');
 
 // Arquivo e data para logs
-$logfile = "temp/log.log"; //Exemplo
+$logfile = __DIR__ .  "/../temp/log.log"; //Exemplo
 $logdate =  date("Y-m-d H:i:s");
 
 ?>

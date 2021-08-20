@@ -21,11 +21,14 @@ $powerPage = "User:" . $username2 . "/Power";
 // Parâmetro maxlag, (5 ou menos para Wikimedia)
 $maxlag = 4;
 
+// Arquivo com o conteúdo da página, para evitar múltiplas requisições de seções
+$contentfile = __DIR__ .  "/../temp/content.txt";
+
 // Timezone UTC
 date_default_timezone_set('UTC');
 
 // Arquivo e data para logs
-$logfile = "temp/log.log"; //Exemplo
+$logfile = __DIR__ .  "/../temp/log.log"; //Exemplo
 $logdate =  date("Y-m-d H:i:s");
 
 ?>
