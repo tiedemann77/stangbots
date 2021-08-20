@@ -2,7 +2,7 @@
 
 NOTE: These bots were made for use on Portuguese Wikipedia, so all instructions and comments are in Portuguese. Feel free to contact me if you have any questions.
 
-Código-fonte utilizado nas operações de alguns robôs na Wikipédia em Português..
+Código-fonte utilizado nas operações de alguns robôs na Wikipédia em Português.
 
 ## Licença
 MIT License
