@@ -8,7 +8,7 @@
 require_once("includes/globals.php");
 
 // Requer funções básicas
-require_once("../common.php");
+require_once("../../common.php");
 
 // Começa o log
 echo logging($logdate . "
