@@ -13,8 +13,14 @@ function getOpenCasesList($content) {
    	$out2[$key] = $newvalue;
   }
 
-  // Desconsiderando o exemplo "Insira o nome aqui"
-  $deleted = array_pop($out2[0]);
+  // Verificando se a última entrada (exemplo) está presente ou não
+  $counttotal = count($out2[0]);
+  $counttotal = $counttotal-1;
+
+  if($out2[0][$counttotal]=="Insira o nome aqui"){
+    // Se sim, desconsiderar o exemplo "Insira o nome aqui"
+    $deleted = array_pop($out2[0]);
+  }
 
 	// Contando casos listados
 	$numberOpenCases = count($out2[0]);
