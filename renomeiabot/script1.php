@@ -85,8 +85,9 @@ $requestNumber = count($oldrequest);
 // Log
 echo logging(" ... são " . $requestNumber . " pedidos ainda em aberto, verificando cada um deles. Apenas fatos relevantes serão logados.\r\n");
 
-// Controle para o próximo loop
+// Controles para o próximo loop
 $control = 0;
+$control2 = 1; // Somente para log
 
 // Loop aonde a mágica acontece
 while ($control < $requestNumber) {
@@ -109,6 +110,9 @@ while ($control < $requestNumber) {
   $actualname = str_replace(' <span style="width:200px;">',"",$actualname);
   $newname = str_replace("</span> ","",$explode[1]);
   $newname = str_replace(" ===","",$newname);
+
+  // Log
+  echo logging("Fazendo checagens da seção número " . $control2 . ";\r\n");
 
   // Checa se o novo nome está em uso
   $exist = accountExist($newname);
