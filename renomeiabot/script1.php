@@ -103,6 +103,7 @@ while ($control < $requestNumber) {
   // Se não for, simplesmente ignora e segue para o próximo loop
   if($countexp!="2"){
     $control++;
+    $control2++;
     continue;
   }
 
@@ -182,6 +183,7 @@ while ($control < $requestNumber) {
 
   // Vida que segue, reinicia o loop para o próximo pedido
   $control++;
+  $control2++;
 
 }
 
