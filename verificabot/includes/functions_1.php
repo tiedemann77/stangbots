@@ -13,14 +13,23 @@ function getOpenCasesList($content) {
    	$out2[$key] = $newvalue;
   }
 
-  // Verificando se a última entrada (exemplo) está presente ou não
+  // Verificando se a entrada do exemplo está presente ou não
   $counttotal = count($out2[0]);
-  $counttotal = $counttotal-1;
 
-  if($out2[0][$counttotal]=="Insira o nome aqui"){
-    // Se sim, desconsiderar o exemplo "Insira o nome aqui"
-    $deleted = array_pop($out2[0]);
+  $control = 0;
+  $control2 = 0;
+
+  while ($control < $counttotal) {
+    // Se sim, ignorar e não incluir
+    if($out2[0][$control]!="Insira o nome aqui"){
+      $temp[0][$control2] = $out2[0][$control];
+      $control2++;
+    }
+    $control++;
   }
+
+  // Recriando a variável
+  $out2 = $temp;
 
 	// Contando casos listados
 	$numberOpenCases = count($out2[0]);
