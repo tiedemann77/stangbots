@@ -118,6 +118,9 @@ $csrf_Token = getCSRFToken();
 // Editando a página de pedidos
 editRequest($csrf_Token, "User:Stangbot/feed", $texto, "atualizando");
 
+// Logout
+logoutRequest( $csrf_Token );
+
 // PARA TESTE
 // ADICIONAR O CONTEÚDO DA EDIÇÃO EM LOG
 //logging("Conteúdo da variável texto:\r\n" . $texto. "\r\n");

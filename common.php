@@ -87,6 +87,31 @@ function getCSRFToken() {
 	return $result["query"]["tokens"]["csrftoken"];
 }
 
+// Step 4: POST request to logout
+function logoutRequest( $csrftoken ) {
+	global $endPoint;
+
+	$params4 = [
+		"action" => "logout",
+		"token" => $csrftoken,
+		"format" => "json"
+	];
+
+	$ch = curl_init();
+
+	curl_setopt( $ch, CURLOPT_URL, $endPoint );
+	curl_setopt( $ch, CURLOPT_POST, true );
+	curl_setopt( $ch, CURLOPT_POSTFIELDS, http_build_query( $params4 ) );
+	curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
+	curl_setopt( $ch, CURLOPT_COOKIEJAR, "/tmp/cookie.txt" );
+	curl_setopt( $ch, CURLOPT_COOKIEFILE, "/tmp/cookie.txt" );
+
+	$output = curl_exec( $ch );
+	curl_close( $ch );
+
+	echo ( $output );
+}
+
 // Função para criar logs
 function logging($logmsg){
 
