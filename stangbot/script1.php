@@ -80,6 +80,11 @@ while ($control<$total) {
 
   $open = $sectionNumber-$closed;
 
+  // Se menor que 0, ocorreu algum erro então colocar 0 por padrão
+  if($open<0){
+    $open = 0;
+  }
+
   echo "total " . $sectionNumber . "; fechadas " . $closed . "; abertas " . $open . "\r\n";
 
   $texto = $texto . " | " . $control2 . " = " . $open . "
