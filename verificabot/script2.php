@@ -160,6 +160,9 @@ if(isset($newCurrentContent)){
   //logging("Content of newCurrentContent string:\r\n" . $newCurrentContent . "\r\n");
 }
 
+// Logout
+logoutRequest( $csrf_Token );
+
 // Fecha o log
 echo logging("Script 2 concluído!\r\n");
 

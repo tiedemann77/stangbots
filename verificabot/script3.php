@@ -78,6 +78,9 @@ $csrf_Token = getCSRFToken();
 // Edita a página
 editRequest($csrf_Token, $page, $archiveContent, "[[WP:Bot|bot]]: substituindo predefinições");
 
+// Logout
+logoutRequest( $csrf_Token );
+
 // PARA TESTE
 // Registra em log ao invés de editar
 //logging("Content of archiveContent string:\r\n" . $archiveContent . "\r\n");

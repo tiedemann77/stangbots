@@ -231,6 +231,9 @@ if($newcontent==$content){
 // Editando a página de pedidos
 //editRequest($csrf_Token, $BasePage, $newcontent, "[[WP:Bot|bot]]: processando pedidos");
 
+// Logout
+//logoutRequest( $csrf_Token );
+
 // PARA TESTE
 // ADICIONAR O CONTEÚDO DA EDIÇÃO EM LOG
 logging("Conteúdo da variável content:\r\n" . $newcontent . "\r\n");

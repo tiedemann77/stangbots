@@ -108,8 +108,7 @@ function logoutRequest( $csrftoken ) {
 
 	$output = curl_exec( $ch );
 	curl_close( $ch );
-
-	echo ( $output );
+	
 }
 
 // Função para criar logs

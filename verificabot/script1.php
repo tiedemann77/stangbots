@@ -59,6 +59,9 @@ editRequest($csrf_Token, $BasePage, $newContentBase, "[[WP:Bot|bot]]: removendo 
 // Editando a página de recentes
 editRequest($csrf_Token, $recentsPage, $newContentRecents, "[[WP:Bot|bot]]: adicionando casos encerrados recentemente");
 
+// Logout
+logoutRequest( $csrf_Token );
+
 // PARA TESTE
 // ADICIONAR O CONTEÚDO DA EDIÇÃO EM LOG
 //logging("Content of newContentBase string:\r\n" . $newContentBase . "\r\n");
