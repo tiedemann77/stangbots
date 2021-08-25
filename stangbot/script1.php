@@ -29,7 +29,7 @@ $control2 = 1;
 // Loop para listar as páginas
 while ($control<$total) {
 
-  $texto = $texto . "Parâmetro " . $control2 . " = " . $pages[$control] . "
+  $texto = $texto . "Código " . $control2 . " = " . $pages[$control] . "
 
 ";
 
