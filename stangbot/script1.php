@@ -70,13 +70,16 @@ while ($control<$total) {
 
   $temp2 = preg_match_all("/<!--\n{{Respondido2\|feito\|texto=/", $content, $out3);
   $fix = count($out3[0]);
-
   $closed = $closed-($fix*3);
 
   $temp3 = preg_match_all("/<!--{{Respondido\|feito\/negado\|texto= -->/", $content, $out4);
   $fix2 = count($out4[0]);
-
   $closed = $closed-$fix2;
+
+  // Fix para [[Wikipédia:Pedidos/Revisão de nomes de usuário]]
+  $temp4 = preg_match_all("/<!--{{Respondido2\|feito\/negado\/em observação\|texto= -->/", $content, $out5);
+  $fix3 = count($out5[0]);
+  $closed = $closed-$fix3;
 
   $open = $sectionNumber-$closed;
 
