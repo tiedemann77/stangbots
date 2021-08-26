@@ -108,7 +108,7 @@ function logoutRequest( $csrftoken ) {
 
 	$output = curl_exec( $ch );
 	curl_close( $ch );
-	
+
 }
 
 // Função para criar logs
@@ -146,6 +146,21 @@ function checkPower(){
 
 }
 
+// Função para requisições simples a API com cURL
+function APIrequest($endPoint, $params){
+
+	$url = $endPoint . "?" . http_build_query( $params );
+
+  $ch = curl_init( $url );
+  curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
+  $output = curl_exec( $ch );
+  curl_close( $ch );
+
+  $result = json_decode( $output, true );
+
+	return $result;
+}
+
 // Função para obter o conteúdo de qualquer página com três modos:
 // 0 não para se inexistente; 1 para o script; 2 mesmo que o 1 + maxlag test
 function getContent( $page, $mode) {
@@ -168,14 +183,8 @@ function getContent( $page, $mode) {
 		$params["maxlag"] = $maxlag;
 	}
 
-  $url = $endPoint . "?" . http_build_query( $params );
-
-  $ch = curl_init( $url );
-  curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
-  $output = curl_exec( $ch );
-  curl_close( $ch );
-
-  $result = json_decode( $output, true );
+	// Requisita o conteúdo a API
+	$result = APIrequest($endPoint, $params);
 
 	// Verifica se há um erro de maxlag
 	if(isset($result["error"]["lag"])){
@@ -217,7 +226,7 @@ function getContent( $page, $mode) {
 function editRequest( $csrftoken, $page, $text, $summary ) {
 	global $endPoint;
 
-	$params4 = [
+	$params = [
 		"action" => "edit",
 		"title" => $page,
 		"text" => $text,
@@ -230,7 +239,7 @@ function editRequest( $csrftoken, $page, $text, $summary ) {
 
 	curl_setopt( $ch, CURLOPT_URL, $endPoint );
 	curl_setopt( $ch, CURLOPT_POST, true );
-	curl_setopt( $ch, CURLOPT_POSTFIELDS, http_build_query( $params4 ) );
+	curl_setopt( $ch, CURLOPT_POSTFIELDS, http_build_query( $params ) );
 	curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
 	curl_setopt( $ch, CURLOPT_COOKIEJAR, "/tmp/cookie.txt" );
 	curl_setopt( $ch, CURLOPT_COOKIEFILE, "/tmp/cookie.txt" );
@@ -344,14 +353,8 @@ function getSectionList( $page ) {
     "format" => "json"
 	];
 
-  $url = $endPoint . "?" . http_build_query( $params );
-
-  $ch = curl_init( $url );
-  curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
-  $output = curl_exec( $ch );
-  curl_close( $ch );
-
-  $result = json_decode( $output, true );
+	// Faz consulta a API
+	$result = APIrequest($endPoint, $params);
 
 	foreach ($result['parse']['sections'] as $key => $value) {
 
@@ -375,14 +378,8 @@ function getSectionContent( $page, $section ) {
 		"format" => "json"
 	];
 
-	$url = $endPoint . "?" . http_build_query( $params );
-
-	$ch = curl_init( $url );
-	curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
-	$output = curl_exec( $ch );
-	curl_close( $ch );
-
-	$result = json_decode( $output, true );
+	// Faz consulta a API
+	$result = APIrequest($endPoint, $params);
 
 	$result = $result['parse']['wikitext']['*'];
 
@@ -402,14 +399,8 @@ function accountExist($account){
 		"format" => "json"
 	];
 
-	$url = $endPoint . "?" . http_build_query( $params );
-
-	$ch = curl_init( $url );
-	curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
-	$output = curl_exec( $ch );
-	curl_close( $ch );
-
-	$result = json_decode( $output, true );
+	// Faz consulta a API
+	$result = APIrequest($endPoint, $params);
 
 	if(isset($result['query']['globaluserinfo']['missing'])){
 		$exist = 0;
@@ -434,14 +425,8 @@ function hasBlocks($account){
 		"format" => "json"
 	];
 
-	$url = $endPoint . "?" . http_build_query( $params );
-
-	$ch = curl_init( $url );
-	curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
-	$output = curl_exec( $ch );
-	curl_close( $ch );
-
-	$result = json_decode( $output, true );
+	// Faz consulta a API
+	$result = APIrequest($endPoint, $params);
 
 	if(isset($result['query']['logevents'][0])){
 		$hasblocks = 1;
@@ -465,14 +450,8 @@ function antispoof($account){
 		"format" => "json"
 	];
 
-	$url = $endPoint . "?" . http_build_query( $params );
-
-	$ch = curl_init( $url );
-	curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
-	$output = curl_exec( $ch );
-	curl_close( $ch );
-
-	$result = json_decode( $output, true );
+	// Faz consulta a API
+	$result = APIrequest($endPoint, $params);
 
 	if($result['antispoof']['result']=="pass"){
 		$antispoof = 0;
