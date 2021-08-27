@@ -23,8 +23,8 @@ function getLoginToken() {
 
 	$ch = curl_init( $url );
 	curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
-	curl_setopt( $ch, CURLOPT_COOKIEJAR, "/tmp/cookie.txt" );
-	curl_setopt( $ch, CURLOPT_COOKIEFILE, "/tmp/cookie.txt" );
+	curl_setopt( $ch, CURLOPT_COOKIEJAR, "/tmp/cookie.inc" );
+	curl_setopt( $ch, CURLOPT_COOKIEFILE, "/tmp/cookie.inc" );
 
 	$output = curl_exec( $ch );
 	curl_close( $ch );
@@ -53,8 +53,8 @@ function loginRequest( $logintoken ) {
 	curl_setopt( $ch, CURLOPT_POST, true );
 	curl_setopt( $ch, CURLOPT_POSTFIELDS, http_build_query( $params2 ) );
 	curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
-	curl_setopt( $ch, CURLOPT_COOKIEJAR, "/tmp/cookie.txt" );
-	curl_setopt( $ch, CURLOPT_COOKIEFILE, "/tmp/cookie.txt" );
+	curl_setopt( $ch, CURLOPT_COOKIEJAR, "/tmp/cookie.inc" );
+	curl_setopt( $ch, CURLOPT_COOKIEFILE, "/tmp/cookie.inc" );
 
 	$output = curl_exec( $ch );
 	curl_close( $ch );
@@ -77,8 +77,8 @@ function getCSRFToken() {
 	$ch = curl_init( $url );
 
 	curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
-	curl_setopt( $ch, CURLOPT_COOKIEJAR, "/tmp/cookie.txt" );
-	curl_setopt( $ch, CURLOPT_COOKIEFILE, "/tmp/cookie.txt" );
+	curl_setopt( $ch, CURLOPT_COOKIEJAR, "/tmp/cookie.inc" );
+	curl_setopt( $ch, CURLOPT_COOKIEFILE, "/tmp/cookie.inc" );
 
 	$output = curl_exec( $ch );
 	curl_close( $ch );
@@ -103,8 +103,8 @@ function logoutRequest( $csrftoken ) {
 	curl_setopt( $ch, CURLOPT_POST, true );
 	curl_setopt( $ch, CURLOPT_POSTFIELDS, http_build_query( $params4 ) );
 	curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
-	curl_setopt( $ch, CURLOPT_COOKIEJAR, "/tmp/cookie.txt" );
-	curl_setopt( $ch, CURLOPT_COOKIEFILE, "/tmp/cookie.txt" );
+	curl_setopt( $ch, CURLOPT_COOKIEJAR, "/tmp/cookie.inc" );
+	curl_setopt( $ch, CURLOPT_COOKIEFILE, "/tmp/cookie.inc" );
 
 	$output = curl_exec( $ch );
 	curl_close( $ch );
@@ -241,8 +241,8 @@ function editRequest( $csrftoken, $page, $text, $summary ) {
 	curl_setopt( $ch, CURLOPT_POST, true );
 	curl_setopt( $ch, CURLOPT_POSTFIELDS, http_build_query( $params ) );
 	curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
-	curl_setopt( $ch, CURLOPT_COOKIEJAR, "/tmp/cookie.txt" );
-	curl_setopt( $ch, CURLOPT_COOKIEFILE, "/tmp/cookie.txt" );
+	curl_setopt( $ch, CURLOPT_COOKIEJAR, "/tmp/cookie.inc" );
+	curl_setopt( $ch, CURLOPT_COOKIEFILE, "/tmp/cookie.inc" );
 
 	$output = curl_exec( $ch );
 	curl_close( $ch );
