@@ -17,93 +17,88 @@ checkPower();
 //--------------------------------------------------------------------
 // INICIANDO SCRIPT EM SI
 
+// Lista de páginas
+$pages = array("Wikipédia:Pedidos/Proteção","Wikipédia:Pedidos/Restauro","Wikipédia:Pedidos/Notificações de vandalismo","Wikipédia:Pedidos/Revisão de nomes de usuário","Wikipédia:Pedidos/Notificação de incidentes","Wikipédia:Renomeação de conta");
+
 // Total de páginas
 $total = count($pages);
 
-$texto = "<noinclude>";
+// Começa a montar o feed
+$text = "<noinclude>";
 
-// Controle para o próximo loop
-$control = 0;
-$control2 = 1;
+// Primeira parte do feed: lista de páginas
+$control = 1;
+foreach ($pages as $key => $value) {
 
-// Loop para listar as páginas
-while ($control<$total) {
-
-  $texto = $texto . "Código " . $control2 . " = " . $pages[$control] . "
+  $text .= "Código " . $control . " = " . $pages[$key] . "
 
 ";
-
   $control++;
-  $control2++;
-
 }
 
-$texto = $texto . "</noinclude><includeonly>{{#switch: {{{1}}}
+// Trecho intermediário do feed
+$text .= "</noinclude><includeonly>{{#switch: {{{1}}}
 ";
 
-// Controle para o próximo loop
-$control = 0;
-$control2 = 1;
+// Segunda parte do feed: pedidos em aberto
+$control = 1;
+foreach ($pages as $key => $value) {
 
-// Loop para processar cada página
-while ($control<$total) {
+  // Conteúdo total da página
+  $content = getContent($pages[$key], 1);
 
-  echo "Checando " . $pages[$control] . ": ";
+  // Número de seções
+  $sectionList = getSectionList($pages[$key]);
 
-  // Obtém o conteúdo de cada página
-  $content = getContent($pages[$control], 1);
-
-  // Obtém a lista de seções (pedidos)
-  $sectionList = getSectionList($pages[$control]);
-
-  // Fix temporário
-  if($pages[$control]=="Wikipédia:Renomeação de conta"){
+  // Precisa remover uma dessa página
+  if($pages[$key]=="Wikipédia:Renomeação de conta"){
     $deleted = array_shift($sectionList);
   }
 
-  // Contando o número de seções
   $sectionNumber = count($sectionList);
 
-  // Conta o número de seções respondidas
-  $temp = preg_match_all("/(\{\{(R|r)espondido(2){0,1}\|.{1,}\|)|(A discussão a seguir está marcada como respondida)/", $content, $out2);
-  $closed = count($out2[0]);
+  // Conta o número de templates de resposta na página
+  preg_match_all("/(\{\{(R|r)espondido(2){0,1}\|.{1,}\|)|(A discussão a seguir está marcada como respondida)/", $content, $out);
+  $closed = count($out[0]);
 
-  $temp2 = preg_match_all("/<!--\n{{Respondido2\|feito\|texto=/", $content, $out3);
-  $fix = count($out3[0]);
-  $closed = $closed-($fix*3);
+  // Correções para várias páginas que apresentam templates de resposta como exemplo, removendo
+  // Wikipédia:Pedidos/Notificações de vandalismo e Wikipédia:Pedidos/Notificação de incidentes
+  preg_match_all("/<!--\n{{Respondido2\|feito\|texto=/", $content, $out);
+  $closed = $closed-(count($out[0])*3);
 
-  $temp3 = preg_match_all("/<!--{{Respondido\|feito\/negado\|texto= -->/", $content, $out4);
-  $fix2 = count($out4[0]);
-  $closed = $closed-$fix2;
+  // Wikipédia:Pedidos/Proteção
+  preg_match_all("/<!--{{Respondido\|feito\/negado\|texto= -->/", $content, $out);
+  $closed = $closed-count($out[0]);
 
-  // Fix para [[Wikipédia:Pedidos/Revisão de nomes de usuário]]
-  $temp4 = preg_match_all("/<!--{{Respondido2\|feito\/negado\/em observação\|texto= -->/", $content, $out5);
-  $fix3 = count($out5[0]);
-  $closed = $closed-$fix3;
+  // Wikipédia:Pedidos/Revisão de nomes de usuário
+  preg_match_all("/<!--{{Respondido2\|feito\/negado\/em observação\|texto= -->/", $content, $out);
+  $closed = $closed-count($out[0]);
 
   $open = $sectionNumber-$closed;
 
-  // Se menor que 0, ocorreu algum erro então colocar 0 por padrão
+  // Se menor que 0, ocorreu algum erro então parar
   if($open<0){
-    $open = 0;
+    exit(logging("Número de pedidos em aberto para " . $pages[$key] . " menor que 0. Fechando...\r\n"));
   }
 
-  echo "total " . $sectionNumber . "; fechadas " . $closed . "; abertas " . $open . "\r\n";
+  echo logging("Checando " . $pages[$key] . ": total " . $sectionNumber . "; fechados " . $closed . "; abertos " . $open . ".\r\n");
 
-  $texto = $texto . " | " . $control2 . " = " . $open . "
+  // Adiciona linha
+  $text .= " | " . $control . " = " . $open . "
 ";
 
   $control++;
-  $control2++;
+
 }
 
-$texto = $texto .  " | 0
+// Rodapé
+$text .= " | 0
 }}</includeonly>";
 
-// Obtém o conteúdo do feed
-$content = getContent("User:Stangbot/feed", 1);
+// Verifica se precisa atualizar o feed
+$content = getContent("User:Stangbot/feed", 0);
 
-if($content==$texto){
+if($content==$text){
   // Nada a editar, para script
   exit(logging("Nenhuma edição precisa ser feita. Fechando...\r\n"));
 }
@@ -118,14 +113,14 @@ loginRequest( $login_Token );
 $csrf_Token = getCSRFToken();
 
 // Editando a página de pedidos
-editRequest($csrf_Token, "User:Stangbot/feed", $texto, "atualizando");
+editRequest($csrf_Token, "User:Stangbot/feed", $text, "atualizando");
 
 // Logout
 logoutRequest( $csrf_Token );
 
 // PARA TESTE
 // ADICIONAR O CONTEÚDO DA EDIÇÃO EM LOG
-//logging("Conteúdo da variável texto:\r\n" . $texto. "\r\n");
+//logging("Conteúdo da variável text:\r\n" . $text. "\r\n");
 
 // Fechar log
 echo logging("Script 1 concluído!\r\n");
