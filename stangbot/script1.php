@@ -105,8 +105,7 @@ $content = getContent("User:Stangbot/feed", 1);
 
 if($content==$texto){
   // Nada a editar, para script
-  $logmsg = logging("Nenhuma edição precisa ser feita. Fechando...\r\n");
-  exit($logmsg);
+  exit(logging("Nenhuma edição precisa ser feita. Fechando...\r\n"));
 }
 
 // Login step 1

@@ -36,8 +36,7 @@ function getOpenCasesList($content) {
 
 	// Se é 0, sem casos abertos, parar script
 	if ($numberOpenCases===0) {
-		$logmsg = logging("Não há casos abertos. Fechando...\r\n");
-		exit($logmsg);
+		exit(logging("Não há casos abertos. Fechando...\r\n"));
 	}else {
 		// Se não, retorna lista de casos
 		return $out2;
@@ -163,10 +162,7 @@ function getClosedCases($opencases) {
 
 	// Se nenhum caso foi fechado ($control==0), parar script
 	if ($control==0) {
-
-		$logmsg = logging("Não há nenhum caso concluído para remover. Fechando...\r\n");
-		exit($logmsg);
-
+		exit(logging("Não há nenhum caso concluído para remover. Fechando...\r\n"));
 	}
 
   // Retorna a lista de casos concluídos

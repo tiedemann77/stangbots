@@ -137,11 +137,9 @@ function checkPower(){
 	if($content=="run"){
 		// Não faz nada, bot está on
 	}elseif($content=="stop"){
-		$logmsg =  logging("Bot está desligado em " . $powerPage . ". Fechando...\r\n");
-	  exit($logmsg);
+	  exit(logging("Bot está desligado em " . $powerPage . ". Fechando...\r\n"));
 	}else{
-  	$logmsg =  logging("Conteúdo estranho em " . $powerPage . ", verifique. Fechando...\r\n");
-		exit($logmsg);
+		exit(logging("Conteúdo estranho em " . $powerPage . ", verifique. Fechando...\r\n"));
 	}
 
 }
@@ -188,8 +186,7 @@ function getContent( $page, $mode) {
 
 	// Verifica se há um erro de maxlag
 	if(isset($result["error"]["lag"])){
-		$logmsg =  logging("Maxlag excedido, limite: " . $maxlag . "; valor atual: " . $result["error"]["lag"] . ". Fechando...\r\n");
-		exit($logmsg);
+		exit(logging("Maxlag excedido, limite: " . $maxlag . "; valor atual: " . $result["error"]["lag"] . ". Fechando...\r\n"));
 	}
 
   // Obtém o ID da página
@@ -212,12 +209,10 @@ function getContent( $page, $mode) {
 			return 0;
 		}elseif ($mode==1||$mode==2) {
 			// Se 1 ou 2, para o script;
-			$logmsg =  logging("Página solicitada (" . $page . ") em modo ativo não existe. Fechando...\r\n");
-			exit($logmsg);
+			exit(logging("Página solicitada (" . $page . ") em modo ativo não existe. Fechando...\r\n"));
 		}else{
 			// Indefinido
-			$logmsg =  logging("Modo desconhecido para getContent (" . $mode . "). Verifique seu script. Fechando...\r\n");
-			exit($logmsg);
+			exit(logging("Modo desconhecido para getContent (" . $mode . "). Verifique seu script. Fechando...\r\n"));
 		}
 	}
 }

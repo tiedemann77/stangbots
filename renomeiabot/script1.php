@@ -25,8 +25,7 @@ $savedcontent = file_get_contents($contentfile);
 
 // Se iguais, não houveram edições, parar script
 if($content==$savedcontent){
-  $logmsg = logging("A página não foi editada. Fechando...\r\n");
-  exit($logmsg);
+  exit(logging("A página não foi editada. Fechando...\r\n"));
 }
 
 // Obtém a lista de seções (pedidos)
@@ -144,7 +143,6 @@ while ($control < $requestNumber) {
   }else{
     // A primeira condição fecha qualquer pedido, então qualquer checagem adicional deve ser feita dentro do else
 
-
     // Se já há notas do bot no pedido, ignorar para evitar comentários repetidos
     $temp3 = preg_match("/(RenomeiaBot)/", $newrequest[$control]);
 
@@ -214,8 +212,7 @@ if($newcontent==$content){
   file_put_contents($contentfile, $content);
 
   // Para o script
-  $logmsg = logging("Nenhuma edição precisa ser feita. Fechando...\r\n");
-  exit($logmsg);
+  exit(logging("Nenhuma edição precisa ser feita. Fechando...\r\n"));
 }
 
 
