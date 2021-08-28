@@ -80,14 +80,35 @@ foreach ($sysops as $key => $value) {
     continue;
   }
 
-  // Eliminações
+  // Eliminações (mais complexo pois precisa remover delete_redir)
   echo logging("Checando eliminações para " . $sysops[$key]['name'] . "\r\n");
 
   $params["letype"] = "delete";
 
+  $params["lelimit"] = "250";
+
+  $params["leprop"] = "type";
+
   $result = APIrequest($endPoint, $params);
 
-  $totals[$sysops[$key]['name']] = $totals[$sysops[$key]['name']] + count($result['query']['logevents']);
+  $totals[$sysops[$key]['name']] += count($result['query']['logevents']);
+
+  $note[$sysops[$key]['name']] = "";
+
+  if(isset($result['query']['logevents'])){
+    $count_delredir = 0;
+    foreach ($result['query']['logevents'] as $key2 => $value2) {
+      if($result['query']['logevents'][$key2]['action']=="delete_redir"){
+        $count_delredir++;
+      }
+    }
+
+    if($count_delredir>235){
+      $note[$sysops[$key]['name']] = "<ref>Os registros de eliminações para " . $sysops[$key]['name'] . " podem não ter sido completamente contabilizados. Verifique manualmente ante de tomar qualquer decisão.</ref>";
+    }
+
+    $totals[$sysops[$key]['name']] -= $count_delredir;
+  }
 
   if($totals[$sysops[$key]['name']]>14){
     continue;
@@ -96,11 +117,15 @@ foreach ($sysops as $key => $value) {
   // Proteções
   echo logging("Checando proteções para " . $sysops[$key]['name'] . "\r\n");
 
+  // A partir daqui, podemos voltar com valores mais restritos
+  $params["lelimit"] = "15";
+  $params["leprop"] = "ids";
+
   $params["letype"] = "protect";
 
   $result = APIrequest($endPoint, $params);
 
-  $totals[$sysops[$key]['name']] = $totals[$sysops[$key]['name']] + count($result['query']['logevents']);
+  $totals[$sysops[$key]['name']] += count($result['query']['logevents']);
 
   if($totals[$sysops[$key]['name']]>14){
     continue;
@@ -113,7 +138,7 @@ foreach ($sysops as $key => $value) {
 
   $result = APIrequest($endPoint, $params);
 
-  $totals[$sysops[$key]['name']] = $totals[$sysops[$key]['name']] + count($result['query']['logevents']);
+  $totals[$sysops[$key]['name']] += count($result['query']['logevents']);
 
   if($totals[$sysops[$key]['name']]>14){
     continue;
@@ -126,7 +151,7 @@ foreach ($sysops as $key => $value) {
 
   $result = APIrequest($endPoint, $params);
 
-  $totals[$sysops[$key]['name']] = $totals[$sysops[$key]['name']] + count($result['query']['logevents']);
+  $totals[$sysops[$key]['name']] += count($result['query']['logevents']);
 
   if($totals[$sysops[$key]['name']]>14){
     continue;
@@ -139,7 +164,7 @@ foreach ($sysops as $key => $value) {
 
   $result = APIrequest($endPoint, $params);
 
-  $totals[$sysops[$key]['name']] = $totals[$sysops[$key]['name']] + count($result['query']['logevents']);
+  $totals[$sysops[$key]['name']] += count($result['query']['logevents']);
 
   if($totals[$sysops[$key]['name']]>14){
     continue;
@@ -176,8 +201,15 @@ foreach ($totals as $key => $value) {
 
     $wpedits[$key] = count($result['query']['usercontribs']);
 
+    if($wpedits[$key]==500){
+      $wpedits_text[$key] = "+500";
+    }else{
+      $wpedits_text[$key] = $wpedits[$key];
+    }
+
   }else{
-    $wpedits[$key] = " ----";
+    $wpedits[$key] = 0;
+    $wpedits_text[$key] = " ----";
   }
 }
 
@@ -196,8 +228,15 @@ foreach ($totals as $key => $value) {
 
     $mwedits[$key] = count($result['query']['usercontribs']);
 
+    if($mwedits[$key]==500){
+      $mwedits_text[$key] = "+500";
+    }else{
+      $mwedits_text[$key] = $mwedits[$key];
+    }
+
   }else{
-    $mwedits[$key] = " ----";
+    $mwedits[$key] = 0;
+    $mwedits_text[$key] = " ----";
   }
 }
 
@@ -239,7 +278,7 @@ foreach ($totals as $key => $value) {
     $text .= "|>15
 ";
   }else{
-    $text .= "|" . $totals[$key] . "
+    $text .= "|" . $totals[$key] . $note[$key] . "
 ";
   }
 
@@ -247,19 +286,19 @@ foreach ($totals as $key => $value) {
   $keyURL = str_replace(" ","+", $key);
   $dateURL = date("Y-m-d", strtotime("-6 months"));
 
-  if($wpedits[$key]!=0&&$wpedits[$key]!=" ----"){
-    $text .= "|" . $wpedits[$key] . " ([https://pt.wikipedia.org/w/index.php?target=" . $keyURL . "&namespace=4&tagfilter=&start=" . $dateURL . "&end=&limit=5000&title=Especial:Contribuições ver])
+  if($wpedits[$key]!=0){
+    $text .= "|" . $wpedits_text[$key] . " ([https://pt.wikipedia.org/w/index.php?target=" . $keyURL . "&namespace=4&tagfilter=&start=" . $dateURL . "&end=&limit=5000&title=Especial:Contribuições ver])
 ";
   }else{
-    $text .= "|" . $wpedits[$key] . "
+    $text .= "|" . $wpedits_text[$key] . "
 ";
   }
 
-  if($mwedits[$key]!=0&&$mwedits[$key]!=" ----"){
-    $text .= "|" . $mwedits[$key] . " ([https://pt.wikipedia.org/w/index.php?target=" . $keyURL . "&namespace=8&tagfilter=&start=" . $dateURL . "&end=&limit=5000&title=Especial:Contribuições ver])
+  if($mwedits[$key]!=0){
+    $text .= "|" . $mwedits_text[$key] . " ([https://pt.wikipedia.org/w/index.php?target=" . $keyURL . "&namespace=8&tagfilter=&start=" . $dateURL . "&end=&limit=5000&title=Especial:Contribuições ver])
 ";
   }else{
-    $text .= "|" . $mwedits[$key] . "
+    $text .= "|" . $mwedits_text[$key] . "
 ";
   }
 
