@@ -312,7 +312,7 @@ $text .= "|}
 
 //Checando se precisa atualizar desde o último relatório
 $content = getContent($page, 0);
-if($content==$text){
+if($content===$text){
   exit(logging("Nenhuma edição precisa ser feita. Fechando...\r\n"));
 }
 
