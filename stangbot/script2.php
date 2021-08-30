@@ -18,7 +18,7 @@ checkPower();
 // INICIANDO SCRIPT EM SI
 
 // Página do relatório
-$page = "User:Stanglavine/Testes";
+$page = "Wikipédia:Burocratas/Atividade dos administradores";
 
 // Seis meses anteriores
 $start = date("Y-m-d h:m:s", strtotime("-6 months"));
