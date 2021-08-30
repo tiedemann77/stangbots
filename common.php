@@ -218,7 +218,7 @@ function getContent( $page, $mode) {
 }
 
 // Função para editar páginas, substituindo o conteúdo
-function editRequest( $csrftoken, $page, $text, $summarym, $minor, $bot ) {
+function editRequest( $csrftoken, $page, $text, $summary, $minor, $bot ) {
 	global $endPoint;
 
 	$params = [
