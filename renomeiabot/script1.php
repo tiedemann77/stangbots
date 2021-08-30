@@ -226,7 +226,7 @@ if($newcontent==$content){
 //$csrf_Token = getCSRFToken();
 
 // Editando a página de pedidos
-//editRequest($csrf_Token, $BasePage, $newcontent, "[[WP:Bot|bot]]: processando pedidos");
+//editRequest($csrf_Token, $BasePage, $newcontent, "[[WP:Bot|bot]]: processando pedidos", 0, 0);
 
 // Logout
 //logoutRequest( $csrf_Token );

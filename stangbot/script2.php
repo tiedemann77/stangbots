@@ -326,7 +326,7 @@ loginRequest( $login_Token );
 $csrf_Token = getCSRFToken();
 
 // Editando
-editRequest($csrf_Token, $page, $text, "atualizando estatísticas sobre administradores");
+editRequest($csrf_Token, $page, $text, "atualizando estatísticas sobre administradores", 0, 0);
 
 // Logout
 logoutRequest( $csrf_Token );

@@ -54,10 +54,10 @@ loginRequest( $login_Token );
 $csrf_Token = getCSRFToken();
 
 // Editando a página de pedidos
-editRequest($csrf_Token, $BasePage, $newContentBase, "[[WP:Bot|bot]]: removendo casos encerrados");
+editRequest($csrf_Token, $BasePage, $newContentBase, "[[WP:Bot|bot]]: removendo casos encerrados", 1, 1);
 
 // Editando a página de recentes
-editRequest($csrf_Token, $recentsPage, $newContentRecents, "[[WP:Bot|bot]]: adicionando casos encerrados recentemente");
+editRequest($csrf_Token, $recentsPage, $newContentRecents, "[[WP:Bot|bot]]: adicionando casos encerrados recentemente", 1, 1);
 
 // Logout
 logoutRequest( $csrf_Token );

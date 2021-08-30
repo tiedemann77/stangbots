@@ -138,7 +138,7 @@ loginRequest( $login_Token );
 $csrf_Token = getCSRFToken();
 
 // Edita a página de recentes
-editRequest($csrf_Token, $recentsPage, $newrecentsContent, "[[WP:Bot|bot]]: arquivando casos antigos");
+editRequest($csrf_Token, $recentsPage, $newrecentsContent, "[[WP:Bot|bot]]: arquivando casos antigos", 1, 1);
 
 // PARA TESTE
 // Registra em log ao invés de editar
@@ -146,7 +146,7 @@ editRequest($csrf_Token, $recentsPage, $newrecentsContent, "[[WP:Bot|bot]]: arqu
 
 // Edita o arquivo do mês anterior, se necessário
 if(isset($newPreviousContent)){
-  editRequest($csrf_Token, $previousPage, $newPreviousContent, "[[WP:Bot|bot]]: arquivando casos antigos");
+  editRequest($csrf_Token, $previousPage, $newPreviousContent, "[[WP:Bot|bot]]: arquivando casos antigos", 1, 1);
   // PARA TESTE
   // Registra em log ao invés de editar
   //logging("Content of newPreviousContent string:\r\n" . $newPreviousContent . "\r\n");
@@ -154,7 +154,7 @@ if(isset($newPreviousContent)){
 
 // Edita o arquivo do mês atual, se necessário
 if(isset($newCurrentContent)){
-  editRequest($csrf_Token, $currentPage, $newCurrentContent, "[[WP:Bot|bot]]: arquivando casos antigos");
+  editRequest($csrf_Token, $currentPage, $newCurrentContent, "[[WP:Bot|bot]]: arquivando casos antigos", 1, 1);
   // PARA TESTE
   // Registra em log ao invés de editar
   //logging("Content of newCurrentContent string:\r\n" . $newCurrentContent . "\r\n");

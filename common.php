@@ -218,7 +218,7 @@ function getContent( $page, $mode) {
 }
 
 // Função para editar páginas, substituindo o conteúdo
-function editRequest( $csrftoken, $page, $text, $summary ) {
+function editRequest( $csrftoken, $page, $text, $summarym, $minor, $bot ) {
 	global $endPoint;
 
 	$params = [
@@ -229,6 +229,14 @@ function editRequest( $csrftoken, $page, $text, $summary ) {
 		"token" => $csrftoken,
 		"format" => "json"
 	];
+
+	if($minor==1){
+		$params["minor"] = "1";
+	}
+
+	if($bot==1){
+		$params["bot"] = "1";
+	}
 
 	$ch = curl_init();
 
