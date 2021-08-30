@@ -245,12 +245,12 @@ $text = '== Atividade dos administradores no último semestre ==
 {| class="wikitable"
 |-
 | style="background:#ccffcc" | Ativo
-| style="background:#f5deb3" | Possivelmente inativo
-! style="background:#ffcccc" | Provavelmente inativo
+| style="background:#f5deb3" | Possivelmente inativo(a)
+! style="background:#ffcccc" | Provavelmente inativo(a)
 |}
 {| class="wikitable sortable center"
 |+
-!Administrador
+!Administrador(a)
 !Logs<ref>Logs: bloqueio, eliminação, proteção, privilégios de usuário, mensagens em massa e gestão de filtros de abuso.</ref>
 !Edições no domínio "Wikipédia"
 !Edições no domínio "MediaWiki"
