@@ -76,7 +76,7 @@ loginRequest( $login_Token );
 $csrf_Token = getCSRFToken();
 
 // Edita a página
-editRequest($csrf_Token, $page, $archiveContent, "[[WP:Bot|bot]]: substituindo predefinições");
+editRequest($csrf_Token, $page, $archiveContent, "[[WP:Bot|bot]]: substituindo predefinições", 1, 1);
 
 // Logout
 logoutRequest( $csrf_Token );
