@@ -135,7 +135,7 @@ while ($control < $requestNumber) {
 
     $newrequest[$control] = str_replace($out[0],$header,$newrequest[$control]);
     $newrequest[$control] = $newrequest[$control] . "
-::{{subst:negado|(automático) Negado}} {{ping|" . $actualname . "}} Olá! O nome de usuário que você escolheu (" . $newname . ") já está em uso. Se " . $newname . " não possui ediçoes ([[Especial:Administração de contas globais/" . $newname . "|verifique aqui]]), ele pode ser elegível para [[m:Special:MyLanguage/USURP|usurpação]]. No entanto, na maioria dos casos o mais recomendado é escolher outro nome que não conste [[Especial:Administração de contas globais|nesta lista]] e abrir um novo pedido. Obrigado! ~~~~}}";
+::{{subst:negado|Negado automaticamente}} {{ping|" . $actualname . "}} Olá! O nome de usuário que você escolheu (" . $newname . ") já está em uso. Se " . $newname . " não possui ediçoes ([[Especial:Administração de contas globais/" . $newname . "|verifique aqui]]), ele pode ser elegível para [[m:Special:MyLanguage/USURP|usurpação]]. No entanto, na maioria dos casos o mais recomendado é escolher outro nome que não conste [[Especial:Administração de contas globais|nesta lista]] e abrir um novo pedido. Obrigado! ~~~~}}";
 
     // Log
     echo logging( $newname . " já está em uso;\r\n");
@@ -217,23 +217,23 @@ if($newcontent==$content){
 
 
 // Login step 1
-//$login_Token = getLoginToken();
+$login_Token = getLoginToken();
 
 // Login step 2
-//loginRequest( $login_Token );
+loginRequest( $login_Token );
 
 // Obtendo edit token
-//$csrf_Token = getCSRFToken();
+$csrf_Token = getCSRFToken();
 
 // Editando a página de pedidos
-//editRequest($csrf_Token, $BasePage, $newcontent, "[[WP:Bot|bot]]: processando pedidos", 0, 0);
+editRequest($csrf_Token, $BasePage, $newcontent, "[[WP:Bot|bot]]: processando pedidos", 0, 0);
 
 // Logout
-//logoutRequest( $csrf_Token );
+logoutRequest( $csrf_Token );
 
 // PARA TESTE
 // ADICIONAR O CONTEÚDO DA EDIÇÃO EM LOG
-logging("Conteúdo da variável content:\r\n" . $newcontent . "\r\n");
+//logging("Conteúdo da variável content:\r\n" . $newcontent . "\r\n");
 
 // Depois da edição, obtém o conteúdo de novo por causa da assinatura
 $content = getContent($BasePage, 1);
