@@ -21,7 +21,7 @@ checkPower();
 $page = "Wikipédia:Burocratas/Atividade dos administradores";
 
 // Seis meses anteriores
-$start = date("Y-m-d h:m:s", strtotime("-6 months"));
+$start = date("Y-m-d", strtotime("-6 months")) . " 00:00:00";
 
 // Obtendo lista de sysops
 $params = [
