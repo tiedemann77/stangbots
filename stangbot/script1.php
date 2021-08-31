@@ -74,6 +74,10 @@ foreach ($pages as $key => $value) {
   preg_match_all("/<!--{{Respondido2\|feito\/negado\/em observação\|texto= -->/", $content, $out);
   $closed = $closed-count($out[0]);
 
+  // Wikipédia:Pedidos/Restauro
+  preg_match_all("/<!--{{Respondido\|feito\/negado\/desnecessário\|texto= -->/", $content, $out);
+  $closed = $closed-count($out[0]);
+
   $open = $sectionNumber-$closed;
 
   // Se menor que 0, ocorreu algum erro então parar
