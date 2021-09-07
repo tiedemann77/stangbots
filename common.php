@@ -466,4 +466,44 @@ function antispoof($account){
 
 }
 
+// Função para detectar o destino de redirects
+function resolveRedir($page){
+
+	// Obtém o conteúdo da página alvo
+	$content = getContent($page, 1);
+
+	//Controle para o loop
+	$x = 0;
+
+	// Verifica se a página é um redirect em loop, para evitar duplos, triplos redirects
+	while($x == "0") {
+
+		if(preg_match("/(#(R|r)(E|e)(D|d)(I|i)(R|r)(E|e)(C|c)){1,1}[a-zA-Z]{0,9} {0,}\[\[/", $content)){
+
+			// Se for, detecta a página alvo
+			$page = preg_replace("/(#(R|r)(E|e)(D|d)(I|i)(R|r)(E|e)(C|c)){1,1}[a-zA-Z]{0,9} {0,}\[\[/", "", $content);
+			$page = preg_replace("/\]\].*/","",$page);
+
+			// Remove possíveis links para seções com "#"
+			$explode = explode("#",$page);
+			$page = $explode[0];
+
+			// Obtém o conteúdo da nova página alvo
+			$content = getContent($page, 1);
+
+			// Reinicia para testar se não é um redirect de novo
+
+		}else{
+
+			// Se não for um redirect, para o loop e prossegue
+			$x = 1;
+
+		}
+
+		// Retorna o título da página alvo
+		return $page;
+
+	}
+}
+
  ?>

@@ -9,8 +9,7 @@ function getOpenCasesList($content) {
   $out2 = array();
 
   foreach ($out as $key => $value) {
-  	$newvalue = str_replace("|","",$value);
-   	$out2[$key] = $newvalue;
+  	$out2[$key] = str_replace("|","",$value);
   }
 
   // Verificando se a entrada do exemplo está presente ou não
@@ -66,56 +65,27 @@ function getClosedCases($opencases) {
     // Nome do usuário
     $CaseTitle = $value;
 
-		// Obtém conteúdo da subpágina
-		$content = getContent($CasePage, 0);
+    // Resolve possíveis redirecionamentos
+    $newPage = resolveRedir($CasePage);
 
-    //Controles para o próximo loop
-    $x = 0;
-    $y = 0;
+    if($CasePage!=$newPage){
 
-    // Verifica se é um redirect em loop, para evitar duplos, triplos redirects
-    while($x == "0") {
+      $redirect = $CaseTitle;
 
-      if(preg_match("/(#(R|r)(E|e)(D|d)(I|i)(R|r)(E|e)(C|c)){1,1}[a-zA-Z]{0,9} {0,}\[\[Wikipédia:Pedidos a verificadores\/Caso\//", $content)){
+      $CaseTitle = str_replace($BasePage . "/Caso/", "", $newPage);
 
-        // Se y == 0, é a primeira vez que passa, salvar redirect original
-        if($y=="0"){
-
-          // Se for um redirect, salva o título
-          $redirect = $CaseTitle;
-
-        }
-
-        // Se for, detecta a página alvo
-        $title = preg_replace("/(#(R|r)(E|e)(D|d)(I|i)(R|r)(E|e)(C|c)){1,1}[a-zA-Z]{0,9} {0,}\[\[Wikipédia:Pedidos a verificadores\/Caso\//", "", $content);
-        $title = preg_replace("/\]\].*/","",$title);
-
-        // Reseta as variáveis para o destino do redirect
-        $CaseTitle = $title;
-        $CasePage = $BasePage . "/Caso/" . $CaseTitle;
-
-        // Obtém o conteúdo da nova página alvo
-        $content = getContent($CasePage, 0);
-
-        // Controle 2
-        $y = 1;
-
-        // Reinicia para testar se não é um redirect de novo
-
-      }else{
-
-        // Se não for um redirect, para o loop e prossegue
-        $x = 1;
-
-      }
+      $CasePage = $BasePage . "/Caso/" . $CaseTitle;
 
     }
+
+		// Obtém conteúdo da subpágina
+		$content = getContent($CasePage, 0);
 
     // Se a página do caso existe, verifica se está aberto ou fechado
     if($content!="0"){
 
       // Conta seções com o padrão dd mm yyyy
-      preg_match_all("/== [0-9]{1,2} .{4,9} [0-9]{4,4} ==/", $content, $out);
+      preg_match_all("/== [0-9]{1,2} .{4,9} [0-9]{4,4} .*==/", $content, $out);
       $numberSections = count($out[0]);
 
       // Se o número de seções = 0 é uma página mal-configurada, ignorar
