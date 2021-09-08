@@ -148,7 +148,18 @@ while ($control < $requestNumber) {
 
     if($temp3==0){
 
-      // Se o usuário tem bloqueios, adiciona uma nota no pedido
+      // Se o novo nome de usuário e o antigo são iguais
+      if($newname==$actualname){
+
+        $newrequest[$control] = $newrequest[$control] . "
+::'''Nota automática:''' o novo nome de usuário e o antigo parecem iguais. ~~~~";
+
+        // Log
+        echo logging("Novo nome (" . $newname . ") parece igual ao antigo;\r\n");
+
+      }
+
+      // Se o usuário tem bloqueios
       if($blocks==1){
 
         // Pequeno ajuste para espaço na URL
