@@ -182,7 +182,7 @@ while ($control < $requestNumber) {
       if($renames!="0"){
 
         $newrequest[$control] = $newrequest[$control] . "
-::'''Nota automática:''' este usuário já foi renomeado no passado. A última renomeação ocorreu em " . $renames . ". ~~~~";
+::'''Nota automática:''' a conta " . $actualname . " já foi renomeada no passado. A última renomeação ocorreu em " . $renames . ". ~~~~";
 
         // Log
         echo logging( $actualname . " já foi renomeado no passado;\r\n");
@@ -196,7 +196,7 @@ while ($control < $requestNumber) {
         $nameURL = str_replace(" ","+",$newname);
 
         $newrequest[$control] = $newrequest[$control] . "
-::'''Nota automática:''' o nome de usuário " . $newname . " é muito similar a [[Especial:Administração de contas globais/" . $antispoof . "|" . $antispoof . "]] ou a outros que [https://meta.wikimedia.org/w/api.php?action=antispoof&username=" . $nameURL . "&format=json já estão em uso]. ~~~~";
+::'''Nota automática:''' o nome de usuário escolhido (" . $newname . ") é muito similar a [[Especial:Administração de contas globais/" . $antispoof . "|" . $antispoof . "]] ou a outros que [https://meta.wikimedia.org/w/api.php?action=antispoof&username=" . $nameURL . "&format=json já estão em uso]. ~~~~";
 
         // Log
         echo logging( $newname . " é muito similar a " . $antispoof . " ou outros;\r\n");
