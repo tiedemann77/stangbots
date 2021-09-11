@@ -6,6 +6,9 @@ require_once("includes/globals.php");
 // Requer funções básicas
 require_once(__DIR__ . "/../common.php");
 
+// Requer funções para esse script em específico
+require_once("includes/functions_1.php");
+
 // Começa o log
 echo logging($logdate . "
 Iniciando script 1...\r\n");
@@ -123,6 +126,9 @@ while ($control < $requestNumber) {
   // Verifica nomes similares
   $antispoof = antispoof($newname);
 
+  // Verifica renomeações anteriores
+  $renames = hasRenames($actualname);
+
   // Fecha pedido, comenta pedido
   // No começo, tudo é igual
   $newrequest[$control] = $oldrequest[$control];
@@ -169,6 +175,17 @@ while ($control < $requestNumber) {
 
         // Log
         echo logging( $actualname . " já foi bloqueado no passado;\r\n");
+
+      }
+
+      // Se já teve renomeações no passado
+      if($renames!="0"){
+
+        $newrequest[$control] = $newrequest[$control] . "
+::'''Nota automática:''' este usuário já foi renomeado no passado. A última renomeação ocorreu em " . $renames . ". ~~~~";
+
+        // Log
+        echo logging( $actualname . " já foi renomeado no passado;\r\n");
 
       }
 
