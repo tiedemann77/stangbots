@@ -22,7 +22,7 @@ $powerPage = "User:" . $username2 . "/Power";
 $maxlag = 4;
 
 // Arquivo com o conteúdo da página, para evitar múltiplas requisições de seções
-$contentfile = __DIR__ .  "/../temp/content.txt";
+$contentfile = __DIR__ .  "/../temp/cache.txt";
 
 // Timezone UTC
 date_default_timezone_set('UTC');
