@@ -166,7 +166,7 @@ while ($control < $requestNumber) {
 
         $newrequest[$control] = str_replace($out[0],$header,$newrequest[$control]);
         $newrequest[$control] = $newrequest[$control] . "
-::{{subst:feito|Pedido atendido}} a conta foi renomeada por " . $renamer . ". ~~~~}}";
+::{{subst:feito|Pedido atendido:}} a conta foi renomeada por " . $renamer . ". ~~~~}}";
 
         // Log
         echo logging( "ATENDIDO: " . $actualname . " foi renomeada para " . $newname . " por " . $renamer . ";\r\n");
@@ -263,7 +263,7 @@ while ($control < $requestNumber) {
         $blocks = hasBlocks($actualname);
 
         // Verifica nomes similares
-        $antispoof = antispoof($newname);
+        $antispoof = antispoof($newname,$actualname);
 
         // Verifica renomeações anteriores
         $renames = hasRenames($actualname);

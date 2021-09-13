@@ -442,7 +442,7 @@ function hasBlocks($account){
 }
 
 // Função para verificar antispoof, retorna 0 ou o primeiro nome caso dispare
-function antispoof($account){
+function antispoof($account,$ignore){
 
 	// Antispoof precisa ser checado no meta
 	$endPoint = "https://meta.wikimedia.org/w/api.php";
@@ -460,6 +460,13 @@ function antispoof($account){
 		$antispoof = 0;
 	}else{
 		$antispoof = $result['antispoof']['users'][0];
+		if($antispoof==$ignore){
+			if(isset($result['antispoof']['users'][1])){
+				$antispoof = $result['antispoof']['users'][1];
+			}else {
+				$antispoof = 0;
+			}
+		}
 	}
 
 	return $antispoof;
