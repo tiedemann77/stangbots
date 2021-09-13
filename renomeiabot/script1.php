@@ -266,7 +266,7 @@ while ($control < $requestNumber) {
         $antispoof = antispoof($newname);
 
         // Verifica renomeações anteriores
-        //$renames = hasRenames($actualname);
+        $renames = hasRenames($actualname);
 
         // Se o novo nome de usuário e o antigo são iguais
         if($newname==$actualname){
@@ -291,7 +291,7 @@ while ($control < $requestNumber) {
           echo logging( $actualname . " já foi bloqueado no passado;\r\n");
 
         }
-/*
+
         // Se já teve renomeações no passado
         if($renames!="0"){
 
@@ -301,7 +301,7 @@ while ($control < $requestNumber) {
           // Log
           echo logging( $actualname . " já foi renomeado no passado;\r\n");
 
-        }*/
+        }
 
         // Se o antispoof disparar
         if($antispoof!="0"){
