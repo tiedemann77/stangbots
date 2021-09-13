@@ -77,7 +77,6 @@ $previousPage = $archivePage . $previousYear . "/" . $previousMonth;
 
 // Código base para novas páginas
 $source = '__NOTOC__
-{{Wikipédia:Pedidos a verificadores/Cabeçalho}}
 = Investigações encerradas em month de year =
 {| class="wikitable sortable center"
 |+
