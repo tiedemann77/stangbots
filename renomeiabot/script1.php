@@ -117,17 +117,8 @@ while ($control < $requestNumber) {
   // Log
   echo logging("Fazendo checagens da seção número " . $control2 . ";\r\n");
 
-  // Checa se o novo nome está em uso
+  // Checa se o novo nome está em uso, condição que fecha o pedido
   $exist = accountExist($newname);
-
-  // Verifica se o usuário teve bloqueios no passado
-  $blocks = hasBlocks($actualname);
-
-  // Verifica nomes similares
-  $antispoof = antispoof($newname);
-
-  // Verifica renomeações anteriores
-  $renames = hasRenames($actualname);
 
   // Fecha pedido, comenta pedido
   // No começo, tudo é igual
@@ -147,12 +138,20 @@ while ($control < $requestNumber) {
     echo logging( $newname . " já está em uso;\r\n");
 
   }else{
-    // A primeira condição fecha qualquer pedido, então qualquer checagem adicional deve ser feita dentro do else
-
     // Se já há notas do bot no pedido, ignorar para evitar comentários repetidos
     $temp3 = preg_match("/(RenomeiaBot)/", $newrequest[$control]);
 
     if($temp3==0){
+
+      // Se o pedido não foi fechado ou comentado ainda, faz as outras checagens
+      // Verifica se o usuário teve bloqueios no passado
+      $blocks = hasBlocks($actualname);
+
+      // Verifica nomes similares
+      $antispoof = antispoof($newname);
+
+      // Verifica renomeações anteriores
+      $renames = hasRenames($actualname);
 
       // Se o novo nome de usuário e o antigo são iguais
       if($newname==$actualname){
