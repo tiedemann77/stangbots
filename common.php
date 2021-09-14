@@ -118,7 +118,9 @@ function logging($logmsg){
 
 	// Requer o arquivo dos logs
 	if(!file_exists($logfile)){
-		exit("Arquivo de log não existe. Script interrompido. Por favor, crie '" . $logfile . "' para prosseguir. Fechando...\r\n");
+		if(!fopen($logfile, 'w')){
+			exit("Não foi possível criar o arquivo de log especificado. Script interrompido. Por favor, crie o arquivo manualmente para prosseguir. Fechando...\r\n");
+		}
 	}
 
 	file_put_contents($logfile, $logmsg, FILE_APPEND);
