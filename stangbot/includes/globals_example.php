@@ -1,7 +1,5 @@
 <?php
 
-$pages = array("Página1", "Página 2");
-
 // Bot username obtido em Special:BotPasswords (alguma@coisa)
 $username = "";
 
