@@ -29,6 +29,6 @@ $logfile = __DIR__ .  "/../temp/log.log"; //Exemplo
 $logdate =  date("Y-m-d H:i:s");
 
 // Se está ou não no Toolforge (para réplicas)
-$toolforge = 0; // 1 ou 0
+$toolforge = 0;
 
 ?>
