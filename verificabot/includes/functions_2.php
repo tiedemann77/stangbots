@@ -143,7 +143,6 @@ function removingRecentList($olderCases, $recentsContent){
 
   // Verifica se a página de recentes não ficou vazia
   $empty = '__NOTOC__
-<noinclude>{{Wikipédia:Pedidos a verificadores/Cabeçalho}}</noinclude>
 = Investigações encerradas recentemente =
 {| class="wikitable sortable center"
 |+
@@ -156,7 +155,6 @@ function removingRecentList($olderCases, $recentsContent){
 
     // Se sim, simplesmente substitui por modelo com {{nenhum}}
     $newrecentsContent = '__NOTOC__
-<noinclude>{{Wikipédia:Pedidos a verificadores/Cabeçalho}}</noinclude>
 = Investigações encerradas recentemente =
 {| class="wikitable sortable center"
 |+

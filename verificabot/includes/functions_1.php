@@ -168,7 +168,6 @@ function updateCaseList( $OpenCases, $ClosedCases, $contentBase ){
 |-
 |{{nenhum}}
 |{{nenhum}}
-<!--{{Wikipédia:Pedidos a verificadores/Listar|Insira o nome aqui|~~~~~}}-->
 |}
 {{Wikipédia:Pedidos a verificadores/Recentes}}';
     }else {
