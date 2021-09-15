@@ -58,7 +58,7 @@ foreach ($pages as $key => $value) {
   $sectionNumber = count($sectionList);
 
   // Conta o número de templates de resposta na página
-  preg_match_all("/(\{\{(R|r)espondido(2){0,1}\|.{1,}\|)|(A discussão a seguir está marcada como respondida)/", $content, $out);
+  preg_match_all($closedRegex, $content, $out);
   $closed = count($out[0]);
 
   // Correções para várias páginas que apresentam templates de resposta como exemplo, removendo
