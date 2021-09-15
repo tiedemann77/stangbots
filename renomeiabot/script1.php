@@ -66,7 +66,7 @@ $control2 = 0;
 // Remove os pedidos já fechados
 while ($control < $sectionNumber) {
 
-  $temp2 = preg_match("/(\{\{(R|r)espondido(2){0,1}\|.{1,}\|)|(A discussão a seguir está marcada como respondida)/", $requests[$control]);
+  $temp2 = preg_match($closedRegex, $requests[$control]);
 
   if($temp2==0){
     $temp[$control2] = $requests[$control];
@@ -206,7 +206,7 @@ $control2 = 1; //Somente para logs
 // ETAPA 2: Processando pedidos que continuam em aberto
 while ($control < $requestNumber) {
 
-  $temp2 = preg_match("/(\{\{(R|r)espondido(2){0,1}\|.{1,}\|)|(A discussão a seguir está marcada como respondida)/", $editedrequests[$control]);
+  $temp2 = preg_match($closedRegex, $editedrequests[$control]);
 
   if($temp2==1){
     echo logging("Pedido número " . $control2 . " já foi atendido;\r\n");
