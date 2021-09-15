@@ -355,7 +355,12 @@ while ($control < $requestNumber) {
 
 // Se os dois foram iguais, nenhuma edição precisa ser feita, parar
 if($newcontent==$content){
+
+  // Salva o novo conteúdo, para evitar múltiplas consultas para conteúdo não alterado
+  file_put_contents($cachefile, $content);
+
   exit(logging("Nenhuma edição precisa ser feita. Fechando...\r\n"));
+  
 }
 
 // Login step 1
@@ -372,6 +377,12 @@ editRequest($csrf_Token, $BasePage, $newcontent, "[[WP:Bot|bot]]: processando pe
 
 // Logout
 logoutRequest( $csrf_Token );
+
+// Depois da edição, obtém o conteúdo de novo por causa da assinatura
+$content = getContent($BasePage, 1);
+
+// Salva o novo conteúdo, para evitar múltiplas consultas para conteúdo não alterado
+file_put_contents($cachefile, $content);
 
 // PARA TESTE
 // ADICIONAR O CONTEÚDO DA EDIÇÃO EM LOG
