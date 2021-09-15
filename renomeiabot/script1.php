@@ -23,6 +23,9 @@ checkPower();
 // Obtém o conteúdo total da página
 $content = getContent($BasePage, 1);
 
+// Verifica se há necessidade do bot rodar
+run($content);
+
 // Obtém a lista de seções (pedidos)
 $sectionList = getSectionList($BasePage);
 

@@ -30,4 +30,65 @@ function hasRenames($name){
 
 }
 
+// Função para verificar se a página foi editada ou se houverem renomeações relacionadas
+function run($content){
+
+  global $cachefile;
+
+  // Requer o arquivo de cache
+  if(!file_exists($cachefile)){
+    if(!fopen($cachefile, 'w')){
+      exit("Não foi possível criar o arquivo de cache especificado. Script interrompido. Por favor, crie o arquivo manualmente para prosseguir. Fechando...\r\n");
+    }
+  }else{
+
+    $cache = file_get_contents($cachefile);
+
+    // Se o cache e o conteúdo forem iguais, verifica se houveram renomeações
+    if($content===$cache){
+
+      $endPoint = "https://meta.wikimedia.org/w/api.php";
+
+      $start = date("Y-m-d H:i:s", strtotime("-1 hour"));
+
+      $params = [
+        "action" => "query",
+        "list" => "logevents",
+        "letype" => "gblrename",
+        "leend" => $start,
+        "lelimit" => "500",
+        "format" => "json"
+      ];
+
+      // Faz consulta a API
+      $result = APIrequest($endPoint, $params);
+
+      // Verifica se houveram renomeações
+      if(isset($result['query']['logevents']['0'])){
+
+        foreach ($result['query']['logevents'] as $key => $value) {
+
+          // Verifica se houveram renomeações possivelmente relacionadas
+          if(preg_match("/" . $result['query']['logevents'][$key]['params']['newuser'] . "/",$content)){
+            $count = 1;
+          }
+
+        }
+
+        // Se não, para
+        if(!isset($count)){
+          exit(logging("Não há razão para rodar (mesmo cache, sem renomeação relacionada). Fechando...\r\n"));
+        }
+
+      // Se não, para
+      }else{
+        exit(logging("Não há razão para rodar (mesmo cache, sem nenhuma renomeação). Fechando...\r\n"));
+      }
+
+    }
+
+  }
+
+}
+
 ?>

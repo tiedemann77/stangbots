@@ -28,6 +28,9 @@ date_default_timezone_set('UTC');
 $logfile = __DIR__ .  "/../temp/log.log"; //Exemplo
 $logdate =  date("Y-m-d H:i:s");
 
+// Arquivo de cache
+$cachefile = __DIR__ .  "/../temp/cache.txt";
+
 // Se está ou não no Toolforge (para réplicas)
 $toolforge = 0;
 
