@@ -12,24 +12,6 @@ function getOpenCasesList($content) {
   	$out2[$key] = str_replace("|","",$value);
   }
 
-  // Verificando se a entrada do exemplo está presente ou não
-  $counttotal = count($out2[0]);
-
-  $control = 0;
-  $control2 = 0;
-
-  while ($control < $counttotal) {
-    // Se sim, ignorar e não incluir
-    if($out2[0][$control]!="Insira o nome aqui"){
-      $temp[0][$control2] = $out2[0][$control];
-      $control2++;
-    }
-    $control++;
-  }
-
-  // Recriando a variável
-  $out2 = $temp;
-
 	// Contando casos listados
 	$numberOpenCases = count($out2[0]);
 
@@ -166,6 +148,7 @@ function updateCaseList( $OpenCases, $ClosedCases, $contentBase ){
 !Caso
 !(Re)Aberto em
 |-
+<!--{{Wikipédia:Pedidos a verificadores/Listar|Usuário Exemplo|~~~~~}}-->
 |{{nenhum}}
 |{{nenhum}}
 |}

@@ -30,11 +30,24 @@ $redirects = array();
 // Obtendo o conteúdo da página de pedidos
 $contentBase = getContent($BasePage, 1);
 
+// Remover qualquer coisa que esteja comentanda (normalmente exemplos) para pegar somente os casos
+$contentBase = preg_replace("/<!--.*-->/", "", $contentBase);
+
 // Obtendo os casos listados na página de pedidos
 $OpenCases = getOpenCasesList($contentBase);
 
 // Verificando se algum caso em aberto foi fechado
 $ClosedCases = getClosedCases($OpenCases);
+
+// Reinsere o exemplo
+$textKey = "!(Re)Aberto em
+|-";
+
+$example = "
+<!--{{Wikipédia:Pedidos a verificadores/Listar|Usuário Exemplo|~~~~~}}-->";
+$example = $textKey . $example;
+
+$contentBase = str_replace($textKey, $example, $contentBase);
 
 // Remove casos fechados da página de pedidos
 $newContentBase = updateCaseList($OpenCases, $ClosedCases, $contentBase);
