@@ -244,7 +244,7 @@ foreach ($totals as $key => $value) {
 $text = '== Atividade dos administradores no último semestre ==
 {| class="wikitable"
 |-
-| style="background:#ccffcc" | Ativo
+| style="background:#ccffcc" | Ativo(a)
 | style="background:#f5deb3" | Possivelmente inativo(a)
 ! style="background:#ffcccc" | Provavelmente inativo(a)
 |}
