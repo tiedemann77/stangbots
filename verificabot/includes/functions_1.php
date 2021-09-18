@@ -147,8 +147,8 @@ function updateCaseList( $OpenCases, $ClosedCases, $contentBase ){
 |+
 !Caso
 !(Re)Aberto em
-|-
 <!--{{Wikipédia:Pedidos a verificadores/Listar|Usuário Exemplo|~~~~~}}-->
+|-
 |{{nenhum}}
 |{{nenhum}}
 |}
