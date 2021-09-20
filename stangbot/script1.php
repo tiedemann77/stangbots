@@ -10,6 +10,9 @@ require_once(__DIR__ . "/../common.php");
 echo logging($logdate . "
 Iniciando script 1...\r\n");
 
+// API URL
+$endPoint = "https://pt.wikipedia.org/w/api.php";
+
 // Verifica se o bot está ligado
 checkPower();
 

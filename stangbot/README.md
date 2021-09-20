@@ -1,9 +1,10 @@
 # Stangbot
 
-Código-fonte utilizado em algumas operações do robô [[User:Stangbot]] na Wikipédia em Português. Há dois scripts diferentes:
+Código-fonte utilizado em algumas operações do robô [[User:Stangbot]] na Wikipédia em Português e no Wikidata. Há três scripts diferentes:
 
 * Script 1: responsável por atualizar [[User:Stangbot/feed]] com a quantidade de pedidos em aberto em várias páginas da Wikipédia;
-* Script 2: responsável por atualizar [[Wikipédia:Burocratas/Atividade dos administradores]] com estatísticas sobre administradores.
+* Script 2: responsável por atualizar [[Wikipédia:Burocratas/Atividade dos administradores]] com estatísticas sobre administradores;
+* Script 3: responsável por esvaziar periodicamente [[Wikidata:Sandbox]] no Wikidata.
 
 ## Instruções
 1) Renomear "globals_example.php" para "globals.php" e preenchê-lo conforme necessário;

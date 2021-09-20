@@ -9,9 +9,6 @@ $username2 = "";
 // Bot password obtido em Special:BotPasswords
 $password = "";
 
-// API URL
-$endPoint = "https://pt.wikipedia.org/w/api.php";
-
 // Página liga/desliga
 $powerPage = "User:" . $username2 . "/Power";
 
