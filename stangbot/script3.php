@@ -26,6 +26,7 @@ $page = "Wikidata:Sandbox";
 $template = "{{sandbox heading}}
 <!--Test your edits below this line-->";
 
+// Horas, menos de 24
 $time = 3;
 
 // Obtém a data da última edição
@@ -33,7 +34,7 @@ $params = [
   "action" => "query",
   "prop" => "revisions",
   "titles" => $page,
-  "rvprop" => "timestamp",
+  "rvprop" => "timestamp|content",
   "rvlimit" => "1",
   "rvslots" => "main",
   "format" => "json"
@@ -41,8 +42,13 @@ $params = [
 
 $result = APIrequest($endPoint, $params);
 
+if(isset($result['query']['pages']['-1'])){
+  exit(logging("A página de testes não existe. Fechando...\r\n"));
+}
+
 foreach ($result['query']['pages'] as $key => $value) {
   $lastedit = $result['query']['pages'][$key]['revisions']['0']['timestamp'];
+  $content = $result['query']['pages'][$key]['revisions']['0']['slots']['main']['*'];
 }
 
 // Verificando se já passou 1 hora desde a última edição
@@ -53,12 +59,11 @@ $lastedit = new DateTime($lastedit);
 $timediff = $lastedit->diff($timenow);
 
 $hours = $timediff->h;
+$days = $timediff->d;
 
-if($hours<$time){
-  exit(logging("Última edição a menos de " . $time . " hora(s). Fechando...\r\n"));
+if($hours<$time&&$days==0){
+  exit(logging("Última edição ocorreu há menos de " . $time . " hora(s). Fechando...\r\n"));
 }
-
-$content = getContent($page, 1);
 
 if($content==$template){
   exit(logging("A página já está vazia. Fechando...\r\n"));
@@ -78,10 +83,6 @@ editRequest($csrf_Token, $page, $template, "[[WD:Bot|bot]]: cleaning sandbox", 1
 
 // Logout
 logoutRequest( $csrf_Token );
-
-// PARA TESTE
-// ADICIONAR O CONTEÚDO DA EDIÇÃO EM LOG
-//logging("Conteúdo da variável text:\r\n" . $text. "\r\n");
 
 // Fechar log
 echo logging("Script 3 concluído!\r\n");
