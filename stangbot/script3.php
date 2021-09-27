@@ -1,35 +1,35 @@
 <?php
 
-// Requer variáveis básicas
+// Basic info
 require_once("includes/globals.php");
 
-// Requer funções básicas
+// Basic functions
 require_once(__DIR__ . "/../common.php");
 
-// Começa o log
+// Starting log
 echo logging($logdate . "
-Iniciando script 3...\r\n");
+Starting script 3...\r\n");
 
-// Projeto
+// Project
 $endPoint = "https://www.wikidata.org/w/api.php";
 
-// Verifica se o bot está ligado
+// On/Off check
 checkPower();
 
-// FIM DO BÁSICO
+// END OF THE BASIC
 //--------------------------------------------------------------------
-// INICIANDO SCRIPT EM SI
+// STARTING SCRIPT
 
-// Variáveis
+// Definitions
 $page = "Wikidata:Sandbox";
 
 $template = "{{sandbox heading}}
 <!--Test your edits below this line-->";
 
-// Horas, menos de 24
+// Time from last edit in hours, less than 24
 $time = 3;
 
-// Obtém a data da última edição
+// Getting time and content from last edit
 $params = [
   "action" => "query",
   "prop" => "revisions",
@@ -42,49 +42,53 @@ $params = [
 
 $result = APIrequest($endPoint, $params);
 
+// If for some reason the $page was deleted, stop
 if(isset($result['query']['pages']['-1'])){
-  exit(logging("A página de testes não existe. Fechando...\r\n"));
+  exit(logging("The page " . $page . " does not exist. Maybe was deleted? Closing...\r\n"));
 }
 
+// Formating time and content
 foreach ($result['query']['pages'] as $key => $value) {
   $lastedit = $result['query']['pages'][$key]['revisions']['0']['timestamp'];
   $content = $result['query']['pages'][$key]['revisions']['0']['slots']['main']['*'];
 }
 
-// Verificando se já passou 1 hora desde a última edição
+// Checking time diff between last edit and now
 $timenow = new DateTime($logdate);
 $lastedit = new DateTime($lastedit);
 
-// Verificando a diferença
 $timediff = $lastedit->diff($timenow);
 
 $hours = $timediff->h;
 $days = $timediff->d;
 
+// If last edit is recent, less than $time
 if($hours<$time&&$days==0){
-  exit(logging("Última edição ocorreu há menos de " . $time . " hora(s). Fechando...\r\n"));
+  exit(logging("Last edit is recent. Closing...\r\n"));
 }
 
+// If the page is already empty
 if($content==$template){
-  exit(logging("A página já está vazia. Fechando...\r\n"));
+  exit(logging("Page already empty. Closing...\r\n"));
 }
 
+// If don't stop yet, let's edit
 // Login step 1
 $login_Token = getLoginToken();
 
 // Login step 2
 loginRequest( $login_Token );
 
-// Obtendo edit token
+// Edit token
 $csrf_Token = getCSRFToken();
 
-// Editando a página de pedidos
-editRequest($csrf_Token, $page, $template, "[[WD:Bot|bot]]: cleaning sandbox", 1, 0);
+// Editing
+editRequest($csrf_Token, $page, $template, "[[WD:Bot|bot]]: cleaning sandbox", 1, 1);
 
 // Logout
 logoutRequest( $csrf_Token );
 
-// Fechar log
-echo logging("Script 3 concluído!\r\n");
+// Closing log
+echo logging("Script 3 done!\r\n");
 
 ?>
