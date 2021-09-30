@@ -23,6 +23,9 @@ checkPower();
 // Relatório 1
 function firstReport(){
 
+  // Log
+  echo logging("Gerando relatório 1...\r\n");
+
   $query = 'SELECT img_name, img_height FROM image WHERE img_height > 500 ORDER BY img_name ASC;';
 
   // Faz a consulta
@@ -87,6 +90,9 @@ function firstReport(){
 
 // Relatório 2
 function secondReport(){
+
+  // Log
+  echo logging("Gerando relatório 2...\r\n");
 
   $query = 'SELECT img_name, img_height, oi_name, oi_archive_name FROM image, oldimage WHERE img_name = oi_name AND img_height < 501 AND img_height != 0 ORDER BY img_name ASC;';
 
@@ -153,26 +159,29 @@ function secondReport(){
 $text1 = firstReport();
 $text2 = secondReport();
 
+// Log
+echo logging("Editando...\r\n");
+
 // Login step 1
-//$login_Token = getLoginToken();
+$login_Token = getLoginToken();
 
 // Login step 2
-//loginRequest( $login_Token );
+loginRequest( $login_Token );
 
 // Obtendo edit token
-//$csrf_Token = getCSRFToken();
+$csrf_Token = getCSRFToken();
 
 // Editando
-//editRequest($csrf_Token, "User:Stangbot/Relatório URC 1", $text1, "[[WP:Bot|bot]]: atualizando relatório", 0, 0);
-//editRequest($csrf_Token, "User:Stangbot/Relatório URC 2", $text2, "[[WP:Bot|bot]]: atualizando relatório", 0, 0);
+editRequest($csrf_Token, "User:Stangbot/Relatório URC 1", $text1, "[[WP:Bot|bot]]: atualizando relatório", 0, 0);
+editRequest($csrf_Token, "User:Stangbot/Relatório URC 2", $text2, "[[WP:Bot|bot]]: atualizando relatório", 0, 0);
 
 // Logout
-//logoutRequest( $csrf_Token );
+logoutRequest( $csrf_Token );
 
 // PARA TESTE
 // ADICIONAR O CONTEÚDO DA EDIÇÃO EM LOG
-logging("Conteúdo da variável text1:\r\n" . $text1. "\r\n");
-logging("Conteúdo da variável text1:\r\n" . $text2. "\r\n");
+//logging("Conteúdo da variável text1:\r\n" . $text1. "\r\n");
+//logging("Conteúdo da variável text1:\r\n" . $text2. "\r\n");
 
 // Fechar log
 echo logging("Script 4 concluído!\r\n");
