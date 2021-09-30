@@ -120,7 +120,7 @@ loginRequest( $login_Token );
 $csrf_Token = getCSRFToken();
 
 // Editando a página de pedidos
-editRequest($csrf_Token, "User:Stangbot/feed", $text, "atualizando", 1, 0);
+editRequest($csrf_Token, "User:Stangbot/feed", $text, "[[WP:Bot|bot]]: atualizando", 1, 0);
 
 // Logout
 logoutRequest( $csrf_Token );

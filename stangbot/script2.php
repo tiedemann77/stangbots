@@ -329,7 +329,7 @@ loginRequest( $login_Token );
 $csrf_Token = getCSRFToken();
 
 // Editando
-editRequest($csrf_Token, $page, $text, "atualizando estatísticas sobre administradores", 0, 0);
+editRequest($csrf_Token, $page, $text, "[[WP:Bot|bot]]: atualizando estatísticas sobre administradores", 0, 0);
 
 // Logout
 logoutRequest( $csrf_Token );
