@@ -522,7 +522,7 @@ function resolveRedir($page){
 }
 
 // Função para fazer consultas nas réplicas no Toolforge
-function replicaQuery($project, $query, $param){
+function replicaQuery($project, $query, $param, $hasParam){
 
 	global $toolforge;
 
@@ -534,7 +534,9 @@ function replicaQuery($project, $query, $param){
 		unset($ts_mycnf, $ts_pw);
 
 		$stmt = $mysqli->prepare($query);
-		$stmt->bind_param('s', $param);
+		if($hasParam!=0){
+			$stmt->bind_param('s', $param);
+		}
 		$stmt->execute();
 		$result = $stmt->get_result();
 		return $result->fetch_all(MYSQLI_BOTH);

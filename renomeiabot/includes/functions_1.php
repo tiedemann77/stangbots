@@ -7,7 +7,7 @@ function hasRenames($name){
   $query = 'SELECT log_timestamp FROM logging WHERE log_type = "gblrename" AND log_title = ? ORDER BY log_id DESC LIMIT 1;';
 
   // Faz a consulta
-  $result = replicaQuery("metawiki", $query, $user);
+  $result = replicaQuery("metawiki", $query, $user, 1);
 
   // Verifica se há renomeçãoes e retorna a data da última
   if(isset($result[0]['log_timestamp'])){
