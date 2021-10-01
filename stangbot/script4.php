@@ -49,7 +49,7 @@ function firstReport(){
   if(isset($result[0])){
 
     // Cabeçalho
-    $text = "Esta é uma página de manutenção atualizada periodicamente que lista as imagens que não cumprem a [[WP:URC|política de uso restrito de conteúdo]] porque possuem mais de 500 pixels de altura.
+    $text = "Esta é uma página de manutenção atualizada periodicamente que lista imagens em desacordo com a [[WP:URC|política de uso restrito de conteúdo]] porque possuem mais de 500 pixels de altura.
 
 <div style=" . '"' . "float: right; width: 25%;" . '"' . ">
 '''Percentagem do total:'''
@@ -88,7 +88,7 @@ function firstReport(){
 
   }else{
     // Se não houver, texto padrão
-    $text = "Esta é uma página de manutenção atualizada periodicamente que lista as imagens que não cumprem a [[WP:URC|política de uso restrito de conteúdo]] porque possuem mais de 500 pixels de altura.
+    $text = "Esta é uma página de manutenção atualizada periodicamente que lista imagens em desacordo com a [[WP:URC|política de uso restrito de conteúdo]] porque possuem mais de 500 pixels de altura.
 
 <div style=" . '"' . "float: right; width: 25%;" . '"' . ">
 '''Percentagem do total:'''
@@ -135,7 +135,7 @@ function secondReport(){
 
   if(isset($result[0])){
 
-    $text = "Esta é uma página de manutenção atualizada periodicamente que lista os arquivos carregados por meio da [[WP:URC|política de uso restrito de conteúdo]] que possuem mais de uma versão. De acordo com a política, versões antigas desses arquivos [[Wikipédia:Conteúdo_restrito#Versões_anteriores|devem ser eliminadas]].
+    $text = "Esta é uma página de manutenção atualizada periodicamente que lista arquivos carregados por meio da [[WP:URC|política de uso restrito de conteúdo]] que possuem mais de uma versão. De acordo com a política, versões anteriores desses arquivos [[Wikipédia:Conteúdo_restrito#Versões_anteriores|devem ser eliminadas]].
 
 <div style=" . '"' . "float: right; width: 25%;" . '"' . ">
 '''Percentagem do total:'''
@@ -171,7 +171,7 @@ function secondReport(){
     $text = str_replace("-percentagem1-", $percent, $text);
   }else{
     // Sem resultados, texto padrão
-    $text = "Esta é uma página de manutenção atualizada periodicamente que lista os arquivos carregados por meio da [[WP:URC|política de uso restrito de conteúdo]] que possuem mais de uma versão. De acordo com a política, versões antigas desses arquivos [[Wikipédia:Conteúdo_restrito#Versões_anteriores|devem ser eliminadas]].
+    $text = "Esta é uma página de manutenção atualizada periodicamente que lista arquivos carregados por meio da [[WP:URC|política de uso restrito de conteúdo]] que possuem mais de uma versão. De acordo com a política, versões anteriores desses arquivos [[Wikipédia:Conteúdo_restrito#Versões_anteriores|devem ser eliminadas]].
 
 <div style=" . '"' . "float: right; width: 25%;" . '"' . ">
 '''Percentagem do total:'''
@@ -326,13 +326,14 @@ if($report1[0]!==$content1||$report2[0]!==$content2||$report3[0]!==$content3){
   logoutRequest( $csrf_Token );
 
 }else{
-  exit(logging("Todos os relatórios já estão atualizados. Fechando...\r\n"));
+  exit(logging("Todas as listas já estão atualizadas. Fechando...\r\n"));
 }
 
 // PARA TESTE
 // ADICIONAR O CONTEÚDO DA EDIÇÃO EM LOG
-//logging("Conteúdo da variável text1:\r\n" . $text1. "\r\n");
-//logging("Conteúdo da variável text1:\r\n" . $text2. "\r\n");
+//logging("Conteúdo da variável report1[0]:\r\n" . $report1[0]. "\r\n");
+//logging("Conteúdo da variável report2[0]:\r\n" . $report2[0]. "\r\n");
+//logging("Conteúdo da variável report3[0]:\r\n" . $report3[0]. "\r\n");
 
 // Fechar log
 echo logging("Script 4 concluído!\r\n");
