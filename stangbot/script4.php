@@ -239,8 +239,6 @@ $text1 = firstReport();
 $text2 = secondReport();
 $text3 = thirdReport();
 
-$endPoint = "https://test.wikipedia.org/w/api.php";
-
 // Checa se é necessário fazer edições
 $content1 = getContent($page1, 0);
 $content2 = getContent($page2, 0);
