@@ -246,7 +246,7 @@ $content1 = getContent($page1, 0);
 $content2 = getContent($page2, 0);
 $content3 = getContent($page3, 0);
 
-if($text1!=$content1||$text2!=$content2||$text3!=$content3){
+if($text1!==$content1||$text2!==$content2||$text3!==$content3){
 
   // Login step 1
   $login_Token = getLoginToken();
@@ -257,17 +257,17 @@ if($text1!=$content1||$text2!=$content2||$text3!=$content3){
   // Obtendo edit token
   $csrf_Token = getCSRFToken();
 
-  if($text1!=$content1){
+  if($text1!==$content1){
     echo logging("Editando relatório 1...\r\n");
     editRequest($csrf_Token, $page1, $text1, "[[WP:Bot|bot]]: atualizando relatório", 0, 0);
   }
 
-  if($text2!=$content2){
+  if($text2!==$content2){
     echo logging("Editando relatório 2...\r\n");
     editRequest($csrf_Token, $page2, $text2, "[[WP:Bot|bot]]: atualizando relatório", 0, 0);
   }
 
-  if($text3!=$content3){
+  if($text3!==$content3){
     echo logging("Editando relatório 3...\r\n");
     editRequest($csrf_Token, $page3, $text3, "[[WP:Bot|bot]]: atualizando relatório", 0, 0);
   }
