@@ -20,6 +20,11 @@ checkPower();
 //--------------------------------------------------------------------
 // INICIANDO SCRIPT EM SI
 
+// Páginas
+$page1 = "User:Stangbot/Relatório URC 1";
+$page2 = "User:Stangbot/Relatório URC 2";
+$page3 = "User:Stangbot/Relatório URC 3";
+
 // Relatório 1
 function firstReport(){
 
@@ -39,7 +44,7 @@ function firstReport(){
 
 '''TOTAL''': -total-
 
-'''Última atualização''': ~~~~~
+'''Última atualização''': {{REVISIONDAY2}}-{{REVISIONMONTH}}-{{REVISIONYEAR}}
 
 == Lista ==
 {| class=" . '"' . "wikitable sortable" . '"' . "
@@ -71,7 +76,7 @@ function firstReport(){
 
 '''TOTAL''': 0
 
-'''Última atualização''': ~~~~~
+'''Última atualização''': {{REVISIONDAY2}}-{{REVISIONMONTH}}-{{REVISIONYEAR}}
 
 == Lista ==
 {| class=" . '"' . "wikitable sortable" . '"' . "
@@ -107,7 +112,7 @@ function secondReport(){
 
 '''TOTAL''': -total-
 
-'''Última atualização''': ~~~~~
+'''Última atualização''': {{REVISIONDAY2}}-{{REVISIONMONTH}}-{{REVISIONYEAR}}
 
 == Lista ==
 {| class=" . '"' . "wikitable sortable" . '"' . "
@@ -139,7 +144,7 @@ function secondReport(){
 
 '''TOTAL''': 0
 
-'''Última atualização''': ~~~~~
+'''Última atualização''': {{REVISIONDAY2}}-{{REVISIONMONTH}}-{{REVISIONYEAR}}
 
 == Lista ==
 {| class=" . '"' . "wikitable sortable" . '"' . "
@@ -156,27 +161,121 @@ function secondReport(){
 
 }
 
+// Relatório 3
+function thirdReport(){
+
+  // Log
+  echo logging("Gerando relatório 3...\r\n");
+
+  $query = 'SELECT img_name, img_metadata FROM image WHERE img_media_type = "AUDIO" ORDER BY img_name ASC;';
+
+  // Faz a consulta
+  $result = replicaQuery("ptwiki", $query, 0, 0);
+
+  // Somente se houverem resultados
+  if(isset($result[0])){
+
+    // Cabeçalho do relatório
+    $text = "Lista de arquivos de áudio em desacordo com a [[WP:URC|política de uso restrito de conteúdo]] porque possuem mais de 30 segundos de duração (excessos menores que 1 segundo são ignorados). Atualizada periodicamente.
+
+'''TOTAL''': -total-
+
+'''Última atualização''': {{REVISIONDAY2}}-{{REVISIONMONTH}}-{{REVISIONYEAR}}
+
+== Lista ==
+{| class=" . '"' . "wikitable sortable" . '"' . "
+|+
+!Arquivo
+!Duração (segundos)";
+
+    $total = 0;
+
+    // Insere cada linha se for maior que 31
+    foreach ($result as $key => $value) {
+      $name = $result[$key][0];
+      $metadata = unserialize($result[$key][1]);
+      $lenght = $metadata['length'];
+      if($lenght>31){
+        $text .= "
+|-
+|[[:Ficheiro:" . $name . "|" . $name . "]]
+|" . $lenght;
+        $total++;
+      }
+    }
+
+    // Rodapé do relatório
+    $text .= "
+|}";
+
+    //Adiciona o total
+    $text = str_replace("-total-", $total, $text);
+  }
+
+  if(!isset($result[0])||$total==0){
+    // Sem resultados, texto padrão
+    $text = "Lista de arquivos de áudio em desacordo com a [[WP:URC|política de uso restrito de conteúdo]] porque possuem mais de 30 segundos de duração (excessos menores que 1 segundo são ignorados). Atualizada periodicamente.
+
+'''TOTAL''': 0
+
+'''Última atualização''': {{REVISIONDAY2}}-{{REVISIONMONTH}}-{{REVISIONYEAR}}
+
+== Lista ==
+{| class=" . '"' . "wikitable sortable" . '"' . "
+|+
+!Arquivo
+!Duração (segundos)
+|-
+|{{nenhum}}
+|{{nenhum}}
+|}";
+  }
+
+  return $text;
+
+}
+
 $text1 = firstReport();
 $text2 = secondReport();
+$text3 = thirdReport();
 
-// Log
-echo logging("Editando...\r\n");
+// Checa se é necessário fazer edições
+$content1 = getContent($page1, 0);
+$content2 = getContent($page2, 0);
+$content3 = getContent($page3, 0);
 
-// Login step 1
-$login_Token = getLoginToken();
+if($text1!=$content1||$text2!=$content2||$text3!=$content3){
 
-// Login step 2
-loginRequest( $login_Token );
+  // Login step 1
+  $login_Token = getLoginToken();
 
-// Obtendo edit token
-$csrf_Token = getCSRFToken();
+  // Login step 2
+  loginRequest( $login_Token );
 
-// Editando
-editRequest($csrf_Token, "User:Stangbot/Relatório URC 1", $text1, "[[WP:Bot|bot]]: atualizando relatório", 0, 0);
-editRequest($csrf_Token, "User:Stangbot/Relatório URC 2", $text2, "[[WP:Bot|bot]]: atualizando relatório", 0, 0);
+  // Obtendo edit token
+  $csrf_Token = getCSRFToken();
 
-// Logout
-logoutRequest( $csrf_Token );
+  if($text1!=$content1){
+    echo logging("Editando relatório 1...\r\n");
+    editRequest($csrf_Token, $page1, $text1, "[[WP:Bot|bot]]: atualizando relatório", 0, 0);
+  }
+
+  if($text2!=$content2){
+    echo logging("Editando relatório 2...\r\n");
+    editRequest($csrf_Token, $page2, $text2, "[[WP:Bot|bot]]: atualizando relatório", 0, 0);
+  }
+
+  if($text3!=$content3){
+    echo logging("Editando relatório 3...\r\n");
+    editRequest($csrf_Token, $page3, $text3, "[[WP:Bot|bot]]: atualizando relatório", 0, 0);
+  }
+
+  // Logout
+  logoutRequest( $csrf_Token );
+
+}else{
+  exit(logging("Todos os relatórios já estão atualizados. Fechando...\r\n"));
+}
 
 // PARA TESTE
 // ADICIONAR O CONTEÚDO DA EDIÇÃO EM LOG
