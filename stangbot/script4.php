@@ -21,9 +21,9 @@ checkPower();
 // INICIANDO SCRIPT EM SI
 
 // Páginas
-$page1 = "User:Stangbot/Relatório URC 1";
-$page2 = "User:Stangbot/Relatório URC 2";
-$page3 = "User:Stangbot/Relatório URC 3";
+$page1 = "Ajuda:Conteúdo restrito/Lista de imagens com dimensões excessivas";
+$page2 = "Ajuda:Conteúdo restrito/Lista de arquivos com múltiplas versões";
+$page3 = "Ajuda:Conteúdo restrito/Lista de áudios com duração excessiva";
 
 // Relatório 1
 function firstReport(){
@@ -36,7 +36,7 @@ function firstReport(){
 
   $result = replicaQuery("ptwiki", $query, 0, 0);
 
-  $totalDB = $result[0];
+  $totalDB = $result[0][0];
 
   // Consulta para a lista
   $query = 'SELECT img_name, img_height FROM image WHERE img_height > 500 ORDER BY img_name ASC;';
@@ -49,14 +49,14 @@ function firstReport(){
   if(isset($result[0])){
 
     // Cabeçalho
-    $text = "Lista de imagens que não cumprem a [[WP:URC|política de uso restrito de conteúdo]] porque possuem mais de 500 pixels de altura. Atualizada periodicamente.
+    $text = "Esta é uma página de manutenção atualizada periodicamente que lista as imagens que não cumprem a [[WP:URC|política de uso restrito de conteúdo]] porque possuem mais de 500 pixels de altura.
 
 <div style=" . '"' . "float: right; width: 25%;" . '"' . ">
-'''Porcentagem do total:'''
+'''Percentagem do total:'''
 {{percentagem|-percentagem1-|FF7F50}}
 </div>
 
-'''TOTAL''': -total1-
+'''Imagens listadas''': -total1-
 
 '''Última atualização''': {{REVISIONDAY2}}-{{REVISIONMONTH}}-{{REVISIONYEAR}}
 
@@ -77,7 +77,9 @@ function firstReport(){
 
     // Rodapé do relatório
     $text .= "
-|}";
+|}
+
+[[Categoria:!Relatórios de manutenção para arquivos de uso restrito]]";
 
     // Personaliza o cabeçalho com os totais e percentagem
     $percent = sprintf("%.2f", (($total*100)/$totalDB));
@@ -86,14 +88,14 @@ function firstReport(){
 
   }else{
     // Se não houver, texto padrão
-    $text = "Lista de imagens que não cumprem a [[WP:URC|política de uso restrito de conteúdo]] porque possuem mais de 500 pixels de altura. Atualizada periodicamente.
+    $text = "Esta é uma página de manutenção atualizada periodicamente que lista as imagens que não cumprem a [[WP:URC|política de uso restrito de conteúdo]] porque possuem mais de 500 pixels de altura.
 
 <div style=" . '"' . "float: right; width: 25%;" . '"' . ">
-'''Porcentagem do total:'''
+'''Percentagem do total:'''
 {{percentagem|0|FF7F50}}
 </div>
 
-'''TOTAL''': 0
+'''Imagens listadas''': 0
 
 '''Última atualização''': {{REVISIONDAY2}}-{{REVISIONMONTH}}-{{REVISIONYEAR}}
 
@@ -105,7 +107,9 @@ function firstReport(){
 |-
 |{{nenhum}}
 |{{nenhum}}
-|}";
+|}
+
+[[Categoria:!Relatórios de manutenção para arquivos de uso restrito]]";
   }
 
   return array($text, $total);
@@ -121,7 +125,7 @@ function secondReport(){
 
   $result = replicaQuery("ptwiki", $query, 0, 0);
 
-  $totalDB = $result[0];
+  $totalDB = $result[0][0];
 
   $query = 'SELECT img_name, img_height, oi_name, oi_archive_name FROM image, oldimage WHERE img_name = oi_name ORDER BY img_name ASC;';
 
@@ -131,14 +135,14 @@ function secondReport(){
 
   if(isset($result[0])){
 
-    $text = "Lista de arquivos carregados por meio da [[WP:URC|política de uso restrito de conteúdo]] que possuem versões antigas. De acordo com a política, versões antigas desses arquivos [[Wikipédia:Conteúdo_restrito#Versões_anteriores|devem ser eliminadas]]. Atualizada periodicamente.
+    $text = "Esta é uma página de manutenção atualizada periodicamente que lista os arquivos carregados por meio da [[WP:URC|política de uso restrito de conteúdo]] que possuem mais de uma versão. De acordo com a política, versões antigas desses arquivos [[Wikipédia:Conteúdo_restrito#Versões_anteriores|devem ser eliminadas]].
 
 <div style=" . '"' . "float: right; width: 25%;" . '"' . ">
-'''Porcentagem do total:'''
+'''Percentagem do total:'''
 {{percentagem|-percentagem1-|FF7F50}}
 </div>
 
-'''TOTAL''': -total1-
+'''Arquivos listados''': -total1-
 
 '''Última atualização''': {{REVISIONDAY2}}-{{REVISIONMONTH}}-{{REVISIONYEAR}}
 
@@ -158,21 +162,23 @@ function secondReport(){
     }
 
     $text .= "
-|}";
+|}
+
+[[Categoria:!Relatórios de manutenção para arquivos de uso restrito]]";
 
     $percent = sprintf("%.2f", (($total*100)/$totalDB));
     $text = str_replace("-total1-", $total, $text);
     $text = str_replace("-percentagem1-", $percent, $text);
   }else{
     // Sem resultados, texto padrão
-    $text = "Lista de arquivos carregados por meio da [[WP:URC|política de uso restrito de conteúdo]] que possuem versões antigas. De acordo com a política, versões antigas desses arquivos [[Wikipédia:Conteúdo_restrito#Versões_anteriores|devem ser eliminadas]]. Atualizada periodicamente.
+    $text = "Esta é uma página de manutenção atualizada periodicamente que lista os arquivos carregados por meio da [[WP:URC|política de uso restrito de conteúdo]] que possuem mais de uma versão. De acordo com a política, versões antigas desses arquivos [[Wikipédia:Conteúdo_restrito#Versões_anteriores|devem ser eliminadas]].
 
 <div style=" . '"' . "float: right; width: 25%;" . '"' . ">
-'''Porcentagem do total:'''
+'''Percentagem do total:'''
 {{percentagem|0|FF7F50}}
 </div>
 
-'''TOTAL''': 0
+'''Arquivos listados''': 0
 
 '''Última atualização''': {{REVISIONDAY2}}-{{REVISIONMONTH}}-{{REVISIONYEAR}}
 
@@ -182,7 +188,9 @@ function secondReport(){
 !Arquivo
 |-
 |{{nenhum}}
-|}";
+|}
+
+[[Categoria:!Relatórios de manutenção para arquivos de uso restrito]]";
   }
 
   return array($text, $total);
@@ -198,7 +206,7 @@ function thirdReport(){
 
   $result = replicaQuery("ptwiki", $query, 0, 0);
 
-  $totalDB = $result[0];
+  $totalDB = $result[0][0];
 
   $query = 'SELECT img_name, img_metadata FROM image WHERE img_media_type = "AUDIO" ORDER BY img_name ASC;';
 
@@ -208,14 +216,14 @@ function thirdReport(){
 
   if(isset($result[0])){
 
-    $text = "Lista de arquivos de áudio em desacordo com a [[WP:URC|política de uso restrito de conteúdo]] porque possuem mais de 30 segundos de duração (excessos menores que 1 segundo são ignorados). Atualizada periodicamente.
+    $text = "Esta é uma página de manutenção atualizada periodicamente que lista arquivos de áudio em desacordo com a [[WP:URC|política de uso restrito de conteúdo]] porque possuem mais de 30 segundos de duração (excessos menores que 1 segundo são ignorados).
 
 <div style=" . '"' . "float: right; width: 25%;" . '"' . ">
-'''Porcentagem do total:'''
+'''Percentagem do total:'''
 {{percentagem|-percentagem1-|FF7F50}}
 </div>
 
-'''TOTAL''': -total1-
+'''Arquivos listados''': -total1-
 
 '''Última atualização''': {{REVISIONDAY2}}-{{REVISIONMONTH}}-{{REVISIONYEAR}}
 
@@ -240,7 +248,9 @@ function thirdReport(){
     }
 
     $text .= "
-|}";
+|}
+
+[[Categoria:!Relatórios de manutenção para arquivos de uso restrito]]";
 
     $percent = sprintf("%.2f", (($total*100)/$totalDB));
     $text = str_replace("-total1-", $total, $text);
@@ -248,14 +258,14 @@ function thirdReport(){
   }
 
   if(!isset($result[0])||$total==0){
-    $text = "Lista de arquivos de áudio em desacordo com a [[WP:URC|política de uso restrito de conteúdo]] porque possuem mais de 30 segundos de duração (excessos menores que 1 segundo são ignorados). Atualizada periodicamente.
+    $text = "Esta é uma página de manutenção atualizada periodicamente que lista arquivos de áudio em desacordo com a [[WP:URC|política de uso restrito de conteúdo]] porque possuem mais de 30 segundos de duração (excessos menores que 1 segundo são ignorados).
 
 <div style=" . '"' . "float: right; width: 25%;" . '"' . ">
-'''Porcentagem do total:'''
+'''Percentagem do total:'''
 {{percentagem|0|FF7F50}}
 </div>
 
-'''TOTAL''': 0
+'''Arquivos listados''': 0
 
 '''Última atualização''': {{REVISIONDAY2}}-{{REVISIONMONTH}}-{{REVISIONYEAR}}
 
@@ -267,7 +277,9 @@ function thirdReport(){
 |-
 |{{nenhum}}
 |{{nenhum}}
-|}";
+|}
+
+[[Categoria:!Relatórios de manutenção para arquivos de uso restrito]]";
   }
 
   return array($text, $total);
@@ -297,17 +309,17 @@ if($report1[0]!==$content1||$report2[0]!==$content2||$report3[0]!==$content3){
 
   if($report1[0]!==$content1){
     echo logging("Editando relatório 1...\r\n");
-    editRequest($csrf_Token, $page1, $report1[0], "[[WP:Bot|bot]]: atualizando relatório (" . $report1[1] . " entradas)", 0, 0);
+    editRequest($csrf_Token, $page1, $report1[0], "[[WP:Bot|bot]]: atualizando lista (" . $report1[1] . " entradas)", 0, 0);
   }
 
   if($report2[0]!==$content2){
     echo logging("Editando relatório 2...\r\n");
-    editRequest($csrf_Token, $page2, $report2[0], "[[WP:Bot|bot]]: atualizando relatório (" . $report2[1] . " entradas)", 0, 0);
+    editRequest($csrf_Token, $page2, $report2[0], "[[WP:Bot|bot]]: atualizando lista (" . $report2[1] . " entradas)", 0, 0);
   }
 
   if($report3[0]!==$content3){
     echo logging("Editando relatório 3...\r\n");
-    editRequest($csrf_Token, $page3, $report3[0], "[[WP:Bot|bot]]: atualizando relatório (" . $report3[1] . " entradas)", 0, 0);
+    editRequest($csrf_Token, $page3, $report3[0], "[[WP:Bot|bot]]: atualizando lista (" . $report3[1] . " entradas)", 0, 0);
   }
 
   // Logout
