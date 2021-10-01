@@ -31,10 +31,19 @@ function firstReport(){
   // Log
   echo logging("Gerando relatório 1...\r\n");
 
+  // Consulta total de itens para percentagem
+  $query = 'SELECT COUNT(*) FROM image WHERE img_media_type = "BITMAP" OR img_media_type = "DRAWING";';
+
+  $result = replicaQuery("ptwiki", $query, 0, 0);
+
+  $totalDB = $result[0];
+
+  // Consulta para a lista
   $query = 'SELECT img_name, img_height FROM image WHERE img_height > 500 ORDER BY img_name ASC;';
 
-  // Faz a consulta
   $result = replicaQuery("ptwiki", $query, 0, 0);
+
+  $total = 0;
 
   // Somente se houver resultados, personaliza relatório
   if(isset($result[0])){
@@ -42,7 +51,12 @@ function firstReport(){
     // Cabeçalho
     $text = "Lista de imagens que não cumprem a [[WP:URC|política de uso restrito de conteúdo]] porque possuem mais de 500 pixels de altura. Atualizada periodicamente.
 
-'''TOTAL''': -total-
+<div style=" . '"' . "float: right; width: 25%;" . '"' . ">
+'''Porcentagem do total:'''
+{{percentagem|-percentagem1-|FF7F50}}
+</div>
+
+'''TOTAL''': -total1-
 
 '''Última atualização''': {{REVISIONDAY2}}-{{REVISIONMONTH}}-{{REVISIONYEAR}}
 
@@ -51,8 +65,6 @@ function firstReport(){
 |+
 !Arquivo
 !Altura (em pixels)";
-
-    $total = 0;
 
     // Insere um arquivo por linha
     foreach ($result as $key => $value) {
@@ -67,12 +79,19 @@ function firstReport(){
     $text .= "
 |}";
 
-  //Adiciona o total
-  $text = str_replace("-total-", $total, $text);
+    // Personaliza o cabeçalho com os totais e percentagem
+    $percent = sprintf("%.2f", (($total*100)/$totalDB));
+    $text = str_replace("-total1-", $total, $text);
+    $text = str_replace("-percentagem1-", $percent, $text);
 
   }else{
     // Se não houver, texto padrão
     $text = "Lista de imagens que não cumprem a [[WP:URC|política de uso restrito de conteúdo]] porque possuem mais de 500 pixels de altura. Atualizada periodicamente.
+
+<div style=" . '"' . "float: right; width: 25%;" . '"' . ">
+'''Porcentagem do total:'''
+{{percentagem|0|FF7F50}}
+</div>
 
 '''TOTAL''': 0
 
@@ -89,28 +108,37 @@ function firstReport(){
 |}";
   }
 
-  return $text;
+  return array($text, $total);
 
 }
 
 // Relatório 2
 function secondReport(){
 
-  // Log
   echo logging("Gerando relatório 2...\r\n");
 
-  $query = 'SELECT img_name, img_height, oi_name, oi_archive_name FROM image, oldimage WHERE img_name = oi_name AND img_height < 501 AND img_height != 0 ORDER BY img_name ASC;';
+  $query = 'SELECT COUNT(*) FROM image;';
 
-  // Faz a consulta
   $result = replicaQuery("ptwiki", $query, 0, 0);
 
-  // Somente se houverem resultados
+  $totalDB = $result[0];
+
+  $query = 'SELECT img_name, img_height, oi_name, oi_archive_name FROM image, oldimage WHERE img_name = oi_name ORDER BY img_name ASC;';
+
+  $result = replicaQuery("ptwiki", $query, 0, 0);
+
+  $total = 0;
+
   if(isset($result[0])){
 
-    // Cabeçalho do relatório
-    $text = "Lista de imagens carregadas por meio da [[WP:URC|política de uso restrito de conteúdo]] que possuem versões antigas. De acordo com a política, versões antigas dessas imagens [[Wikipédia:Conteúdo_restrito#Versões_anteriores|devem ser eliminadas]]. Atualizada periodicamente.
+    $text = "Lista de arquivos carregados por meio da [[WP:URC|política de uso restrito de conteúdo]] que possuem versões antigas. De acordo com a política, versões antigas desses arquivos [[Wikipédia:Conteúdo_restrito#Versões_anteriores|devem ser eliminadas]]. Atualizada periodicamente.
 
-'''TOTAL''': -total-
+<div style=" . '"' . "float: right; width: 25%;" . '"' . ">
+'''Porcentagem do total:'''
+{{percentagem|-percentagem1-|FF7F50}}
+</div>
+
+'''TOTAL''': -total1-
 
 '''Última atualização''': {{REVISIONDAY2}}-{{REVISIONMONTH}}-{{REVISIONYEAR}}
 
@@ -119,9 +147,6 @@ function secondReport(){
 |+
 !Arquivo";
 
-    $total = 0;
-
-    // Insere cada linha
     foreach ($result as $key => $value) {
       $temp = preg_quote($result[$key][0]);
       if(!preg_match("/" . $temp . "/", $text)){
@@ -132,15 +157,20 @@ function secondReport(){
       }
     }
 
-    // Rodapé do relatório
     $text .= "
 |}";
 
-    //Adiciona o total
-    $text = str_replace("-total-", $total, $text);
+    $percent = sprintf("%.2f", (($total*100)/$totalDB));
+    $text = str_replace("-total1-", $total, $text);
+    $text = str_replace("-percentagem1-", $percent, $text);
   }else{
     // Sem resultados, texto padrão
-    $text = "Lista de imagens carregadas por meio da [[WP:URC|política de uso restrito de conteúdo]] que possuem versões antigas. De acordo com a política, versões antigas dessas imagens [[Wikipédia:Conteúdo_restrito#Versões_anteriores|devem ser eliminadas]]. Atualizada periodicamente.
+    $text = "Lista de arquivos carregados por meio da [[WP:URC|política de uso restrito de conteúdo]] que possuem versões antigas. De acordo com a política, versões antigas desses arquivos [[Wikipédia:Conteúdo_restrito#Versões_anteriores|devem ser eliminadas]]. Atualizada periodicamente.
+
+<div style=" . '"' . "float: right; width: 25%;" . '"' . ">
+'''Porcentagem do total:'''
+{{percentagem|0|FF7F50}}
+</div>
 
 '''TOTAL''': 0
 
@@ -150,35 +180,42 @@ function secondReport(){
 {| class=" . '"' . "wikitable sortable" . '"' . "
 |+
 !Arquivo
-!Altura (em pixels)
 |-
-|{{nenhum}}
 |{{nenhum}}
 |}";
   }
 
-  return $text;
+  return array($text, $total);
 
 }
 
 // Relatório 3
 function thirdReport(){
 
-  // Log
   echo logging("Gerando relatório 3...\r\n");
+
+  $query = 'SELECT COUNT(*) FROM image WHERE img_media_type = "AUDIO";';
+
+  $result = replicaQuery("ptwiki", $query, 0, 0);
+
+  $totalDB = $result[0];
 
   $query = 'SELECT img_name, img_metadata FROM image WHERE img_media_type = "AUDIO" ORDER BY img_name ASC;';
 
-  // Faz a consulta
   $result = replicaQuery("ptwiki", $query, 0, 0);
 
-  // Somente se houverem resultados
+  $total = 0;
+
   if(isset($result[0])){
 
-    // Cabeçalho do relatório
     $text = "Lista de arquivos de áudio em desacordo com a [[WP:URC|política de uso restrito de conteúdo]] porque possuem mais de 30 segundos de duração (excessos menores que 1 segundo são ignorados). Atualizada periodicamente.
 
-'''TOTAL''': -total-
+<div style=" . '"' . "float: right; width: 25%;" . '"' . ">
+'''Porcentagem do total:'''
+{{percentagem|-percentagem1-|FF7F50}}
+</div>
+
+'''TOTAL''': -total1-
 
 '''Última atualização''': {{REVISIONDAY2}}-{{REVISIONMONTH}}-{{REVISIONYEAR}}
 
@@ -187,8 +224,6 @@ function thirdReport(){
 |+
 !Arquivo
 !Duração (segundos)";
-
-    $total = 0;
 
     // Insere cada linha se for maior que 31
     foreach ($result as $key => $value) {
@@ -204,17 +239,21 @@ function thirdReport(){
       }
     }
 
-    // Rodapé do relatório
     $text .= "
 |}";
 
-    //Adiciona o total
-    $text = str_replace("-total-", $total, $text);
+    $percent = sprintf("%.2f", (($total*100)/$totalDB));
+    $text = str_replace("-total1-", $total, $text);
+    $text = str_replace("-percentagem1-", $percent, $text);
   }
 
   if(!isset($result[0])||$total==0){
-    // Sem resultados, texto padrão
     $text = "Lista de arquivos de áudio em desacordo com a [[WP:URC|política de uso restrito de conteúdo]] porque possuem mais de 30 segundos de duração (excessos menores que 1 segundo são ignorados). Atualizada periodicamente.
+
+<div style=" . '"' . "float: right; width: 25%;" . '"' . ">
+'''Porcentagem do total:'''
+{{percentagem|0|FF7F50}}
+</div>
 
 '''TOTAL''': 0
 
@@ -231,20 +270,21 @@ function thirdReport(){
 |}";
   }
 
-  return $text;
+  return array($text, $total);
 
 }
 
-$text1 = firstReport();
-$text2 = secondReport();
-$text3 = thirdReport();
+// Executa as funções
+$report1 = firstReport();
+$report2 = secondReport();
+$report3 = thirdReport();
 
 // Checa se é necessário fazer edições
 $content1 = getContent($page1, 0);
 $content2 = getContent($page2, 0);
 $content3 = getContent($page3, 0);
 
-if($text1!==$content1||$text2!==$content2||$text3!==$content3){
+if($report1[0]!==$content1||$report2[0]!==$content2||$report3[0]!==$content3){
 
   // Login step 1
   $login_Token = getLoginToken();
@@ -255,19 +295,19 @@ if($text1!==$content1||$text2!==$content2||$text3!==$content3){
   // Obtendo edit token
   $csrf_Token = getCSRFToken();
 
-  if($text1!==$content1){
+  if($report1[0]!==$content1){
     echo logging("Editando relatório 1...\r\n");
-    editRequest($csrf_Token, $page1, $text1, "[[WP:Bot|bot]]: atualizando relatório", 0, 0);
+    editRequest($csrf_Token, $page1, $report1[0], "[[WP:Bot|bot]]: atualizando relatório (" . $report1[1] . " entradas)", 0, 0);
   }
 
-  if($text2!==$content2){
+  if($report2[0]!==$content2){
     echo logging("Editando relatório 2...\r\n");
-    editRequest($csrf_Token, $page2, $text2, "[[WP:Bot|bot]]: atualizando relatório", 0, 0);
+    editRequest($csrf_Token, $page2, $report2[0], "[[WP:Bot|bot]]: atualizando relatório (" . $report2[1] . " entradas)", 0, 0);
   }
 
-  if($text3!==$content3){
+  if($report3[0]!==$content3){
     echo logging("Editando relatório 3...\r\n");
-    editRequest($csrf_Token, $page3, $text3, "[[WP:Bot|bot]]: atualizando relatório", 0, 0);
+    editRequest($csrf_Token, $page3, $report3[0], "[[WP:Bot|bot]]: atualizando relatório (" . $report3[1] . " entradas)", 0, 0);
   }
 
   // Logout
