@@ -22,4 +22,7 @@ date_default_timezone_set('UTC');
 $logfile = __DIR__ .  "/../temp/log.log";
 $logdate =  date("Y-m-d H:i:s");
 
+// Se está ou não no Toolforge (para réplicas)
+$toolforge = 0;
+
 ?>
