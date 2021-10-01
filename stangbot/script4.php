@@ -246,6 +246,8 @@ $content3 = getContent($page3, 0);
 
 if($text1!=$content1||$text2!=$content2||$text3!=$content3){
 
+  $endPoint = "https://test.wikipedia.org/w/api.php";
+
   // Login step 1
   $login_Token = getLoginToken();
 
