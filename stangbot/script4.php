@@ -239,14 +239,14 @@ $text1 = firstReport();
 $text2 = secondReport();
 $text3 = thirdReport();
 
+$endPoint = "https://test.wikipedia.org/w/api.php";
+
 // Checa se é necessário fazer edições
 $content1 = getContent($page1, 0);
 $content2 = getContent($page2, 0);
 $content3 = getContent($page3, 0);
 
 if($text1!=$content1||$text2!=$content2||$text3!=$content3){
-
-  $endPoint = "https://test.wikipedia.org/w/api.php";
 
   // Login step 1
   $login_Token = getLoginToken();
