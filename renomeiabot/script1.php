@@ -251,7 +251,7 @@ while ($control < $requestNumber) {
     if($exist==1){
 
       $header = $out[0] . "
-    {{Respondido2|negado|texto=";
+{{Respondido2|negado|texto=";
 
       $newrequest[$control] = str_replace($out[0],$header,$newrequest[$control]);
       $newrequest[$control] = $newrequest[$control] . "
@@ -304,7 +304,7 @@ while ($control < $requestNumber) {
         if($renames!="0"){
 
           $newrequest[$control] = $newrequest[$control] . "
-    ::'''Nota automática:''' a conta " . $actualname . " já foi renomeada no passado. A última renomeação ocorreu em " . $renames . ". ~~~~";
+::'''Nota automática:''' a conta " . $actualname . " já foi renomeada no passado. A última renomeação ocorreu em " . $renames . ". ~~~~";
 
           // Log
           echo logging( $actualname . " já foi renomeado no passado;\r\n");
