@@ -53,6 +53,11 @@ foreach ($result['query']['pages'] as $key => $value) {
   $content = $result['query']['pages'][$key]['revisions']['0']['slots']['main']['*'];
 }
 
+// If the page is already empty
+if($content==$template){
+  exit(logging("Page already empty. Closing...\r\n"));
+}
+
 // Checking time diff between last edit and now
 $timenow = new DateTime($logdate);
 $lastedit = new DateTime($lastedit);
@@ -65,11 +70,6 @@ $days = $timediff->d;
 // If last edit is recent, less than $time
 if($hours<$time&&$days==0){
   exit(logging("Last edit is recent. Closing...\r\n"));
-}
-
-// If the page is already empty
-if($content==$template){
-  exit(logging("Page already empty. Closing...\r\n"));
 }
 
 // If don't stop yet, let's edit

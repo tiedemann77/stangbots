@@ -29,7 +29,7 @@ $page3 = "Ajuda:Conteúdo restrito/Lista de áudios com duração excessiva";
 function firstReport(){
 
   // Log
-  echo logging("Gerando relatório 1...\r\n");
+  echo logging("Gerando lista 1...\r\n");
 
   // Consulta total de itens para percentagem
   $query = 'SELECT COUNT(*) FROM image WHERE img_media_type = "BITMAP" OR img_media_type = "DRAWING";';
@@ -119,7 +119,7 @@ function firstReport(){
 // Relatório 2
 function secondReport(){
 
-  echo logging("Gerando relatório 2...\r\n");
+  echo logging("Gerando lista 2...\r\n");
 
   $query = 'SELECT COUNT(*) FROM image;';
 
@@ -200,7 +200,7 @@ function secondReport(){
 // Relatório 3
 function thirdReport(){
 
-  echo logging("Gerando relatório 3...\r\n");
+  echo logging("Gerando lista 3...\r\n");
 
   $query = 'SELECT COUNT(*) FROM image WHERE img_media_type = "AUDIO";';
 
