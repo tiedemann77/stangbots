@@ -35,6 +35,11 @@ $deleted = array_shift($sectionList);
 // Contando o número de seções
 $sectionNumber = count($sectionList);
 
+// Se a página está vazia, para
+if($sectionNumber == 0){
+  exit(logging("A página está vazia. Fechando...\r\n"));
+}
+
 // Log
 echo logging("São " . $sectionNumber . " seções no total, requisitando cada uma delas, pode demorar...\r\n");
 
