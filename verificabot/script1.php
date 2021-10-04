@@ -31,7 +31,7 @@ $redirects = array();
 $contentBase = getContent($BasePage, 1);
 
 // Remover qualquer coisa que esteja comentanda (normalmente exemplos) para pegar somente os casos
-$contentBase = preg_replace("/\<\!\-\-(?:.|\n|\r)*?-->/", "", $contentBase);
+$contentBase = preg_replace($htmlcommentRegex, "", $contentBase);
 
 // Obtendo os casos listados na página de pedidos
 $OpenCases = getOpenCasesList($contentBase);
