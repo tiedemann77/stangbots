@@ -43,14 +43,14 @@ foreach ($pages as $key => $value) {
 $text .= "</noinclude><includeonly>{{#switch: {{{1}}}
 ";
 
-// Segunda parte do feed: pedidos em aberto
+// Segunda parte do feed: pedidos em aberto em cada página
 $control = 1;
 foreach ($pages as $key => $value) {
 
   // Conteúdo total da página
   $content = getContent($pages[$key], 1);
 
-  // Número de seções
+  // Lista de seções
   $sectionList = getSectionList($pages[$key]);
 
   // Precisa remover uma dessa página
@@ -58,29 +58,17 @@ foreach ($pages as $key => $value) {
     $deleted = array_shift($sectionList);
   }
 
+  // Número de seções
   $sectionNumber = count($sectionList);
+
+  // Remove qualquer coisa comentada, geralmente templates de resposta
+  $content = preg_replace($htmlcommentRegex, "", $content);
 
   // Conta o número de templates de resposta na página
   preg_match_all($closedRegex, $content, $out);
   $closed = count($out[0]);
 
-  // Correções para várias páginas que apresentam templates de resposta como exemplo, removendo
-  // Wikipédia:Pedidos/Notificações de vandalismo e Wikipédia:Pedidos/Notificação de incidentes
-  preg_match_all("/<!--\n{{Respondido2\|feito\|texto=/", $content, $out);
-  $closed = $closed-(count($out[0])*3);
-
-  // Wikipédia:Pedidos/Proteção
-  preg_match_all("/<!--{{Respondido\|feito\/negado\|texto= -->/", $content, $out);
-  $closed = $closed-count($out[0]);
-
-  // Wikipédia:Pedidos/Revisão de nomes de usuário
-  preg_match_all("/<!--{{Respondido2\|feito\/negado\/em observação\|texto= -->/", $content, $out);
-  $closed = $closed-count($out[0]);
-
-  // Wikipédia:Pedidos/Restauro
-  preg_match_all("/<!--{{Respondido\|feito\/negado\/desnecessário\|texto= -->/", $content, $out);
-  $closed = $closed-count($out[0]);
-
+  // Número de pedidos em aberto
   $open = $sectionNumber-$closed;
 
   // Se menor que 0, ocorreu algum erro então parar
@@ -90,7 +78,7 @@ foreach ($pages as $key => $value) {
 
   echo logging("Checando " . $pages[$key] . ": total " . $sectionNumber . "; fechados " . $closed . "; abertos " . $open . ".\r\n");
 
-  // Adiciona linha
+  // Adiciona linha no feed
   $text .= " | " . $control . " = " . $open . "
 ";
 

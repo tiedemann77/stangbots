@@ -11,8 +11,7 @@ Código-fonte utilizado em algumas operações do robô [[User:Stangbot]] na Wik
 1) Renomear "globals_example.php" para "globals.php" e preenchê-lo conforme necessário;
 2) Criar um arquivo para log em branco com o nome determinado em "globals.php";
 3) Personalizar páginas-alvo e sumários de edição conforme necessário nos arquivos de cada script;
-4) O script 1 pode precisar ser ajustado de acordo com as páginas-alvo que vão ser utilizadas. Esta versão funciona com as páginas listadas no script;
-5) O script 4 depende de acesso às réplicas do banco de dados.
+4) O script 4 depende de acesso às réplicas do banco de dados.
 
 ## Licença
 MIT License
