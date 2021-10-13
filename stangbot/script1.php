@@ -19,7 +19,7 @@ $robot = new bot(
   $credentials,
   $api,
   $power,
-  $log,
+  $log
 );
 
 echo $log->log("Stangbot - Iniciando script 1\r\n");
