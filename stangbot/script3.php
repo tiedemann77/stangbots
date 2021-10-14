@@ -1,24 +1,27 @@
 <?php
 
-// Basic info
-require_once("includes/globals.php");
+// Settings
+require_once("settings.php");
 
 // Basic functions
 require_once(__DIR__ . "/../common.php");
 
-// Starting log
-echo logging($logdate . "
-Starting script 3...\r\n");
+// Settings
+$settings = [
+  'credentials' => $uspw,
+  'username' => "Stangbot",
+  'power' => "User:Stangbot/Power",
+  'script' => "Script 3",
+  'url' => "https://www.wikidata.org/w/api.php",
+  'maxlag' => 4,
+  'file' => __DIR__ .  "/../log.log",
+  'stats' => array(),
+  'replicasDB' => "wikidatawiki",
+  'personalDB' => "s54852__stangbots"
+];
 
-// Project
-$endPoint = "https://www.wikidata.org/w/api.php";
-
-// On/Off check
-checkPower();
-
-// END OF THE BASIC
-//--------------------------------------------------------------------
-// STARTING SCRIPT
+//Creating bot
+$robot = new bot();
 
 // Definitions
 $page = "Wikidata:Sandbox";
@@ -40,11 +43,11 @@ $params = [
   "format" => "json"
 ];
 
-$result = APIrequest($endPoint, $params);
+$result = $robot->api->request($params);
 
 // If for some reason the $page was deleted, stop
 if(isset($result['query']['pages']['-1'])){
-  exit(logging("The page " . $page . " does not exist. Maybe was deleted? Closing...\r\n"));
+  $robot->bye("The page " . $page . " does not exist. Maybe was deleted? Closing...\r\n");
 }
 
 // Formating time and content
@@ -55,11 +58,11 @@ foreach ($result['query']['pages'] as $key => $value) {
 
 // If the page is already empty
 if($content==$template){
-  exit(logging("Page already empty. Closing...\r\n"));
+  $robot->bye("Page already empty. Closing...\r\n");
 }
 
 // Checking time diff between last edit and now
-$timenow = new DateTime($logdate);
+$timenow = new DateTime(date("Y-m-d H:i:s"));
 $lastedit = new DateTime($lastedit);
 
 $timediff = $lastedit->diff($timenow);
@@ -69,26 +72,14 @@ $days = $timediff->d;
 
 // If last edit is recent, less than $time
 if($hours<$time&&$days==0){
-  exit(logging("Last edit is recent. Closing...\r\n"));
+  $robot->bye("Last edit is recent. Closing...\r\n");
 }
 
 // If don't stop yet, let's edit
-// Login step 1
-$login_Token = getLoginToken();
-
-// Login step 2
-loginRequest( $login_Token );
-
-// Edit token
-$csrf_Token = getCSRFToken();
-
 // Editing
-editRequest($csrf_Token, $page, $template, "[[WD:Bot|bot]]: cleaning sandbox", 1, 1);
-
-// Logout
-logoutRequest( $csrf_Token );
+$robot->edit($page, $template, "[[WD:Bot|bot]]: cleaning sandbox", 1, 1);
 
 // Closing log
-echo logging("Script 3 done!\r\n");
+$robot->bye($robot->script . " done!\r\n");
 
 ?>
