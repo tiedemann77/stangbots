@@ -25,22 +25,29 @@ INICIANDO CONVERSÃO PARA POO (TEMPORÁRIO)
 // Classe do robô
 class bot{
 
-	// Propriedades
 	public $username;
 	private $credentials;
-	public $api;
 	public $power;
+	public $script;
 	public $log;
+	public $api;
+	public $sql;
 	private $CSRFToken;
 
-	// Construindo
-	public function __construct($username, $credentials, $api, $power, $log){
-		$this->username = $username;
-		$this->credentials = $credentials;
-		$this->api = $api;
-		$this->power = $power;
-		$this->log = $log;
+	public function __construct(){
+		global $settings;
+
+		if(!isset($settings)){
+			exit("Não foram encontradas configurações para o robô. Fechando...\r\n");
+		}
+		$this->username = $settings['username'];
+		$this->credentials = $settings['credentials'];
+		$this->power = $settings['power'];
+		$this->script = $settings['script'];
+		$this->log = new log($settings['file']);
+		$this->api = new api($settings['url'], $settings['maxlag'], $this->log);
 		$this->checkPower();
+		$this->sql = new toolforgeSQL($settings['replicasDB'], $settings['personalDB'], $this->log);
 	}
 
 	// Destruidor, logout caso precise
@@ -184,6 +191,12 @@ class bot{
 
 	}
 
+	public function bye($message){
+		$this->log->log($message);
+		$this->sql->updateStats($this->username, $this->script);
+		exit($message);
+	}
+
 }
 
 // Classe da API
@@ -225,7 +238,7 @@ class api{
 	  curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
 	  $output = curl_exec( $ch );
 	  curl_close( $ch );
-
+		$this->log->setStats("api");
 	  return json_decode( $output, true );
 
 	}
@@ -431,14 +444,29 @@ class api{
 class log{
 
 	public $file;
+	public $stats;
+	private $start;
+	public $end;
 
 	public function __construct($file){
+		global $settings;
+
 		$this->file = $file;
-		$this->log(date("Y-m-d H:i:s") . " - Iniciando log\r\n");
+		$this->stats = [
+			"api" => 0,
+			"sql" => 0,
+			"duration" => 0
+		];
+		$settings['stats'] = $this->stats;
+		$this->start = new DateTime(date("Y-m-d H:i:s"));
+		$this->log($this->start->format('c') . " - Iniciando log\r\n");
 	}
 
 	public function __destruct(){
-		$this->log(date("Y-m-d H:i:s") . " - Fechando log\r\n");
+		if(!isset($this->end)){
+			$this->end = new DateTime(date("Y-m-d H:i:s"));
+		}
+		$this->log($this->end->format('c') . " - Fechando log\r\n");
 	}
 
 	public function log($msg){
@@ -453,6 +481,17 @@ class log{
 
 		return $msg;
 
+	}
+
+	public function setStats($type){
+		global $settings;
+		if($type=="duration"){
+			$this->end = new DateTime(date("Y-m-d H:i:s"));
+			$this->stats["duration"] = $this->end->getTimestamp() - $this->start->getTimestamp();
+		}else{
+			$this->stats[$type]++;
+		}
+		$settings['stats'] = $this->stats;
 	}
 
 }
@@ -603,9 +642,29 @@ class toolforgeSQL{
 			}
 		}
 		$stmt->execute();
+		$this->log->setStats("sql");
 		$result = $stmt->get_result();
 		if(gettype($result)!="boolean"){
 			return $result->fetch_all(MYSQLI_BOTH);
+		}
+	}
+
+	public function updateStats($bot,$script){
+		global $settings;
+		if($this->personalStatus===TRUE){
+			$api = $settings["api"];
+			$sql = $settings["sql"]+2;
+			$duration = $settings["duration"];
+			$this->log->setStats("duration");
+			$last = $this->log->end->format('c');
+			$query = "SELECT * FROM stats WHERE bot = '$bot' AND script_name = '$script'";
+			$result = $this->personalQuery($query,$params=NULL);
+			if(isset($result[0])){
+				$query = "UPDATE stats SET api_requests = $api, sql_requests = $sql, duration = $duration, last = '$last' WHERE bot = '$bot' AND script_name = '$script';";
+			}else{
+				$query = "INSERT INTO stats (bot, api_requests, sql_requests, duration, last, script_name) VALUES ('$bot', $api, $sql, $duration, '$last', '$script');";
+			}
+			$result = $this->personalQuery($query,$params=NULL);
 		}
 	}
 
