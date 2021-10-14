@@ -1,24 +1,28 @@
 <?php
 
-// Requer variáveis básicas
-require_once("includes/globals.php");
+// Requer configurações
+require_once("settings.php");
 
 // Requer funções básicas
 require_once(__DIR__ . "/../common.php");
 
-// Começa o log
-echo logging($logdate . "
-Iniciando script 2...\r\n");
+// Settings
+$settings = [
+  'credentials' => $uspw,
+  'username' => "Stangbot",
+  'power' => "User:Stangbot/Power",
+  'script' => "Script 2",
+  'url' => "https://pt.wikipedia.org/w/api.php",
+  'maxlag' => 4,
+  'file' => __DIR__ .  "/../log.log",
+  'stats' => array(),
+  'replicasDB' => "ptwiki",
+  'personalDB' => "s54852__stangbots"
+];
 
-// API URL
-$endPoint = "https://pt.wikipedia.org/w/api.php";
+$robot = new bot();
 
-// Verifica se o bot está ligado
-checkPower();
-
-// FIM DO BÁSICO
-//--------------------------------------------------------------------
-// INICIANDO SCRIPT EM SI
+echo $robot->log->log($robot->username . " - Iniciando " . $robot->script . "\r\n");
 
 // Página do relatório
 $page = "Wikipédia:Burocratas/Atividade dos administradores";
@@ -36,7 +40,7 @@ $params = [
 ];
 
 // Faz consulta a API
-$result = APIrequest($endPoint, $params);
+$result = $robot->api->request($params);
 
 $sysops = $result['query']['allusers'];
 
@@ -71,11 +75,11 @@ foreach ($sysops as $key => $value) {
   $params["leuser"] = $sysops[$key]['name'];
 
   // Bloqueios
-  echo logging("Checando bloqueios para " . $sysops[$key]['name'] . "\r\n");
+  echo $robot->log->log("Checando bloqueios para " . $sysops[$key]['name'] . "\r\n");
 
   $params["letype"] = "block";
 
-  $result = APIrequest($endPoint, $params);
+  $result = $robot->api->request($params);
 
   $totals[$sysops[$key]['name']] = count($result['query']['logevents']);
 
@@ -84,7 +88,7 @@ foreach ($sysops as $key => $value) {
   }
 
   // Eliminações (mais complexo pois precisa remover delete_redir)
-  echo logging("Checando eliminações para " . $sysops[$key]['name'] . "\r\n");
+  echo $robot->log->log("Checando eliminações para " . $sysops[$key]['name'] . "\r\n");
 
   $params["letype"] = "delete";
 
@@ -92,7 +96,7 @@ foreach ($sysops as $key => $value) {
 
   $params["leprop"] = "type";
 
-  $result = APIrequest($endPoint, $params);
+  $result = $robot->api->request($params);
 
   $totals[$sysops[$key]['name']] += count($result['query']['logevents']);
 
@@ -107,7 +111,7 @@ foreach ($sysops as $key => $value) {
     }
 
     if($count_delredir>235){
-      $note[$sysops[$key]['name']] = "<ref>Os registros de eliminações para " . $sysops[$key]['name'] . " podem não ter sido completamente contabilizados. Verifique manualmente ante de tomar qualquer decisão.</ref>";
+      $note[$sysops[$key]['name']] = "<ref>Os registros de eliminações para " . $sysops[$key]['name'] . " podem não ter sido completamente contabilizados. Verifique manualmente antes de tomar qualquer decisão.</ref>";
     }
 
     $totals[$sysops[$key]['name']] -= $count_delredir;
@@ -118,7 +122,7 @@ foreach ($sysops as $key => $value) {
   }
 
   // Proteções
-  echo logging("Checando proteções para " . $sysops[$key]['name'] . "\r\n");
+  echo $robot->log->log("Checando proteções para " . $sysops[$key]['name'] . "\r\n");
 
   // A partir daqui, podemos voltar com valores mais restritos
   $params["lelimit"] = "15";
@@ -126,7 +130,7 @@ foreach ($sysops as $key => $value) {
 
   $params["letype"] = "protect";
 
-  $result = APIrequest($endPoint, $params);
+  $result = $robot->api->request($params);
 
   $totals[$sysops[$key]['name']] += count($result['query']['logevents']);
 
@@ -135,11 +139,11 @@ foreach ($sysops as $key => $value) {
   }
 
   // Privilégios
-  echo logging("Checando privilégios para " . $sysops[$key]['name'] . "\r\n");
+  echo $robot->log->log("Checando privilégios para " . $sysops[$key]['name'] . "\r\n");
 
   $params["letype"] = "rights";
 
-  $result = APIrequest($endPoint, $params);
+  $result = $robot->api->request($params);
 
   $totals[$sysops[$key]['name']] += count($result['query']['logevents']);
 
@@ -148,11 +152,11 @@ foreach ($sysops as $key => $value) {
   }
 
   // Mensagens em massa
-  echo logging("Checando mensagens em massa para " . $sysops[$key]['name'] . "\r\n");
+  echo $robot->log->log("Checando mensagens em massa para " . $sysops[$key]['name'] . "\r\n");
 
   $params["letype"] = "massmessage";
 
-  $result = APIrequest($endPoint, $params);
+  $result = $robot->api->request($params);
 
   $totals[$sysops[$key]['name']] += count($result['query']['logevents']);
 
@@ -161,11 +165,11 @@ foreach ($sysops as $key => $value) {
   }
 
   // Filtro de abusos
-  echo logging("Checando filtros de abuso para " . $sysops[$key]['name'] . "\r\n");
+  echo $robot->log->log("Checando filtros de abuso para " . $sysops[$key]['name'] . "\r\n");
 
   $params["letype"] = "abusefilter";
 
-  $result = APIrequest($endPoint, $params);
+  $result = $robot->api->request($params);
 
   $totals[$sysops[$key]['name']] += count($result['query']['logevents']);
 
@@ -196,11 +200,11 @@ $params["ucnamespace"] = "4";
 foreach ($totals as $key => $value) {
   if ($totals[$key]<15){
 
-    echo logging("Contando edições no domínio Wikipédia para " . $key . "\r\n");
+    echo $robot->log->log("Contando edições no domínio Wikipédia para " . $key . "\r\n");
 
     $params["ucuser"] = $key;
 
-    $result = APIrequest($endPoint, $params);
+    $result = $robot->api->request($params);
 
     $wpedits[$key] = count($result['query']['usercontribs']);
 
@@ -223,11 +227,11 @@ $params["ucnamespace"] = "8";
 foreach ($totals as $key => $value) {
   if ($totals[$key]<15){
 
-    echo logging("Contando edições no domínio MediaWiki para " . $key . "\r\n");;
+    echo $robot->log->log("Contando edições no domínio MediaWiki para " . $key . "\r\n");;
 
     $params["ucuser"] = $key;
 
-    $result = APIrequest($endPoint, $params);
+    $result = $robot->api->request($params);
 
     $mwedits[$key] = count($result['query']['usercontribs']);
 
@@ -314,31 +318,19 @@ $text .= "|}
 ===Notas===";
 
 //Checando se precisa atualizar desde o último relatório
-$content = getContent($page, 0);
+$content = $robot->api->getContent($page, 0);
 if($content===$text){
-  exit(logging("Nenhuma edição precisa ser feita. Fechando...\r\n"));
+  $robot->bye("Nenhuma edição precisa ser feita. Fechando...\r\n");
 }
 
-// Login step 1
-$login_Token = getLoginToken();
-
-// Login step 2
-loginRequest( $login_Token );
-
-// Obtendo edit token
-$csrf_Token = getCSRFToken();
-
 // Editando
-editRequest($csrf_Token, $page, $text, "[[WP:Bot|bot]]: atualizando estatísticas sobre administradores", 0, 0);
-
-// Logout
-logoutRequest( $csrf_Token );
+$robot->edit($page, $text, "[[WP:Bot|bot]]: atualizando estatísticas sobre administradores", 0, 0);
 
 // PARA TESTE
 // ADICIONAR O CONTEÚDO DA EDIÇÃO EM LOG
-//logging("Conteúdo da variável text:\r\n" . $text. "\r\n");
+//$robot->log->log("Conteúdo da variável text:\r\n" . $text. "\r\n");
 
 // Fechar log
-echo logging("Script 2 concluído!\r\n");
+$robot->bye($robot->script . " concluído!\r\n");
 
 ?>
