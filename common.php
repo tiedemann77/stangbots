@@ -50,8 +50,7 @@ class bot{
 		$this->sql = new toolforgeSQL($settings['replicasDB'], $settings['personalDB'], $this->log);
 	}
 
-	// Destruidor, logout caso precise
-	public function __destruct(){
+	private function logout(){
 
 		if(isset($this->CSRFToken)){
 
@@ -72,6 +71,7 @@ class bot{
 
 			curl_exec( $ch );
 			curl_close( $ch );
+			$this->log->setStats("api");
 
 		}
 
@@ -95,6 +95,7 @@ class bot{
 
 			$output = curl_exec( $ch );
 			curl_close( $ch );
+			$this->log->setStats("api");
 			unset($params);
 
 			$result = json_decode( $output, true );
@@ -120,6 +121,7 @@ class bot{
 
 			curl_exec( $ch );
 			curl_close( $ch );
+			$this->log->setStats("api");
 			unset($params);
 
 			$params = [
@@ -138,6 +140,7 @@ class bot{
 
 			$output = curl_exec( $ch );
 			curl_close( $ch );
+			$this->log->setStats("api");
 
 			$result = json_decode( $output, true );
 			$this->CSRFToken = $result["query"]["tokens"]["csrftoken"];
@@ -178,6 +181,7 @@ class bot{
 
 			curl_exec( $ch );
 			curl_close( $ch );
+			$this->log->setStats("api");
 
 	}
 
@@ -193,6 +197,7 @@ class bot{
 
 	public function bye($message){
 		$this->log->log($message);
+		$this->logout();
 		$this->sql->updateStats($this->username, $this->script);
 		exit($message);
 	}
@@ -660,9 +665,9 @@ class toolforgeSQL{
 			$query = "SELECT * FROM stats WHERE bot = '$bot' AND script_name = '$script'";
 			$result = $this->personalQuery($query,$params=NULL);
 			if(isset($result[0])){
-				$query = "UPDATE stats SET api_requests = $api, sql_requests = $sql, duration = $duration, last = '$last' WHERE bot = '$bot' AND script_name = '$script';";
+				$query = "UPDATE stats SET api_requests = $api, sql_requests = $sql, duration = $duration, last = '$last', do_manual = 1 WHERE bot = '$bot' AND script_name = '$script';";
 			}else{
-				$query = "INSERT INTO stats (bot, api_requests, sql_requests, duration, last, script_name) VALUES ('$bot', $api, $sql, $duration, '$last', '$script');";
+				$query = "INSERT INTO stats (bot, api_requests, sql_requests, duration, last, script_name, do_manual) VALUES ('$bot', $api, $sql, $duration, '$last', '$script', 1);";
 			}
 			$result = $this->personalQuery($query,$params=NULL);
 		}
