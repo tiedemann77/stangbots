@@ -652,10 +652,10 @@ class toolforgeSQL{
 	public function updateStats($bot,$script){
 		global $settings;
 		if($this->personalStatus===TRUE){
-			$api = $settings["api"];
-			$sql = $settings["sql"]+2;
-			$duration = $settings["duration"];
+			$api = $settings["stats"]["api"];
+			$sql = $settings["stats"]["sql"]+2;
 			$this->log->setStats("duration");
+			$duration = $settings["stats"]["duration"];
 			$last = $this->log->end->format('c');
 			$query = "SELECT * FROM stats WHERE bot = '$bot' AND script_name = '$script'";
 			$result = $this->personalQuery($query,$params=NULL);
