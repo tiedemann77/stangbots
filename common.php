@@ -470,14 +470,14 @@ class log{
 		];
 		$settings['stats'] = $this->stats;
 		$this->start = new DateTime(date("Y-m-d H:i:s"));
-		$this->log($this->start->format('c') . " - Iniciando log\r\n");
+		$this->log($this->start->format('d-m-Y H:i:s') . " - Iniciando log\r\n");
 	}
 
 	public function __destruct(){
 		if(!isset($this->end)){
 			$this->end = new DateTime(date("Y-m-d H:i:s"));
 		}
-		$this->log($this->end->format('c') . " - Fechando log\r\n");
+		$this->log($this->end->format('d-m-Y H:i:s') . " - Fechando log\r\n");
 	}
 
 	public function log($msg){
@@ -673,7 +673,7 @@ class toolforgeSQL{
 			$sql = $settings["stats"]["sql"]+2;
 			$this->log->setStats("duration");
 			$duration = $settings["stats"]["duration"];
-			$last = $this->log->end->format('c');
+			$last = $this->log->end->format('d-m-Y H:i:s');
 			$query = "SELECT * FROM stats WHERE bot = '$bot' AND script_name = '$script'";
 			$result = $this->personalQuery($query,$params=NULL);
 			if(isset($result[0])){
