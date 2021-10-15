@@ -3,11 +3,17 @@
 // Verifica se a conta já foi renomeada no passado via replicas
 function hasRenames($name){
 
+  global $robot;
+
   $user = "CentralAuth/" . $name;
   $query = 'SELECT log_timestamp FROM logging WHERE log_type = "gblrename" AND log_title = ? ORDER BY log_id DESC LIMIT 1;';
 
+  $params = [
+    array("s",$user)
+  ];
+
   // Faz a consulta
-  $result = replicaQuery("metawiki", $query, $user, 1);
+  $result = $robot->sql->replicasQuery($query, $params);
 
   // Verifica se há renomeçãoes e retorna a data da última
   if(isset($result[0]['log_timestamp'])){
@@ -33,12 +39,13 @@ function hasRenames($name){
 // Função para verificar se a página foi editada ou se houverem renomeações relacionadas
 function run($content){
 
+  global $robot;
   global $cachefile;
 
   // Requer o arquivo de cache
   if(!file_exists($cachefile)){
     if(!fopen($cachefile, 'w')){
-      exit("Não foi possível criar o arquivo de cache especificado. Script interrompido. Por favor, crie o arquivo manualmente para prosseguir. Fechando...\r\n");
+      $robot->bye("Não foi possível criar o arquivo de cache especificado. Script interrompido. Por favor, crie o arquivo manualmente para prosseguir. Fechando...\r\n");
     }
   }else{
 
@@ -47,7 +54,8 @@ function run($content){
     // Se o cache e o conteúdo forem iguais, verifica se houveram renomeações
     if($content===$cache){
 
-      $endPoint = "https://meta.wikimedia.org/w/api.php";
+      // Troca temporária
+      $robot->api->url = "https://meta.wikimedia.org/w/api.php";
 
       $start = date("Y-m-d H:i:s", strtotime("-1 hour"));
 
@@ -61,7 +69,9 @@ function run($content){
       ];
 
       // Faz consulta a API
-      $result = APIrequest($endPoint, $params);
+      $result = $robot->api->request($params);
+      // Retornando
+      $robot->api->url = "https://pt.wikipedia.org/w/api.php";
 
       // Verifica se houveram renomeações
       if(isset($result['query']['logevents']['0'])){
@@ -77,12 +87,12 @@ function run($content){
 
         // Se não, para
         if(!isset($count)){
-          exit(logging("Não há razão para rodar (mesmo cache, sem renomeação relacionada). Fechando...\r\n"));
+          $robot->bye("Não há razão para rodar (mesmo cache, sem renomeação relacionada). Fechando...\r\n");
         }
 
       // Se não, para
       }else{
-        exit(logging("Não há razão para rodar (mesmo cache, sem nenhuma renomeação). Fechando...\r\n"));
+        $robot->bye("Não há razão para rodar (mesmo cache, sem nenhuma renomeação). Fechando...\r\n");
       }
 
     }

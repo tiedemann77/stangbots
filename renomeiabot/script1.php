@@ -1,33 +1,46 @@
 <?php
 
-// Requer variáveis básicas
-require_once("includes/globals.php");
+// Requer funções para esse script em específico
+require_once(__DIR__ . "/includes/functions_1.php");
+
+// Requer configurações
+require_once(__DIR__ . "/settings.php");
 
 // Requer funções básicas
 require_once(__DIR__ . "/../common.php");
 
-// Requer funções para esse script em específico
-require_once("includes/functions_1.php");
+// Settings
+$settings = [
+  'credentials' => $uspw,
+  'username' => "RenomeiaBot",
+  'power' => "User:RenomeiaBot/Power",
+  'script' => "Script 1",
+  'url' => "https://pt.wikipedia.org/w/api.php",
+  'maxlag' => 4,
+  'file' => __DIR__ .  "/../log.log",
+  'stats' => array(),
+  'replicasDB' => "metawiki",
+  'personalDB' => "s54852__stangbots"
+];
 
-// Começa o log
-echo logging($logdate . "
-Iniciando script 1...\r\n");
+$robot = new bot();
 
-// Verifica se o bot está ligado
-checkPower();
+echo $robot->log->log($robot->username . " - Iniciando " . $robot->script . "\r\n");
 
-// FIM DO BÁSICO
-//--------------------------------------------------------------------
-// INICIANDO SCRIPT EM SI
+// Página base
+$BasePage = "Wikipédia:Renomeação de conta";
+
+// Arquivo de cache
+$cachefile = __DIR__ .  "/temp/cache.txt";
 
 // Obtém o conteúdo total da página
-$content = getContent($BasePage, 1);
+$content = $robot->api->getContent($BasePage, 1);
 
 // Verifica se há necessidade do bot rodar
 run($content);
 
 // Obtém a lista de seções (pedidos)
-$sectionList = getSectionList($BasePage);
+$sectionList = $robot->api->getSectionList($BasePage);
 
 // Exclui a primeira seção, irrelevante
 $deleted = array_shift($sectionList);
@@ -37,11 +50,11 @@ $sectionNumber = count($sectionList);
 
 // Se a página está vazia, para
 if($sectionNumber == 0){
-  exit(logging("A página está vazia. Fechando...\r\n"));
+  $robot->bye("A página está vazia. Fechando...\r\n");
 }
 
 // Log
-echo logging("São " . $sectionNumber . " seções no total, requisitando cada uma delas, pode demorar...\r\n");
+echo $robot->log->log("São " . $sectionNumber . " seções no total, requisitando cada uma delas, pode demorar...\r\n");
 
 // Controles para o próximo loop
 $control = 0;
@@ -50,19 +63,19 @@ $control2 = 2; //primeira seção nesse caso sempre é a 2
 // Adiciona o conteúdo de cada seção numa array com todos os pedidos
 while ($control < $sectionNumber) {
 
-  $requests[$control] = getSectionContent($BasePage, $control2);
+  $requests[$control] = $robot->api->getSectionContent($BasePage, $control2);
 
   // Segue para o próximo
   $control++;
   $control2++;
 
   // Log
-  echo logging("Requisitando seção número " . $control . ";\r\n");
+  echo $robot->log->log("Requisitando seção número " . $control . ";\r\n");
 
 }
 
 // Log
-echo logging("Removendo pedidos já fechados...");
+echo $robot->log->log("Removendo pedidos já fechados...");
 
 // Controles para o próximo loop
 $control = 0;
@@ -87,7 +100,7 @@ $openrequests = $temp;
 $requestNumber = count($openrequests);
 
 // Log
-echo logging(" ... são " . $requestNumber . " pedidos ainda em aberto, verificando e fechando os que já foram atendidos (etapa 1).\r\n");
+echo $robot->log->log(" ... são " . $requestNumber . " pedidos ainda em aberto, verificando e fechando os que já foram atendidos (etapa 1).\r\n");
 
 // Controles para o próximo loop
 $control = 0;
@@ -120,9 +133,10 @@ while ($control < $requestNumber) {
   $newname = str_replace(" ===","",$newname);
 
   // Log
-  echo logging("Verificando pedido número " . $control2 . "...\r\n");
+  echo $robot->log->log("Verificando pedido número " . $control2 . "...\r\n");
 
-  $endPoint2 = "https://meta.wikimedia.org/w/api.php";
+  // Troca temporária
+  $robot->api->url = "https://meta.wikimedia.org/w/api.php";
 
   $params = [
 		"action" => "query",
@@ -133,7 +147,9 @@ while ($control < $requestNumber) {
 	];
 
   // Faz consulta a API
-  $result = APIrequest($endPoint2, $params);
+  $result = $robot->api->request($params);
+  // Retorna
+  $robot->api->url = "https://pt.wikipedia.org/w/api.php";
 
   // Verificando se há registro de renonomeação
   if(isset($result['query']['logevents'][0])){
@@ -177,7 +193,7 @@ while ($control < $requestNumber) {
 ::{{subst:feito|Pedido atendido:}} a conta foi renomeada por " . $renamer . ". ~~~~}}";
 
         // Log
-        echo logging( "ATENDIDO: " . $actualname . " foi renomeada para " . $newname . " por " . $renamer . ";\r\n");
+        echo $robot->log->log( "ATENDIDO: " . $actualname . " foi renomeada para " . $newname . " por " . $renamer . ";\r\n");
 
         $editedrequests[$control] = $newrequest[$control];
 
@@ -202,7 +218,7 @@ while ($control < $requestNumber) {
 $remainOpen = $requestNumber-$numberClosed;
 
 // Log
-echo logging($numberClosed . " pedidos foram atendidos, sobraram " . $remainOpen . " em aberto. Fazendo checagens adicionais nesses pedidos (etapa 2)...\r\n");
+echo $robot->log->log($numberClosed . " pedidos foram atendidos, sobraram " . $remainOpen . " em aberto. Fazendo checagens adicionais nesses pedidos (etapa 2)...\r\n");
 
 // Controles para o próximo loop
 $control = 0;
@@ -214,7 +230,7 @@ while ($control < $requestNumber) {
   $temp2 = preg_match($closedRegex, $editedrequests[$control]);
 
   if($temp2==1){
-    echo logging("Pedido número " . $control2 . " já foi atendido;\r\n");
+    echo $robot->log->log("Pedido número " . $control2 . " já foi atendido;\r\n");
   }else{
 
     // Primeiro, os nomes de usuário
@@ -238,10 +254,10 @@ while ($control < $requestNumber) {
     $newname = str_replace(" ===","",$newname);
 
     // Log
-    echo logging("Fazendo checagens no pedido número " . $control2 . ";\r\n");
+    echo $robot->log->log("Fazendo checagens no pedido número " . $control2 . ";\r\n");
 
     // Checa se o novo nome está em uso, condição que fecha o pedido
-    $exist = accountExist($newname);
+    $exist = $robot->api->accountExist($newname);
 
     // Fecha pedido, comenta pedido
     // No começo, tudo é igual
@@ -258,7 +274,7 @@ while ($control < $requestNumber) {
 ::{{subst:negado|Negado automaticamente}} {{ping|" . $actualname . "}} Olá! O nome de usuário que você escolheu (" . $newname . ") já está em uso. Se " . $newname . " não possui ediçoes ([[Especial:Administração de contas globais/" . $newname . "|verifique aqui]]), ele pode ser elegível para [[m:Special:MyLanguage/USURP|usurpação]]. No entanto, na maioria dos casos o mais recomendado é escolher outro nome que não conste [[Especial:Administração de contas globais|nesta lista]] e abrir um novo pedido. Obrigado! ~~~~}}";
 
       // Log
-      echo logging( $newname . " já está em uso;\r\n");
+      echo $robot->log->log( $newname . " já está em uso;\r\n");
 
     }else{
       // Se já há notas do bot no pedido, ignorar para evitar comentários repetidos
@@ -268,10 +284,10 @@ while ($control < $requestNumber) {
 
         // Se o pedido não foi fechado ou comentado ainda, faz as outras checagens
         // Verifica se o usuário teve bloqueios no passado
-        $blocks = hasBlocks($actualname);
+        $blocks = $robot->api->hasBlocks($actualname);
 
         // Verifica nomes similares
-        $antispoof = antispoof($newname,$actualname);
+        $antispoof = $robot->api->antispoof($newname,$actualname);
 
         // Verifica renomeações anteriores
         $renames = hasRenames($actualname);
@@ -283,7 +299,7 @@ while ($control < $requestNumber) {
 ::'''Nota automática:''' o novo nome de usuário e o antigo parecem iguais. ~~~~";
 
           // Log
-          echo logging("Novo nome (" . $newname . ") parece igual ao antigo;\r\n");
+          echo $robot->log->log("Novo nome (" . $newname . ") parece igual ao antigo;\r\n");
 
         }
 
@@ -296,7 +312,7 @@ while ($control < $requestNumber) {
 ::'''Nota automática:''' a conta " . $actualname . " já foi [https://pt.wikipedia.org/wiki/Especial:Registo?type=block&page=User:" . $nameURL . " bloqueada] no passado. ~~~~";
 
           // Log
-          echo logging( $actualname . " já foi bloqueado no passado;\r\n");
+          echo $robot->log->log( $actualname . " já foi bloqueado no passado;\r\n");
 
         }
 
@@ -307,7 +323,7 @@ while ($control < $requestNumber) {
 ::'''Nota automática:''' a conta " . $actualname . " já foi renomeada no passado. A última renomeação ocorreu em " . $renames . ". ~~~~";
 
           // Log
-          echo logging( $actualname . " já foi renomeado no passado;\r\n");
+          echo $robot->log->log( $actualname . " já foi renomeado no passado;\r\n");
 
         }
 
@@ -321,7 +337,7 @@ while ($control < $requestNumber) {
 ::'''Nota automática:''' o nome de usuário escolhido (" . $newname . ") é muito similar a [[Especial:Administração de contas globais/" . $antispoof . "|" . $antispoof . "]] ou a outros que [https://meta.wikimedia.org/w/api.php?action=antispoof&username=" . $nameURL . "&format=json já estão em uso]. ~~~~";
 
           // Log
-          echo logging( $newname . " é muito similar a " . $antispoof . " ou outros;\r\n");
+          echo $robot->log->log( $newname . " é muito similar a " . $antispoof . " ou outros;\r\n");
 
         }
 
@@ -345,7 +361,7 @@ $control = 0;
 $newcontent = $content;
 
 // Log
-echo logging("Iniciando edições...\r\n");
+echo $robot->log->log("Iniciando edições...\r\n");
 
 while ($control < $requestNumber) {
 
@@ -364,36 +380,24 @@ if($newcontent==$content){
   // Salva o novo conteúdo, para evitar múltiplas consultas para conteúdo não alterado
   file_put_contents($cachefile, $content);
 
-  exit(logging("Nenhuma edição precisa ser feita. Fechando...\r\n"));
-  
+  $robot->bye("Nenhuma edição precisa ser feita. Fechando...\r\n");
+
 }
 
-// Login step 1
-$login_Token = getLoginToken();
-
-// Login step 2
-loginRequest( $login_Token );
-
-// Obtendo edit token
-$csrf_Token = getCSRFToken();
-
 // Editando a página de pedidos
-editRequest($csrf_Token, $BasePage, $newcontent, "[[WP:Bot|bot]]: processando pedidos", 0, 0);
-
-// Logout
-logoutRequest( $csrf_Token );
+$robot->edit($BasePage, $newcontent, "[[WP:Bot|bot]]: processando pedidos", 0, 0);
 
 // Depois da edição, obtém o conteúdo de novo por causa da assinatura
-$content = getContent($BasePage, 1);
+$content = $robot->api->getContent($BasePage, 1);
 
 // Salva o novo conteúdo, para evitar múltiplas consultas para conteúdo não alterado
 file_put_contents($cachefile, $content);
 
 // PARA TESTE
 // ADICIONAR O CONTEÚDO DA EDIÇÃO EM LOG
-//logging("Conteúdo da variável content:\r\n" . $newcontent . "\r\n");
+//$robot->log->log("Conteúdo da variável content:\r\n" . $newcontent . "\r\n");
 
-// Fechar log
-echo logging("Script 1 concluído!\r\n");
+// Fim
+$robot->bye($robot->script . " concluído!\r\n");
 
 ?>
