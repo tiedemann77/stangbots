@@ -655,8 +655,14 @@ class toolforgeSQL{
 	}
 
 	public function updateStats($bot,$script){
-		global $settings;
 		if($this->personalStatus===TRUE){
+			global $settings;
+			global $manualRun;
+			if($manualRun===TRUE){
+				$manual = 0;
+			}else{
+				$manual = 1;
+			}
 			$api = $settings["stats"]["api"];
 			$sql = $settings["stats"]["sql"]+2;
 			$this->log->setStats("duration");
@@ -665,7 +671,7 @@ class toolforgeSQL{
 			$query = "SELECT * FROM stats WHERE bot = '$bot' AND script_name = '$script'";
 			$result = $this->personalQuery($query,$params=NULL);
 			if(isset($result[0])){
-				$query = "UPDATE stats SET api_requests = $api, sql_requests = $sql, duration = $duration, last = '$last', do_manual = 1 WHERE bot = '$bot' AND script_name = '$script';";
+				$query = "UPDATE stats SET api_requests = $api, sql_requests = $sql, duration = $duration, last = '$last', do_manual = $manual WHERE bot = '$bot' AND script_name = '$script';";
 			}else{
 				$query = "INSERT INTO stats (bot, api_requests, sql_requests, duration, last, script_name, do_manual) VALUES ('$bot', $api, $sql, $duration, '$last', '$script', 1);";
 			}
