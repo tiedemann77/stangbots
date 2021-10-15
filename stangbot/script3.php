@@ -1,7 +1,7 @@
 <?php
 
 // Settings
-require_once("settings.php");
+require_once(__DIR__ . "/settings.php");
 
 // Basic functions
 require_once(__DIR__ . "/../common.php");
