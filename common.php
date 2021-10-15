@@ -611,7 +611,6 @@ class toolforgeSQL{
 
 	private function query($stmt,$params){
 		if(is_array($params)){
-			$type = "";
 			foreach ($params as $key => $value) {
 				$types .= $params[$key][0];
 			}
