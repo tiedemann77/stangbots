@@ -1,25 +1,34 @@
 <?php
 
-/*
-    ESTE SCRIPT APLICA SUBST: NOS ARQUIVOS
-*/
-
-// Requer variáveis básicas
-require_once("includes/globals.php");
+// Requer configurações
+require_once(__DIR__ . "/settings.php");
 
 // Requer funções básicas
 require_once(__DIR__ . "/../common.php");
 
-// Começa o log
-echo logging($logdate . "
-Iniciando script 3...\r\n");
+// Settings
+$settings = [
+  'credentials' => $uspw,
+  'username' => "VerificaBot",
+  'power' => "User:VerificaBot/Power",
+  'script' => "Script 3",
+  'url' => "https://pt.wikipedia.org/w/api.php",
+  'maxlag' => 4,
+  'file' => __DIR__ .  "/../log.log",
+  'stats' => array(),
+  'replicasDB' => "ptwiki",
+  'personalDB' => "s54852__stangbots"
+];
 
-// Verifica se o bot está ligado
-checkPower();
+$robot = new bot();
 
-// FIM DO BÁSICO
-//--------------------------------------------------------------------
-// INICIANDO SCRIPT EM SI
+echo $robot->log->log($robot->username . " - Iniciando " . $robot->script . "\r\n");
+
+// Página base
+$BasePage = "Wikipédia:Pedidos a verificadores";
+
+// Prefixo dos arquivos
+$archivePage = $BasePage . "/Arquivo/";
 
 // Obtém a data atual
 $month = date("m");
@@ -46,7 +55,7 @@ if($archiveMonth<10){
 $page = $archivePage . $archiveYear . "/" . $archiveMonth;
 
 // Obtendo conteúdo da página de recentes
-$archiveContent = getContent($page, 1);
+$archiveContent = $robot->api->getContent($page, 1);
 
 // Substituições...
 $archiveContent = str_ireplace("{{Wikipédia:Pedidos a verificadores/ListarArquivo|","{{subst:Wikipédia:Pedidos a verificadores/ListarArquivo2|",$archiveContent);
@@ -63,29 +72,14 @@ $archiveContent = str_ireplace("|possivável}}","|{{subst:possivável}}}}",$arch
 $archiveContent = str_ireplace("|negado}}","|{{subst:negado}}}}",$archiveContent);
 $archiveContent = str_ireplace("|pato}}","|{{subst:pato}}}}",$archiveContent);
 
-
-// Login para edição
-
-// Login step 1
-$login_Token = getLoginToken();
-
-// Login step 2
-loginRequest( $login_Token );
-
-// Obtém edit token
-$csrf_Token = getCSRFToken();
-
 // Edita a página
-editRequest($csrf_Token, $page, $archiveContent, "[[WP:Bot|bot]]: substituindo predefinições", 1, 1);
-
-// Logout
-logoutRequest( $csrf_Token );
+$robot->edit($page, $archiveContent, "[[WP:Bot|bot]]: substituindo predefinições", 1, 1);
 
 // PARA TESTE
 // Registra em log ao invés de editar
-//logging("Content of archiveContent string:\r\n" . $archiveContent . "\r\n");
+//$robot->log->log("Content of archiveContent string:\r\n" . $archiveContent . "\r\n");
 
-// Fecha o log
-echo logging("Script 3 concluído!\r\n");
+// Fim
+$robot->bye($robot->script . " concluído!\r\n");
 
 ?>

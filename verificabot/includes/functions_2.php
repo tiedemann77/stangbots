@@ -3,13 +3,14 @@
 // Função para obter casos antigos da página de recentes
 function getOldCases($older,$recentsContent){
 
+  global $robot;
   global $older;
 
   // Verificar se a página está vazia (com {{nenhum}})
   if (preg_match("/\{\{nenhum\}\}/", $recentsContent)) {
 
     // Se sim, nada a fazer, parar
-    exit(logging("Não há casos na página de recentes ({{nenhum}}). Fechando...\r\n"));
+    $robot->bye("Não há casos na página de recentes ({{nenhum}}). Fechando...\r\n");
 
   }
 
@@ -76,7 +77,7 @@ function getOldCases($older,$recentsContent){
 
     if($future==1){
       // Se sim, parar script
-      exit(logging("Há uma data futura na página de recentes, correção manual é necessária. Fechando...\r\n"));
+      $robot->bye("Há uma data futura na página de recentes, correção manual é necessária. Fechando...\r\n");
     }
 
     // Convertendo para dias
@@ -94,7 +95,7 @@ function getOldCases($older,$recentsContent){
 
   // Se não há casos antigos para arquivar, para script
   if (!isset($olderCases)) {
-    exit(logging("Não há casos antigos para arquivar na página de recentes (mais antigos que " . $older . " dias). Fechando...\r\n"));
+    $robot->bye("Não há casos antigos para arquivar na página de recentes (mais antigos que " . $older . " dias). Fechando...\r\n");
   }
 
   // Reconvertendo datas para formato por extenso
@@ -177,6 +178,8 @@ function removingRecentList($olderCases, $recentsContent){
 // Função para separar os casos antigos em dois meses
 function separeMonths($olderCases){
 
+  global $robot;
+
   // Definindo mês atual e anterior
   $month = date("m");
 
@@ -234,7 +237,7 @@ function separeMonths($olderCases){
         $date[$key][2] = "12";
         break;
       default:
-        exit(logging("Erro obtendo data para arquivar (function separeMonths). Fechando...\r\n"));
+        $robot->bye("Erro obtendo data para arquivar (function separeMonths). Fechando...\r\n");
     }
 
     // Separando mês: array [1] para atual e [0] para anterior
@@ -243,7 +246,7 @@ function separeMonths($olderCases){
     }elseif ($date[$key][2]==$previousMonth) {
       $olderCasesFilter[0][$key] = $olderCases[$key];
     }else {
-      exit(logging("Erro determinando o mês correto para arquivar (talvez mais de dois?). Fechando...\r\n"));
+      $robot->bye("Erro determinando o mês correto para arquivar (talvez mais de dois?). Fechando...\r\n");
     }
 
   }

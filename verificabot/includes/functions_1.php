@@ -2,6 +2,7 @@
 
 // Função que obtém os casos listados na paǵina de pedidos
 function getOpenCasesList($content) {
+  global $robot;
 
 	// Obtendo nome do usuário)
   preg_match_all("/\|.{0,}\|/", $content, $out);
@@ -17,7 +18,7 @@ function getOpenCasesList($content) {
 
 	// Se é 0, sem casos abertos, parar script
 	if ($numberOpenCases===0) {
-		exit(logging("Não há casos abertos. Fechando...\r\n"));
+		$robot->bye("Não há casos em aberto. Fechando...\r\n");
 	}else {
 		// Se não, retorna lista de casos
 		return $out2;
@@ -27,6 +28,8 @@ function getOpenCasesList($content) {
 
 // Função para verificar quais casos abertos foram fechados
 function getClosedCases($opencases) {
+
+  global $robot;
 
   global $BasePage;
 
@@ -48,7 +51,7 @@ function getClosedCases($opencases) {
     $CaseTitle = $value;
 
     // Resolve possíveis redirecionamentos
-    $newPage = resolveRedir($CasePage);
+    $newPage = $robot->api->resolveRedir($CasePage);
 
     if($CasePage!=$newPage){
 
@@ -61,7 +64,7 @@ function getClosedCases($opencases) {
     }
 
 		// Obtém conteúdo da subpágina
-		$content = getContent($CasePage, 0);
+		$content = $robot->api->getContent($CasePage, 0);
 
     // Se a página do caso existe, verifica se está aberto ou fechado
     if($content!="0"){
@@ -114,7 +117,7 @@ function getClosedCases($opencases) {
 
 	// Se nenhum caso foi fechado ($control==0), parar script
 	if ($control==0) {
-		exit(logging("Não há nenhum caso concluído para remover. Fechando...\r\n"));
+		$robot->bye("Não há nenhum caso concluído para remover. Fechando...\r\n");
 	}
 
   // Retorna a lista de casos concluídos
@@ -178,10 +181,12 @@ function updateCaseList( $OpenCases, $ClosedCases, $contentBase ){
 // Função para adicionar casos encerrados na lista de recentes
 function updateRecentsList($ClosedCases){
 
+  global $robot;
+
 	global $recentsPage;
 
   // No primeiro momento, novo conteúdo é igual ao antigo
-  $newContentRecents = getContent($recentsPage, 1);
+  $newContentRecents = $robot->api->getContent($recentsPage, 1);
 
 	// Verifica se a página de recentes está vazia
 	if (preg_match("/\{\{nenhum\}\}/", $newContentRecents)) {

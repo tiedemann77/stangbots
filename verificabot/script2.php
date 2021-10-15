@@ -1,35 +1,46 @@
 <?php
 
-/*
-    ESTE SCRIPT ATUALIZA OS ARQUIVOS EM WP:PV/Arquivo/Ano/Mês
-    A PARTIR DE WP:PV/Recentes
-*/
+// Requer funções para esse script em específico
+require_once(__DIR__ . "/includes/functions_2.php");
 
-// Requer variáveis básicas
-require_once("includes/globals.php");
+// Requer configurações
+require_once(__DIR__ . "/settings.php");
 
 // Requer funções básicas
 require_once(__DIR__ . "/../common.php");
 
-// Requer funções para esse script em específico
-require_once("includes/functions_2.php");
+// Settings
+$settings = [
+  'credentials' => $uspw,
+  'username' => "VerificaBot",
+  'power' => "User:VerificaBot/Power",
+  'script' => "Script 2",
+  'url' => "https://pt.wikipedia.org/w/api.php",
+  'maxlag' => 4,
+  'file' => __DIR__ .  "/../log.log",
+  'stats' => array(),
+  'replicasDB' => "ptwiki",
+  'personalDB' => "s54852__stangbots"
+];
 
-// Começa o log
-echo logging($logdate . "
-Iniciando script 2...\r\n");
+$robot = new bot();
 
-// Verifica se o bot está ligado
-checkPower();
+echo $robot->log->log($robot->username . " - Iniciando " . $robot->script . "\r\n");
 
-// FIM DO BÁSICO
-//--------------------------------------------------------------------
-// INICIANDO SCRIPT EM SI
+// Página base
+$BasePage = "Wikipédia:Pedidos a verificadores";
+
+// Página listando os pedidos concluídos recentemente
+$recentsPage = $BasePage . "/Recentes";
+
+// Prefixo dos arquivos
+$archivePage = $BasePage . "/Arquivo/";
 
 // Idade para arquivar (em dias)
 $older = 15;
 
 // Obtendo conteúdo da página de recentes
-$recentsContent = getContent($recentsPage, 1);
+$recentsContent = $robot->api->getContent($recentsPage, 1);
 
 // Verificando se há casos antigos para arquivar
 $olderCases = getOldCases($older,$recentsContent);
@@ -89,7 +100,7 @@ $source = '__NOTOC__
 if(isset($olderCasesFilter[0])){
 
   // Obtém o conteúdo do arquivo se existe
-  $content = getContent($previousPage, 0);
+  $content = $robot->api->getContent($previousPage, 0);
 
   // Caso não, cria um novo do zero
   if($content=="0"){
@@ -109,7 +120,7 @@ if(isset($olderCasesFilter[0])){
 if(isset($olderCasesFilter[1])){
 
   // Obtém o conteúdo do arquivo se existe
-  $content = getContent($currentPage, 0);
+  $content = $robot->api->getContent($currentPage, 0);
 
   // Caso não, cria um novo do zero
   if($content=="0"){
@@ -127,42 +138,27 @@ if(isset($olderCasesFilter[1])){
 
 // Se o script não parou até agora, há edições por fazer
 
-// Login step 1
-$login_Token = getLoginToken();
-
-// Login step 2
-loginRequest( $login_Token );
-
-// Obtém edit token
-$csrf_Token = getCSRFToken();
-
 // Edita a página de recentes
-editRequest($csrf_Token, $recentsPage, $newrecentsContent, "[[WP:Bot|bot]]: arquivando casos antigos", 1, 1);
+$robot->edit($recentsPage, $newrecentsContent, "[[WP:Bot|bot]]: arquivando casos antigos", 1, 1);
 
 // PARA TESTE
-// Registra em log ao invés de editar
-//logging("Content of newrecentsContent string:\r\n" . $newrecentsContent . "\r\n");
+//$robot->log->log("Content of newrecentsContent string:\r\n" . $newrecentsContent . "\r\n");
 
 // Edita o arquivo do mês anterior, se necessário
 if(isset($newPreviousContent)){
-  editRequest($csrf_Token, $previousPage, $newPreviousContent, "[[WP:Bot|bot]]: arquivando casos antigos", 1, 1);
+  $robot->edit($previousPage, $newPreviousContent, "[[WP:Bot|bot]]: arquivando casos antigos", 1, 1);
   // PARA TESTE
-  // Registra em log ao invés de editar
-  //logging("Content of newPreviousContent string:\r\n" . $newPreviousContent . "\r\n");
+  //$robot->log->log("Content of newPreviousContent string:\r\n" . $newPreviousContent . "\r\n");
 }
 
 // Edita o arquivo do mês atual, se necessário
 if(isset($newCurrentContent)){
-  editRequest($csrf_Token, $currentPage, $newCurrentContent, "[[WP:Bot|bot]]: arquivando casos antigos", 1, 1);
+  $robot->edit($currentPage, $newCurrentContent, "[[WP:Bot|bot]]: arquivando casos antigos", 1, 1);
   // PARA TESTE
-  // Registra em log ao invés de editar
-  //logging("Content of newCurrentContent string:\r\n" . $newCurrentContent . "\r\n");
+  //$robot->log->log("Content of newCurrentContent string:\r\n" . $newCurrentContent . "\r\n");
 }
 
-// Logout
-logoutRequest( $csrf_Token );
-
-// Fecha o log
-echo logging("Script 2 concluído!\r\n");
+// Fim
+$robot->bye($robot->script . " concluído!\r\n");
 
 ?>

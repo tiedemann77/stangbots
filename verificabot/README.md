@@ -9,9 +9,8 @@ Código-fonte utilizado nas operações do robô [[User:VerificaBot]] na Wikipé
 Os três scripts são independentes e podem ser executados separadamente.
 
 ## Instruções
-1) Renomear "globals_example.php" para "globals.php" e preenchê-lo conforme necessário;
-2) Criar um arquivo para log em branco com o nome determinado em "globals.php";
-3) Personalizar sumários de edição e tempo de arquivamento (para o script 2) conforme necessário nos arquivos de cada script.
+1) Renomear "settings_example.php" para "settings.php" e preenchê-lo conforme necessário;
+2) Personalizar sumários de edição e tempo de arquivamento (para o script 2) conforme necessário nos arquivos de cada script.
 
 ## Licença
 MIT License
