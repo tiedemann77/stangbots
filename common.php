@@ -376,6 +376,10 @@ class api{
 	// Função para verificar antispoof, retorna 0 ou o primeiro nome caso dispare
 	public function antispoof($account,$ignore){
 
+		// Troca temporariamente a URL da API
+		$old = $this->url;
+		$this->url = "https://meta.wikimedia.org/w/api.php";
+
 		$params = [
 			"action" => "antispoof",
 			"username" => $account,
@@ -384,6 +388,8 @@ class api{
 
 		// Faz consulta a API
 		$result = $this->request($params);
+		//Retorna
+		$this->url = $old;
 
 		if($result['antispoof']['result']=="pass"){
 			$antispoof = 0;
