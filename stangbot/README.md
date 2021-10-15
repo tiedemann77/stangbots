@@ -8,10 +8,9 @@ Código-fonte utilizado em algumas operações do robô [[User:Stangbot]] na Wik
 * Script 4: atualiza vários relatórios sobre problemas com ficheiros na Wikipédia em Português.
 
 ## Instruções
-1) Renomear "globals_example.php" para "globals.php" e preenchê-lo conforme necessário;
-2) Criar um arquivo para log em branco com o nome determinado em "globals.php";
-3) Personalizar páginas-alvo e sumários de edição conforme necessário nos arquivos de cada script;
-4) O script 4 depende de acesso às réplicas do banco de dados.
+1) Renomear "settings_example.php" para "settings.php" e preenchê-lo conforme necessário;
+2) Personalizar configurações, páginas-alvo e sumários de edição conforme necessário nos arquivos de cada script;
+3) O script 4 depende de acesso às réplicas do banco de dados.
 
 ## Licença
 MIT License
