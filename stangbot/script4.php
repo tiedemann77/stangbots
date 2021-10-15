@@ -1,24 +1,28 @@
 <?php
 
-// Requer variáveis básicas
-require_once("includes/globals.php");
+// Requer configurações
+require_once("settings.php");
 
 // Requer funções básicas
 require_once(__DIR__ . "/../common.php");
 
-// Começa o log
-echo logging($logdate . "
-Iniciando script 4...\r\n");
+// Settings
+$settings = [
+  'credentials' => $uspw,
+  'username' => "Stangbot",
+  'power' => "User:Stangbot/Power",
+  'script' => "Script 4",
+  'url' => "https://pt.wikipedia.org/w/api.php",
+  'maxlag' => 4,
+  'file' => __DIR__ .  "/../log.log",
+  'stats' => array(),
+  'replicasDB' => "ptwiki",
+  'personalDB' => "s54852__stangbots"
+];
 
-// API URL
-$endPoint = "https://pt.wikipedia.org/w/api.php";
+$robot = new bot();
 
-// Verifica se o bot está ligado
-checkPower();
-
-// FIM DO BÁSICO
-//--------------------------------------------------------------------
-// INICIANDO SCRIPT EM SI
+echo $robot->log->log($robot->username . " - Iniciando " . $robot->script . "\r\n");
 
 // Páginas
 $page1 = "Ajuda:Conteúdo restrito/Lista de imagens com dimensões excessivas";
@@ -28,20 +32,22 @@ $page3 = "Ajuda:Conteúdo restrito/Lista de áudios com duração excessiva";
 // Relatório 1
 function firstReport(){
 
+  global $robot;
+
   // Log
-  echo logging("Gerando lista 1...\r\n");
+  echo $robot->log->log("Gerando lista 1...\r\n");
 
   // Consulta total de itens para percentagem
   $query = 'SELECT COUNT(*) FROM image WHERE img_media_type = "BITMAP" OR img_media_type = "DRAWING";';
 
-  $result = replicaQuery("ptwiki", $query, 0, 0);
+  $result = $robot->sql->replicasQuery($query, $params=NULL);
 
   $totalDB = $result[0][0];
 
   // Consulta para a lista
   $query = 'SELECT img_name, img_height FROM image WHERE img_height > 500 ORDER BY img_name ASC;';
 
-  $result = replicaQuery("ptwiki", $query, 0, 0);
+  $result = $robot->sql->replicasQuery($query, $params=NULL);
 
   $total = 0;
 
@@ -119,17 +125,19 @@ function firstReport(){
 // Relatório 2
 function secondReport(){
 
-  echo logging("Gerando lista 2...\r\n");
+  global $robot;
+
+  echo $robot->log->log("Gerando lista 2...\r\n");
 
   $query = 'SELECT COUNT(*) FROM image;';
 
-  $result = replicaQuery("ptwiki", $query, 0, 0);
+  $result = $robot->sql->replicasQuery($query, $params=NULL);
 
   $totalDB = $result[0][0];
 
   $query = 'SELECT img_name, img_height, oi_name, oi_archive_name FROM image, oldimage WHERE img_name = oi_name ORDER BY img_name ASC;';
 
-  $result = replicaQuery("ptwiki", $query, 0, 0);
+  $result = $robot->sql->replicasQuery($query, $params=NULL);
 
   $total = 0;
 
@@ -200,17 +208,19 @@ function secondReport(){
 // Relatório 3
 function thirdReport(){
 
-  echo logging("Gerando lista 3...\r\n");
+  global $robot;
+
+  echo $robot->log->log("Gerando lista 3...\r\n");
 
   $query = 'SELECT COUNT(*) FROM image WHERE img_media_type = "AUDIO";';
 
-  $result = replicaQuery("ptwiki", $query, 0, 0);
+  $result = $robot->sql->replicasQuery($query, $params=NULL);
 
   $totalDB = $result[0][0];
 
   $query = 'SELECT img_name, img_metadata FROM image WHERE img_media_type = "AUDIO" ORDER BY img_name ASC;';
 
-  $result = replicaQuery("ptwiki", $query, 0, 0);
+  $result = $robot->sql->replicasQuery($query, $params=NULL);
 
   $total = 0;
 
@@ -292,50 +302,38 @@ $report2 = secondReport();
 $report3 = thirdReport();
 
 // Checa se é necessário fazer edições
-$content1 = getContent($page1, 0);
-$content2 = getContent($page2, 0);
-$content3 = getContent($page3, 0);
+$content1 = $robot->api->getContent($page1, 0);
+$content2 = $robot->api->getContent($page2, 0);
+$content3 = $robot->api->getContent($page3, 0);
 
 if($report1[0]!==$content1||$report2[0]!==$content2||$report3[0]!==$content3){
 
-  // Login step 1
-  $login_Token = getLoginToken();
-
-  // Login step 2
-  loginRequest( $login_Token );
-
-  // Obtendo edit token
-  $csrf_Token = getCSRFToken();
-
   if($report1[0]!==$content1){
-    echo logging("Editando relatório 1...\r\n");
-    editRequest($csrf_Token, $page1, $report1[0], "[[WP:Bot|bot]]: atualizando lista (" . $report1[1] . " entradas)", 0, 0);
+    echo $robot->log->log("Editando relatório 1...\r\n");
+    $robot->edit($page1, $report1[0], "[[WP:Bot|bot]]: atualizando lista (" . $report1[1] . " entradas)", 0, 0);
   }
 
   if($report2[0]!==$content2){
-    echo logging("Editando relatório 2...\r\n");
-    editRequest($csrf_Token, $page2, $report2[0], "[[WP:Bot|bot]]: atualizando lista (" . $report2[1] . " entradas)", 0, 0);
+    echo $robot->log->log("Editando relatório 2...\r\n");
+    $robot->edit($page2, $report2[0], "[[WP:Bot|bot]]: atualizando lista (" . $report2[1] . " entradas)", 0, 0);
   }
 
   if($report3[0]!==$content3){
-    echo logging("Editando relatório 3...\r\n");
-    editRequest($csrf_Token, $page3, $report3[0], "[[WP:Bot|bot]]: atualizando lista (" . $report3[1] . " entradas)", 0, 0);
+    echo $robot->log->log("Editando relatório 3...\r\n");
+    $robot->edit($page3, $report3[0], "[[WP:Bot|bot]]: atualizando lista (" . $report3[1] . " entradas)", 0, 0);
   }
 
-  // Logout
-  logoutRequest( $csrf_Token );
-
 }else{
-  exit(logging("Todas as listas já estão atualizadas. Fechando...\r\n"));
+  $robot->bye("Todas as listas já estão atualizadas. Fechando...\r\n");
 }
 
 // PARA TESTE
 // ADICIONAR O CONTEÚDO DA EDIÇÃO EM LOG
-//logging("Conteúdo da variável report1[0]:\r\n" . $report1[0]. "\r\n");
-//logging("Conteúdo da variável report2[0]:\r\n" . $report2[0]. "\r\n");
-//logging("Conteúdo da variável report3[0]:\r\n" . $report3[0]. "\r\n");
+//$robot->log->log("Conteúdo da variável report1[0]:\r\n" . $report1[0]. "\r\n");
+//$robot->log->log("Conteúdo da variável report2[0]:\r\n" . $report2[0]. "\r\n");
+//$robot->log->log("Conteúdo da variável report3[0]:\r\n" . $report3[0]. "\r\n");
 
 // Fechar log
-echo logging("Script 4 concluído!\r\n");
+$robot->bye($robot->script . " concluído!\r\n");
 
 ?>
