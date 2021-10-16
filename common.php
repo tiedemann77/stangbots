@@ -470,6 +470,8 @@ class log{
 		];
 		$settings['stats'] = $this->stats;
 		$this->start = new DateTime(date("Y-m-d H:i:s"));
+		$this->check();
+		$this->clear();
 		$this->log($this->start->format('d-m-Y H:i:s') . " - Iniciando log\r\n");
 	}
 
@@ -481,17 +483,25 @@ class log{
 	}
 
 	public function log($msg){
+		file_put_contents($this->file, $msg, FILE_APPEND);
+		return $msg;
+	}
 
+	private function check(){
 		if(!file_exists($this->file)){
 			if(!fopen($this->file, 'w')){
-				exit("Não foi possível criar o arquivo de log especificado. Script interrompido. Por favor, crie o arquivo manualmente para prosseguir. Fechando...\r\n");
+				exit("Não foi possível criar o arquivo de log especificado. Provavelmente um erro de permissão ou o diretório não existe. Script interrompido. Por favor, crie o arquivo manualmente para prosseguir. Fechando...\r\n");
 			}
 		}
+	}
 
-		file_put_contents($this->file, $msg, FILE_APPEND);
-
-		return $msg;
-
+	private function clear(){
+		if(filesize($this->file)>4194304){//4 MB
+			$file = file($this->file);
+			$file = array_slice($file, 1000);//1000 linhas
+			file_put_contents($this->file, $file);
+			unset($file);
+		}
 	}
 
 	public function setStats($type){
