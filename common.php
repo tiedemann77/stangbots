@@ -679,19 +679,20 @@ class toolforgeSQL{
 			}else{
 				$manual = 1;
 			}
+			$query = "SELECT * FROM stats WHERE bot = '$bot' AND script_name = '$script'";
+			$result = $this->personalQuery($query,$params=NULL);
 			$api = $settings["stats"]["api"];
 			$sql = $settings["stats"]["sql"]+2;
 			$this->log->setStats("duration");
 			$duration = $settings["stats"]["duration"];
 			$last = $this->log->end->format('d-m-Y H:i:s');
-			$query = "SELECT * FROM stats WHERE bot = '$bot' AND script_name = '$script'";
-			$result = $this->personalQuery($query,$params=NULL);
+			$memory = number_format(((memory_get_peak_usage()/1024)/1024),2,".",",");
 			if(isset($result[0])){
-				$query = "UPDATE stats SET api_requests = $api, sql_requests = $sql, duration = $duration, last = '$last', do_manual = $manual WHERE bot = '$bot' AND script_name = '$script';";
+				$query = "UPDATE stats SET api_requests = $api, sql_requests = $sql, duration = $duration, last = '$last', do_manual = $manual, memory = '$memory' WHERE bot = '$bot' AND script_name = '$script';";
 			}else{
-				$query = "INSERT INTO stats (bot, api_requests, sql_requests, duration, last, script_name, do_manual) VALUES ('$bot', $api, $sql, $duration, '$last', '$script', 1);";
+				$query = "INSERT INTO stats (bot, api_requests, sql_requests, duration, last, script_name, do_manual, memory) VALUES ('$bot', $api, $sql, $duration, '$last', '$script', 1, '$memory');";
 			}
-			$result = $this->personalQuery($query,$params=NULL);
+			$this->personalQuery($query,$params=NULL);
 		}
 	}
 
