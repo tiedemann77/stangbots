@@ -682,7 +682,7 @@ class toolforgeSQL{
 			$query = "SELECT * FROM stats WHERE bot = '$bot' AND script_name = '$script'";
 			$result = $this->personalQuery($query,$params=NULL);
 			$api = $settings["stats"]["api"];
-			$sql = $settings["stats"]["sql"]+2;
+			$sql = $settings["stats"]["sql"]+1;
 			$this->log->setStats("duration");
 			$duration = $settings["stats"]["duration"];
 			$last = $this->log->end->format('d-m-Y H:i:s');
