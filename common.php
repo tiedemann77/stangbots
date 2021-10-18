@@ -171,13 +171,19 @@ class api{
 
 	public $url;
 	public $maxlag;
+	private $cookies;
 	public $log;
 
 	public function __construct($url,$maxlag,$log){
 		$this->url = $url;
 		$this->maxlag = $maxlag;
+		$this->cookies = "/tmp/stangbots_cookie_" . rand() . ".inc";
 		$this->log = $log;
 		$this->checkLag();
+	}
+
+	public function __destruct(){
+		unlink($this->cookies);
 	}
 
 	private function checkLag(){
@@ -205,8 +211,8 @@ class api{
 		curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($params));
 		curl_setopt($ch, CURLOPT_USERAGENT, "A bot by User Stanglavine");
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-		curl_setopt($ch, CURLOPT_COOKIEJAR, "/tmp/cookie.inc");
-		curl_setopt($ch, CURLOPT_COOKIEFILE, "/tmp/cookie.inc");
+		curl_setopt($ch, CURLOPT_COOKIEJAR, $this->cookies);
+		curl_setopt($ch, CURLOPT_COOKIEFILE, $this->cookies);
 
 		$result = json_decode(curl_exec($ch),true);
 		curl_close($ch);
