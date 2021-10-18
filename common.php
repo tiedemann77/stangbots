@@ -32,7 +32,8 @@ class bot{
 	public $log;
 	public $api;
 	public $sql;
-	private $CSRFToken;
+	private $tokens;
+	public $login;
 
 	public function __construct(){
 		global $settings;
@@ -48,140 +49,101 @@ class bot{
 		$this->api = new api($settings['url'], $settings['maxlag'], $this->log);
 		$this->checkPower();
 		$this->sql = new toolforgeSQL($settings['replicasDB'], $settings['personalDB'], $this->log);
+		$this->login = FALSE;
 	}
 
-	private function logout(){
+	public function login(){
+		// Estapa 1
+		$params = [
+			"action" => "query",
+			"meta" => "tokens",
+			"type" => "login",
+			"format" => "json"
+		];
 
-		if(isset($this->CSRFToken)){
+		$result = $this->api->request($params);
+		unset($params);
 
+		// Etapa 2
+		$params = [
+			"action" => "login",
+			"lgname" => $this->credentials[0],
+			"lgpassword" => $this->credentials[1],
+			"lgtoken" => $result["query"]["tokens"]["logintoken"],
+			"format" => "json"
+		];
+
+		$result = $this->api->request($params);
+		if($result['login']['result']==="Success"){
+			$this->login = TRUE;
+		}else{
+			$this->bye("Erro durante o login. Razão: '" . $result['login']['reason'] . "'. Fechando...\r\n");
+		}
+
+	}
+
+	public function logout(){
+		if($this->login===TRUE){
+			if(!isset($this->tokens['csrf'])){
+				$this->getTokens();
+			}
 			$params = [
 				"action" => "logout",
-				"token" => $this->CSRFToken,
+				"token" => $this->tokens['csrf'],
 				"format" => "json"
 			];
-
-			$ch = curl_init();
-
-			curl_setopt( $ch, CURLOPT_URL, $this->api->url );
-			curl_setopt( $ch, CURLOPT_POST, true );
-			curl_setopt( $ch, CURLOPT_POSTFIELDS, http_build_query( $params ) );
-			curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
-			curl_setopt( $ch, CURLOPT_COOKIEJAR, "/tmp/cookie.inc" );
-			curl_setopt( $ch, CURLOPT_COOKIEFILE, "/tmp/cookie.inc" );
-
-			curl_exec( $ch );
-			curl_close( $ch );
-			$this->log->setStats("api");
-
+			$this->api->request($params);
 		}
+	}
+
+	private function getTokens(){
+		if($this->login===FALSE){
+			$this->login();
+		}
+
+		$params = [
+			"action" => "query",
+			"meta" => "tokens",
+			"type" => "csrf|deleteglobalaccount|patrol|rollback|setglobalaccountstatus|userrights|watch",
+			"format" => "json"
+		];
+
+		$result = $this->api->request($params);
+
+		$this->tokens['csrf'] = $result['query']['tokens']['csrftoken'];
+		$this->tokens['deleteglobalaccount'] = $result['query']['tokens']['deleteglobalaccounttoken'];
+		$this->tokens['patrol'] = $result['query']['tokens']['patroltoken'];
+		$this->tokens['rollback'] = $result['query']['tokens']['rollbacktoken'];
+		$this->tokens['setglobalaccountstatus'] = $result['query']['tokens']['setglobalaccountstatustoken'];
+		$this->tokens['userrights'] = $result['query']['tokens']['userrightstoken'];
+		$this->tokens['watch'] = $result['query']['tokens']['watchtoken'];
 
 	}
 
-	private function getCSRFToken(){
+	public function edit($page, $text, $summary, $minor, $bot){
 
-			$params = [
-				"action" => "query",
-				"meta" => "tokens",
-				"type" => "login",
-				"format" => "json"
-			];
-
-			$url = $this->api->url . "?" . http_build_query( $params );
-
-			$ch = curl_init( $url );
-			curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
-			curl_setopt( $ch, CURLOPT_COOKIEJAR, "/tmp/cookie.inc" );
-			curl_setopt( $ch, CURLOPT_COOKIEFILE, "/tmp/cookie.inc" );
-
-			$output = curl_exec( $ch );
-			curl_close( $ch );
-			$this->log->setStats("api");
-			unset($params);
-
-			$result = json_decode( $output, true );
-			$logintoken = $result["query"]["tokens"]["logintoken"];
-			unset($result);
-
-			$params = [
-				"action" => "login",
-				"lgname" => $this->credentials[0],
-				"lgpassword" => $this->credentials[1],
-				"lgtoken" => $logintoken,
-				"format" => "json"
-			];
-
-			$ch = curl_init();
-
-			curl_setopt( $ch, CURLOPT_URL, $this->api->url );
-			curl_setopt( $ch, CURLOPT_POST, true );
-			curl_setopt( $ch, CURLOPT_POSTFIELDS, http_build_query( $params ) );
-			curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
-			curl_setopt( $ch, CURLOPT_COOKIEJAR, "/tmp/cookie.inc" );
-			curl_setopt( $ch, CURLOPT_COOKIEFILE, "/tmp/cookie.inc" );
-
-			curl_exec( $ch );
-			curl_close( $ch );
-			$this->log->setStats("api");
-			unset($params);
-
-			$params = [
-				"action" => "query",
-				"meta" => "tokens",
-				"format" => "json"
-			];
-
-			$url = $this->api->url . "?" . http_build_query( $params );
-
-			$ch = curl_init( $url );
-
-			curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
-			curl_setopt( $ch, CURLOPT_COOKIEJAR, "/tmp/cookie.inc" );
-			curl_setopt( $ch, CURLOPT_COOKIEFILE, "/tmp/cookie.inc" );
-
-			$output = curl_exec( $ch );
-			curl_close( $ch );
-			$this->log->setStats("api");
-
-			$result = json_decode( $output, true );
-			$this->CSRFToken = $result["query"]["tokens"]["csrftoken"];
-
+		if(!isset($this->tokens['csrf'])){
+			$this->getTokens();
 		}
 
-		public function edit($page, $text, $summary, $minor, $bot){
+		$params = [
+			"action" => "edit",
+			"title" => $page,
+			"text" => $text,
+		   "summary" => $summary,
+			"token" => $this->tokens['csrf'],
+			"format" => "json"
+		];
 
-			if(!isset($this->CSRFToken)){
-				$this->getCSRFToken();
-			}
+		if($minor==1){
+			$params["minor"] = "1";
+		}
 
-			$params = [
-				"action" => "edit",
-				"title" => $page,
-				"text" => $text,
-		    "summary" => $summary,
-				"token" => $this->CSRFToken,
-				"format" => "json"
-			];
+		if($bot==1){
+			$params["bot"] = "1";
+		}
 
-			if($minor==1){
-				$params["minor"] = "1";
-			}
-
-			if($bot==1){
-				$params["bot"] = "1";
-			}
-
-			$ch = curl_init();
-
-			curl_setopt( $ch, CURLOPT_URL, $this->api->url );
-			curl_setopt( $ch, CURLOPT_POST, true );
-			curl_setopt( $ch, CURLOPT_POSTFIELDS, http_build_query( $params ) );
-			curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
-			curl_setopt( $ch, CURLOPT_COOKIEJAR, "/tmp/cookie.inc" );
-			curl_setopt( $ch, CURLOPT_COOKIEFILE, "/tmp/cookie.inc" );
-
-			curl_exec( $ch );
-			curl_close( $ch );
-			$this->log->setStats("api");
+		$this->api->request($params);
 
 	}
 
@@ -236,19 +198,23 @@ class api{
 	}
 
 	public function request($params){
+		$ch = curl_init();
 
-		$url = $this->url . "?" . http_build_query( $params );
+		curl_setopt($ch, CURLOPT_URL, $this->url);
+		curl_setopt($ch, CURLOPT_POST, true);
+		curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($params));
+		curl_setopt($ch, CURLOPT_USERAGENT, "A bot by User Stanglavine");
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($ch, CURLOPT_COOKIEJAR, "/tmp/cookie.inc");
+		curl_setopt($ch, CURLOPT_COOKIEFILE, "/tmp/cookie.inc");
 
-	  $ch = curl_init( $url );
-	  curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
-	  $output = curl_exec( $ch );
-	  curl_close( $ch );
+		$result = json_decode(curl_exec($ch),true);
+		curl_close($ch);
 		$this->log->setStats("api");
-	  return json_decode( $output, true );
-
+		return $result;
 	}
 
-	// Função para obter o conteúdo de qualquer página com três modos:
+	// Função para obter o conteúdo de qualquer página com dois modos:
 	// 0 não para se inexistente; 1 para o script;
 	public function getContent($page,$mode) {
 
