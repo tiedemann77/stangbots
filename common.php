@@ -172,38 +172,43 @@ class api{
 	public $url;
 	public $maxlag;
 	private $cookies;
+	private $checked;
 	public $log;
 
 	public function __construct($url,$maxlag,$log){
 		$this->url = $url;
 		$this->maxlag = $maxlag;
 		$this->cookies = "/tmp/stangbots_cookie_" . rand() . ".inc";
+		$this->checked = FALSE;
 		$this->log = $log;
-		$this->checkLag();
 	}
 
 	public function __destruct(){
 		unlink($this->cookies);
 	}
 
-	private function checkLag(){
+	private function checkLag($params){
+		$params["maxlag"] = $this->maxlag;
 
-		$params = [
-		  "action" => "query",
-		  "titles" => "MainPage",
-		  "format" => "json",
-		  "maxlag" => $this->maxlag
-		];
-
-		$result = $this->request($params);
-
+		$result = $this->doCurl($params);
+		
 		if(isset($result["error"]["lag"])){
 			exit($this->log->log("Maxlag excedido, limite: " . $this->maxlag . "; valor atual: " . $result["error"]["lag"] . ". Fechando...\r\n"));
+		}else{
+			$this->checked = TRUE;
+			return $result;
 		}
-
 	}
 
 	public function request($params){
+		if($this->checked===FALSE){
+			return $this->checkLag($params);
+		}else{
+			return $this->doCurl($params);
+		}
+	}
+
+	private function doCurl($params){
 		$ch = curl_init();
 
 		curl_setopt($ch, CURLOPT_URL, $this->url);
