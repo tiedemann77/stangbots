@@ -267,6 +267,39 @@ class api{
 		}
 	}
 
+	// Função para obter o conteúdo de múltiplas páginas
+	public function getMultipleContent($pages) {
+
+		foreach ($pages as $key => $value) {
+			if($key===0){
+				$titles = $pages[$key];
+			}else{
+				$titles .= "|" . $pages[$key];
+			}
+		}
+
+		$params = [
+			"action" => "query",
+			"prop" => "revisions",
+			"titles" => $titles,
+			"rvprop" => "content",
+			"rvslots" => "main",
+			"format" => "json"
+		];
+
+		$result = $this->request($params);
+
+		if(isset($result['query']['pages'][-1])){
+			exit($this->log->log("Uma (ou mais) das páginas solicitadas em getMultipleContent não existe. Fechando...\r\n"));
+		}
+
+		foreach ($result['query']['pages'] as $key => $value) {
+			$content[$result['query']['pages'][$key]['title']] = $result['query']['pages'][$key]['revisions']['0']['slots']['main']['*'];
+		}
+
+		return $content;
+	}
+
 	// Função para obter a lista de seções de uma página
 	public function getSectionList($page) {
 
