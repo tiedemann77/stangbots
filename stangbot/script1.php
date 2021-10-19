@@ -24,92 +24,78 @@ $robot = new bot();
 
 echo $robot->log->log($robot->username . " - Iniciando " . $robot->script . "\r\n");
 
-// Lista de páginas
-$pages = array("Wikipédia:Pedidos/Proteção","Wikipédia:Pedidos/Restauro","Wikipédia:Pedidos/Notificações de vandalismo","Wikipédia:Pedidos/Revisão de nomes de usuário","Wikipédia:Pedidos/Notificação de incidentes","Wikipédia:Renomeação de conta");
+$feed = "Usuário(a):Stangbot/feed";
 
-// Total de páginas
-$total = count($pages);
+$pages = array("Wikipédia:Pedidos/Proteção","Wikipédia:Pedidos/Restauro","Wikipédia:Pedidos/Notificações de vandalismo","Wikipédia:Pedidos/Revisão de nomes de usuário","Wikipédia:Pedidos/Notificação de incidentes","Wikipédia:Renomeação de conta", $feed);
 
-// Começa a montar o feed
-$text = "<noinclude>";
+$template = '<noinclude>= Painel de pedidos em aberto =
+{| class="wikitable sortable center"
+|+
+!Código
+!Página
+!Número de pedidos[[replacekey1]]
+|}</noinclude><includeonly>{{#switch: {{{1}}}[[replacekey2]]
+ | 0
+}}</includeonly>';
 
-// Primeira parte do feed: lista de páginas
-$control = 1;
+$content = $robot->api->getMultipleContent($pages);
+$code = 1;
+$replacekey1 = "";
+$replacekey2 = "";
+
 foreach ($pages as $key => $value) {
-
-  $text .= "Código " . $control . " = " . $pages[$key] . "
-
-";
-  $control++;
-}
-
-// Trecho intermediário do feed
-$text .= "</noinclude><includeonly>{{#switch: {{{1}}}
-";
-
-// Segunda parte do feed: pedidos em aberto em cada página
-$control = 1;
-foreach ($pages as $key => $value) {
-
-  // Conteúdo total da página
-  $content = $robot->api->getContent($pages[$key], 1);
-
-  // Lista de seções
-  $sectionList = $robot->api->getSectionList($pages[$key]);
-
-  // Precisa remover uma dessa página
-  if($pages[$key]=="Wikipédia:Renomeação de conta"){
-    $deleted = array_shift($sectionList);
+  // Ignora o feed
+  if($pages[$key]===$feed){
+    continue;
   }
 
-  // Número de seções
-  $sectionNumber = count($sectionList);
+  $sections = $robot->api->getSectionList($pages[$key]);
+
+  // Precisa remover uma seção dessa página
+  if($pages[$key]=="Wikipédia:Renomeação de conta"){
+    $deleted = array_shift($sections);
+  }
+
+  $total = count($sections);
 
   // Remove qualquer coisa comentada, geralmente templates de resposta
-  $content = preg_replace($htmlcommentRegex, "", $content);
+  $content[$pages[$key]] = preg_replace($htmlcommentRegex,"",$content[$pages[$key]]);
 
   // Conta o número de templates de resposta na página
-  preg_match_all($closedRegex, $content, $out);
-  $closed = count($out[0]);
+  $closed = preg_match_all($closedRegex,$content[$pages[$key]]);
 
-  // Número de pedidos em aberto
-  $open = $sectionNumber-$closed;
+  $open = $total-$closed;
 
-  // Se menor que 0, ocorreu algum erro então parar
   if($open<0){
-    exit($robot->log->log("Número de pedidos em aberto para " . $pages[$key] . " menor que 0. Fechando...\r\n"));
+    $robot->bye("Número de pedidos em aberto para " . $pages[$key] . " menor que 0. Fechando...\r\n");
   }
 
-  echo $robot->log->log("Checando " . $pages[$key] . ": total " . $sectionNumber . "; fechados " . $closed . "; abertos " . $open . ".\r\n");
+  $replacekey1 .= "
+|-
+|" . $code . "
+|" . $pages[$key] . "
+|" . $open;
 
-  // Adiciona linha no feed
-  $text .= " | " . $control . " = " . $open . "
-";
+  $replacekey2 .= "
+ | " . $code . " = " . $open . "";
 
-  $control++;
-
+ // Finaliza o loop
+ echo $robot->log->log($pages[$key] . ": total " . $total . "; fechados " . $closed . "; abertos " . $open . ".\r\n");
+ unset($content[$pages[$key]]);
+ $code++;
 }
 
-// Rodapé
-$text .= " | 0
-}}</includeonly>";
+// Aplica novo conteúdo no template
+$template = str_replace("[[replacekey1]]",$replacekey1,$template);
+$template = str_replace("[[replacekey2]]",$replacekey2,$template);
 
-// Verifica se precisa atualizar o feed
-$content = $robot->api->getContent("User:Stangbot/feed", 0);
-
-if($content==$text){
-  // Nada a editar, para script
+if($content[$feed]==$template){
   $robot->bye("Nenhuma edição precisa ser feita. Fechando...\r\n");
 }
 
-// Editando a página de pedidos
-$robot->edit("User:Stangbot/feed", $text, "[[WP:Bot|bot]]: atualizando", 1, 0);
+// Editando
+$robot->edit($feed,$template,"[[WP:Bot|bot]]: atualizando",1,0);
 
-// PARA TESTE
-// ADICIONAR O CONTEÚDO DA EDIÇÃO EM LOG
-//$robot->log->log("Conteúdo da variável text:\r\n" . $text. "\r\n");
-
-// Fim
 $robot->bye($robot->script . " concluído!\r\n");
 
 ?>
