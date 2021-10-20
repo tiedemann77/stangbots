@@ -24,9 +24,13 @@ $robot = new bot();
 
 echo $robot->log->log($robot->username . " - Iniciando " . $robot->script . "\r\n");
 
-$feed = "Usuário(a):Stangbot/feed";
+$list = "User:Stangbot/páginas.json";
 
-$pages = array("Wikipédia:Pedidos/Proteção","Wikipédia:Pedidos/Restauro","Wikipédia:Pedidos/Notificações de vandalismo","Wikipédia:Pedidos/Revisão de nomes de usuário","Wikipédia:Pedidos/Notificação de incidentes","Wikipédia:Renomeação de conta", $feed);
+$pages = json_decode($robot->api->getContent($list,1), true);
+
+foreach ($pages as $key => $value) {
+  $content[] = $pages[$key]['título'];
+}
 
 $template = '<noinclude>= Painel de pedidos em aberto =
 {| class="wikitable sortable center"
@@ -38,63 +42,56 @@ $template = '<noinclude>= Painel de pedidos em aberto =
  | 0
 }}</includeonly>';
 
-$content = $robot->api->getMultipleContent($pages);
-$code = 1;
+$content = $robot->api->getMultipleContent($content);
 $replacekey1 = "";
 $replacekey2 = "";
 
 foreach ($pages as $key => $value) {
   // Ignora o feed
-  if($pages[$key]===$feed){
+  if($key==="feed"){
     continue;
   }
 
-  $sections = $robot->api->getSectionList($pages[$key]);
+  $sections = $robot->api->getSectionList($pages[$key]['título']);
 
-  // Precisa remover uma seção dessa página
-  if($pages[$key]=="Wikipédia:Renomeação de conta"){
-    $deleted = array_shift($sections);
-  }
-
-  $total = count($sections);
+  $total = count($sections)-$pages[$key]['ignorar_seções'];
 
   // Remove qualquer coisa comentada, geralmente templates de resposta
-  $content[$pages[$key]] = preg_replace($htmlcommentRegex,"",$content[$pages[$key]]);
+  $content[$pages[$key]['título']] = preg_replace($htmlcommentRegex,"",$content[$pages[$key]['título']]);
 
   // Conta o número de templates de resposta na página
-  $closed = preg_match_all($closedRegex,$content[$pages[$key]]);
+  $closed = preg_match_all($closedRegex,$content[$pages[$key]['título']]);
 
   $open = $total-$closed;
 
   if($open<0){
-    $robot->bye("Número de pedidos em aberto para " . $pages[$key] . " menor que 0. Fechando...\r\n");
+    $robot->bye("Número de pedidos em aberto para " . $pages[$key]['título'] . " menor que 0. Fechando...\r\n");
   }
 
   $replacekey1 .= "
 |-
-|" . $code . "
-|" . $pages[$key] . "
+|" . $key . "
+|" . $pages[$key]['título'] . "
 |" . $open;
 
   $replacekey2 .= "
- | " . $code . " = " . $open . "";
+ | " . $key . " = " . $open . "";
 
  // Finaliza o loop
- echo $robot->log->log($pages[$key] . ": total " . $total . "; fechados " . $closed . "; abertos " . $open . ".\r\n");
- unset($content[$pages[$key]]);
- $code++;
+ echo $robot->log->log($pages[$key]['título'] . ": total " . $total . "; fechados " . $closed . "; abertos " . $open . ".\r\n");
+ unset($content[$pages[$key]['título']]);
 }
 
 // Aplica novo conteúdo no template
 $template = str_replace("[[replacekey1]]",$replacekey1,$template);
 $template = str_replace("[[replacekey2]]",$replacekey2,$template);
 
-if($content[$feed]==$template){
+if($content[$pages['feed']['título']]==$template){
   $robot->bye("Nenhuma edição precisa ser feita. Fechando...\r\n");
 }
 
 // Editando
-$robot->edit($feed,$template,"[[WP:Bot|bot]]: atualizando",1,0);
+$robot->edit($pages['feed']['título'],$template,"[[WP:Bot|bot]]: atualizando",1,0);
 
 $robot->bye($robot->script . " concluído!\r\n");
 
