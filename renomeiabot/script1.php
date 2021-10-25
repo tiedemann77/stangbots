@@ -271,7 +271,7 @@ while ($control < $requestNumber) {
 
       $newrequest[$control] = str_replace($out[0],$header,$newrequest[$control]);
       $newrequest[$control] = $newrequest[$control] . "
-::{{subst:negado|Negado automaticamente}} {{ping|" . $actualname . "}} Olá! O nome de usuário que você escolheu (" . $newname . ") já está em uso. Se " . $newname . " não possui ediçoes ([[Especial:Administração de contas globais/" . $newname . "|verifique aqui]]), ele pode ser elegível para [[m:Special:MyLanguage/USURP|usurpação]]. No entanto, na maioria dos casos o mais recomendado é escolher outro nome que não conste [[Especial:Administração de contas globais|nesta lista]] e abrir um novo pedido. Obrigado! ~~~~}}";
+::{{subst:negado|Negado automaticamente}} {{ping|" . $actualname . "}} Olá! O nome de usuário que você escolheu (" . $newname . ") já está em uso. Se " . $newname . " não possui edições ([[Especial:Administração de contas globais/" . $newname . "|verifique aqui]]), ele pode ser elegível para [[m:Special:MyLanguage/USURP|usurpação]]. No entanto, na maioria dos casos o mais recomendado é escolher outro nome que não conste [[Especial:Administração de contas globais|nesta lista]] e abrir um novo pedido. Obrigado! ~~~~}}";
 
       // Log
       echo $robot->log->log( $newname . " já está em uso;\r\n");
