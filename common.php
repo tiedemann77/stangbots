@@ -143,6 +143,34 @@ class bot{
 
 	}
 
+	public function editSection($page,$section,$text,$summary,$minor,$bot){
+
+		if(!isset($this->tokens['csrf'])){
+			$this->getTokens();
+		}
+
+		$params = [
+			"action" => "edit",
+			"title" => $page,
+			"section" => $section,
+			"text" => $text,
+		  "summary" => $summary,
+			"token" => $this->tokens['csrf'],
+			"format" => "json"
+		];
+
+		if($minor==1){
+			$params["minor"] = "1";
+		}
+
+		if($bot==1){
+			$params["bot"] = "1";
+		}
+
+		$this->api->request($params);
+
+	}
+
 	private function checkPower(){
 
 		$content = $this->api->getContent($this->power,1);
@@ -187,7 +215,7 @@ class api{
 		$params["maxlag"] = $this->maxlag;
 
 		$result = $this->doCurl($params);
-		
+
 		if(isset($result["error"]["lag"])){
 			exit($this->log->log("Maxlag excedido, limite: " . $this->maxlag . "; valor atual: " . $result["error"]["lag"] . ". Fechando...\r\n"));
 		}else{
