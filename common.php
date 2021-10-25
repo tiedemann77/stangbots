@@ -126,7 +126,7 @@ class bot{
 			"action" => "edit",
 			"title" => $page,
 			"text" => $text,
-		   "summary" => $summary,
+		  "summary" => $summary,
 			"token" => $this->tokens['csrf'],
 			"format" => "json"
 		];
