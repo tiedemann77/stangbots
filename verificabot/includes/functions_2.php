@@ -143,8 +143,8 @@ function removingRecentList($olderCases, $recentsContent){
   $newrecentsContent = preg_replace("/(^[\r\n]*|[\r\n]+)[\s\t]*[\r\n]+/", "\n", $newrecentsContent);
 
   // Verifica se a página de recentes não ficou vazia
-  $empty = '__NOTOC__
-= Investigações encerradas recentemente =
+  $empty = '<noinclude>__NOTOC__
+= Investigações encerradas recentemente =</noinclude>
 {| class="wikitable sortable center"
 |+
 !Caso
@@ -155,8 +155,8 @@ function removingRecentList($olderCases, $recentsContent){
   if($newrecentsContent==$empty){
 
     // Se sim, simplesmente substitui por modelo com {{nenhum}}
-    $newrecentsContent = '__NOTOC__
-= Investigações encerradas recentemente =
+    $newrecentsContent = '<noinclude>__NOTOC__
+= Investigações encerradas recentemente =</noinclude>
 {| class="wikitable sortable center"
 |+
 !Caso

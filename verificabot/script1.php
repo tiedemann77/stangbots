@@ -37,7 +37,7 @@ $recentsPage = $BasePage . "/Recentes";
 $redirects = array();
 
 // Obtendo o conteúdo da página de pedidos
-$contentBase = $robot->api->getContent($BasePage, 1);
+$contentBase = $robot->api->getSectionContent($BasePage, 1);
 
 // Remover qualquer coisa que esteja comentanda (normalmente exemplos) para pegar somente os casos
 $contentBase = preg_replace($htmlcommentRegex, "", $contentBase);
@@ -66,7 +66,7 @@ $newContentRecents = updateRecentsList( $ClosedCases );
 // Se o script não parou até agora, há edições a fazer
 
 // Editando a página de pedidos
-$robot->edit($BasePage, $newContentBase, "[[WP:Bot|bot]]: removendo casos encerrados", 1, 1);
+$robot->editSection($BasePage, 1, $newContentBase, "[[WP:Bot|bot]]: removendo casos encerrados", 1, 1);
 
 // Editando a página de recentes
 $robot->edit($recentsPage, $newContentRecents, "[[WP:Bot|bot]]: adicionando casos encerrados recentemente", 1, 1);

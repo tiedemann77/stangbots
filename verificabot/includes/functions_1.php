@@ -142,10 +142,7 @@ function updateCaseList( $OpenCases, $ClosedCases, $contentBase ){
 
     // Se forem iguais, remove-se todos então simplesmente usar o template padrão com {{nenhum}};
     if($numberOpen===$numberClosed){
-      $newContent = '__NOTOC__
-{{Wikipédia:Pedidos a verificadores/Cabeçalho}}
-{{Wikipédia:Pedidos a verificadores/Caixa3}}
-= Investigações em andamento =
+      $newContent = '= Investigações em andamento =
 {| class="wikitable sortable center"
 |+
 !Caso
@@ -154,8 +151,7 @@ function updateCaseList( $OpenCases, $ClosedCases, $contentBase ){
 |-
 |{{nenhum}}
 |{{nenhum}}
-|}
-{{Wikipédia:Pedidos a verificadores/Recentes}}';
+|}';
     }else {
       // Caso não, remover linhas específicas
       // Loop para remover cada linha
@@ -192,16 +188,14 @@ function updateRecentsList($ClosedCases){
 	if (preg_match("/\{\{nenhum\}\}/", $newContentRecents)) {
 
 		// Se sim, usa o template vazio para começar
-		$newContentRecents = '__NOTOC__
-<noinclude>{{Wikipédia:Pedidos a verificadores/Cabeçalho}}</noinclude>
-= Investigações encerradas recentemente =
+		$newContentRecents = '<noinclude>__NOTOC__
+= Investigações encerradas recentemente =</noinclude>
 {| class="wikitable sortable center"
 |+
 !Caso
 !Encerrado em
 !Resultado
-|}
-{{Wikipédia:Pedidos a verificadores/Recentes}}';
+|}';
 
 	}
 
