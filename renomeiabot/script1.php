@@ -33,6 +33,9 @@ $BasePage = "Wikipédia:Renomeação de conta";
 // Arquivo de cache
 $cachefile = __DIR__ .  "/temp/cache.txt";
 
+// Carrega expressões
+$expressions = json_decode($robot->api->getContent("User:RenomeiaBot/expressões.json",1), true);
+
 // Obtém o conteúdo total da página
 $content = $robot->api->getContent($BasePage, 1);
 
@@ -256,15 +259,16 @@ while ($control < $requestNumber) {
     // Log
     echo $robot->log->log("Fazendo checagens no pedido número " . $control2 . ";\r\n");
 
-    // Checa se o novo nome está em uso, condição que fecha o pedido
+    // Checa se o novo nome está em uso e não é um pedido de abandono, condição que fecha
     $exist = $robot->api->accountExist($newname);
+    $vanish = preg_match($expressions['abandono']['regex'],$editedrequests[$control]);
 
     // Fecha pedido, comenta pedido
     // No começo, tudo é igual
     $newrequest[$control] = $editedrequests[$control];
 
-    // Se o novo nome já existe, fecha direto
-    if($exist==1){
+    // Se o novo nome já existe e não é abandono, fecha direto
+    if($exist==1&&$vanish==0){
 
       $header = $out[0] . "
 {{Respondido2|negado|texto=";
@@ -286,11 +290,26 @@ while ($control < $requestNumber) {
         // Verifica se o usuário teve bloqueios no passado
         $blocks = $robot->api->hasBlocks($actualname);
 
-        // Verifica nomes similares
-        $antispoof = $robot->api->antispoof($newname,$actualname);
+        // Verifica nomes similares, caso o nome escolhido não exista
+        if($exist==0){
+          $antispoof = $robot->api->antispoof($newname,$actualname);
+        }else{
+          $antispoof = 0;
+        }
 
         // Verifica renomeações anteriores
         $renames = hasRenames($actualname);
+
+        // Se é um pedido de abandono com nome já em uso
+        if($exist==1&&$vanish==1){
+
+          $newrequest[$control] = $newrequest[$control] . "
+::'''Nota automática:''' o novo nome de usuário escolhido [[Especial:Administração de contas globais/" . $newname . "|já está em uso]]. Porém, como esse parece ser um pedido de [[Wikipédia:Direito a desaparecer|esquecimento]], a solicitação não foi negada automaticamente. Renomeador: lembre-se de configurar outro novo nome de usuário quando processar esse pedido. ~~~~";
+
+          // Log
+          echo $robot->log->log($newname . " já está em uso, porém é um pedido de esquecimento. Adicionando nota;\r\n");
+
+        }
 
         // Se o novo nome de usuário e o antigo são iguais
         if($newname==$actualname){
