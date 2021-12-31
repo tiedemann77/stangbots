@@ -1,10 +1,11 @@
 # VerificaBot
 
-Código-fonte utilizado nas operações do robô [[User:VerificaBot]] na Wikipédia em Português. Há três scripts diferentes:
+Código-fonte utilizado nas operações do robô [[User:VerificaBot]] na Wikipédia em Português. Há quatro scripts diferentes:
 
 * Script 1: responsável pela remoção dos pedidos concluídos de [[Wikipédia:Pedidos a verificadores]], além da adição dos mesmos em [[Wikipédia:Pedidos a verificadores/Recentes]];
 * Script 2: responsável pela remoção dos pedidos antigos de [[Wikipédia:Pedidos a verificadores/Recentes]] e arquivamento na respectiva página do mês;
-* Script 3: responsável por aplicar {{subst:}} nas predefinições de resultado nos arquivos permanentes.
+* Script 3: responsável por aplicar {{subst:}} nas predefinições de resultado nos arquivos permanentes;
+* Script 4: busca casos abertos e não listados (normalmente esquecidos).
 
 Os três scripts são independentes e podem ser executados separadamente.
 
