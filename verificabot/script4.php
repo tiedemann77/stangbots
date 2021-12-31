@@ -153,7 +153,7 @@ $textkey = "|}";
 foreach ($opencases as $key => $value) {
 
   if(!preg_match("/{{Wikipédia:Pedidos a verificadores\/Listar\|$value\|.{1,}/",$contentBase)){
-    $textkey = "{{Wikipédia:Pedidos a verificadores/Listar|" . $value . "|~~~~~  <small>(inserido por [[User:VerificaBot|VerificaBot]])<small>}}
+    $textkey = "{{Wikipédia:Pedidos a verificadores/Listar|" . $value . "|~~~~~  <small>(inserido por VerificaBot)<small>}}
 " . $textkey;
   }
 
