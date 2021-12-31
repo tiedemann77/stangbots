@@ -74,7 +74,7 @@ if(!isset($result['continue'])){
 // Conta o número de casos
 $count = count($cases);
 
-// O limite aqui também é de 500, se houve mais, fazer novas consultas
+// O limite aqui também é de 500, caso necessite de mais, fazer novas consultas
 if($count<=500){
   $contents = $robot->api->getMultipleContent($cases);
 }else{
