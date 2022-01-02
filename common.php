@@ -139,7 +139,16 @@ class bot{
 			$params["bot"] = "1";
 		}
 
-		$this->api->request($params);
+		$revids = $this->api->getRevids();
+		if(isset($revids[$page])){
+			$params["baserevid"] = $revids[$page];
+		}
+
+		$result = $this->api->request($params);
+
+		if(isset($result['error'])){
+			$this->bye("Erro ao editar '" . $page . "': " . $result['error']['code'] . ". Fechando...\r\n");
+		}
 
 	}
 
@@ -167,7 +176,16 @@ class bot{
 			$params["bot"] = "1";
 		}
 
-		$this->api->request($params);
+		$revids = $this->api->getRevids();
+		if(isset($revids[$page])){
+			$params["baserevid"] = $revids[$page];
+		}
+
+		$result = $this->api->request($params);
+
+		if(isset($result['error'])){
+			$this->bye("Erro ao editar '" . $page . "': " . $result['error']['code'] . ". Fechando...\r\n");
+		}
 
 	}
 
@@ -197,6 +215,7 @@ class api{
 	public $maxlag;
 	private $cookies;
 	private $checked;
+	private $revids;
 	public $log;
 
 	public function __construct($url,$maxlag,$log){
@@ -249,6 +268,10 @@ class api{
 		return $result;
 	}
 
+	public function getRevids() {
+		return $this->revids;
+	}
+
 	// Função para obter o conteúdo de qualquer página com dois modos:
 	// 0 não para se inexistente; 1 para o script;
 	public function getContent($page,$mode) {
@@ -257,7 +280,7 @@ class api{
 	    "action" => "query",
 	    "prop" => "revisions",
 	    "titles" => $page,
-	    "rvprop" => "content",
+	    "rvprop" => "content|ids",
 	    "rvlimit" => "1",
 	    "rvslots" => "main",
 	    "format" => "json"
@@ -271,6 +294,8 @@ class api{
 
 	  	// Verifica se a página existe
 	  	if(isset($result['query']['pages'][$key]['revisions'])){
+
+				$this->revids[$page] = $result['query']['pages'][$key]['revisions']['0']['revid'];
 
 	    	// Retorna o conteúdo
 	    	return $result['query']['pages'][$key]['revisions']['0']['slots']['main']['*'];
@@ -306,7 +331,7 @@ class api{
 			"action" => "query",
 			"prop" => "revisions",
 			"titles" => $titles,
-			"rvprop" => "content",
+			"rvprop" => "content|ids",
 			"rvslots" => "main",
 			"format" => "json"
 		];
@@ -318,6 +343,9 @@ class api{
 		}
 
 		foreach ($result['query']['pages'] as $key => $value) {
+
+			$this->revids[$result['query']['pages'][$key]['title']] = $result['query']['pages'][$key]['revisions']['0']['revid'];
+
 			$content[$result['query']['pages'][$key]['title']] = $result['query']['pages'][$key]['revisions']['0']['slots']['main']['*'];
 		}
 
@@ -349,12 +377,14 @@ class api{
 		$params = [
 			"action" => "parse",
 			"page" => $page,
-			"prop" => "wikitext",
+			"prop" => "wikitext|revid",
 			"section" => $section,
 			"format" => "json"
 		];
 
 		$result = $this->request($params);
+
+		$this->revids[$page] = $result['parse']['revid'];
 
 		$result = $result['parse']['wikitext']['*'];
 
