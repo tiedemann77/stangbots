@@ -118,55 +118,38 @@ class bot{
 
 	public function edit($page, $text, $summary, $minor, $bot){
 
-		if(!isset($this->tokens['csrf'])){
-			$this->getTokens();
-		}
+		$target = array($page);
 
-		$params = [
-			"action" => "edit",
-			"title" => $page,
-			"text" => $text,
-		  "summary" => $summary,
-			"token" => $this->tokens['csrf'],
-			"format" => "json"
-		];
-
-		if($minor==1){
-			$params["minor"] = "1";
-		}
-
-		if($bot==1){
-			$params["bot"] = "1";
-		}
-
-		$revids = $this->api->getRevids();
-		if(isset($revids[$page])){
-			$params["baserevid"] = $revids[$page];
-		}
-
-		$result = $this->api->request($params);
-
-		if(isset($result['error'])){
-			$this->bye("Erro ao editar '" . $page . "': " . $result['error']['code'] . ". Fechando...\r\n");
-		}
+		$this->doEdit("entire", $target, $text, $summary, $minor, $bot);
 
 	}
 
 	public function editSection($page,$section,$text,$summary,$minor,$bot){
 
+		$target = array($page,$section);
+
+		$this->doEdit("section", $target, $text, $summary, $minor, $bot);
+
+	}
+
+	private function doEdit($type,$target,$text,$summary,$minor,$bot){
+
 		if(!isset($this->tokens['csrf'])){
 			$this->getTokens();
 		}
 
 		$params = [
 			"action" => "edit",
-			"title" => $page,
-			"section" => $section,
+			"title" => $target[0],
 			"text" => $text,
-		  "summary" => $summary,
+			"summary" => $summary,
 			"token" => $this->tokens['csrf'],
 			"format" => "json"
 		];
+
+		if($type=="section"){
+			$params["section"] = $target[1];
+		}
 
 		if($minor==1){
 			$params["minor"] = "1";
@@ -177,14 +160,14 @@ class bot{
 		}
 
 		$revids = $this->api->getRevids();
-		if(isset($revids[$page])){
-			$params["baserevid"] = $revids[$page];
+		if(isset($revids[$target[0]])){
+			$params["baserevid"] = $revids[$target[0]];
 		}
 
 		$result = $this->api->request($params);
 
 		if(isset($result['error'])){
-			$this->bye("Erro ao editar '" . $page . "': " . $result['error']['code'] . ". Fechando...\r\n");
+			$this->bye("Erro ao editar '" . $target[0] . "': " . $result['error']['code'] . ". Fechando...\r\n");
 		}
 
 	}
