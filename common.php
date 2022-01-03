@@ -387,13 +387,12 @@ class api{
 
 		$result = $this->request($params);
 
-		if(isset($result['query']['globaluserinfo']['missing'])){
-			$exist = 0;
-		}else{
-			$exist = 1;
+		if(isset($result['query']['globaluserinfo']['name'])){
+			return 1;
 		}
 
-		return $exist;
+		// Padrão
+		return 0;
 
 	}
 
