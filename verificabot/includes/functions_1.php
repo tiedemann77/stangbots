@@ -77,7 +77,7 @@ function getClosedCases($opencases) {
       if($numberSections!="0"){
 
         // Conta templates de resposta
-        preg_match_all("/\{\{(R|r)espondido(2){0,1}\|.{1,}\|/", $content, $out2);
+        preg_match_all($closedRegex, $content, $out2);
         $numberResponses = count($out2[0]);
 
         // Se forem iguais, caso concluído
