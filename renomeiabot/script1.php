@@ -267,9 +267,21 @@ while ($control < $requestNumber) {
     // No começo, tudo é igual
     $newrequest[$control] = $editedrequests[$control];
 
-    // Se o novo nome já existe e não é abandono, fecha direto
-    if($exist==1&&$vanish==0){
+    // Se o novo nome de usuário e o antigo são iguais
+    if($newname==$actualname){
 
+      $header = $out[0] . "
+{{Respondido2|negado|texto=";
+
+      $newrequest[$control] = str_replace($out[0],$header,$newrequest[$control]);
+      $newrequest[$control] = $newrequest[$control] . "
+::{{subst:negado|Negado automaticamente}} {{ping|" . $actualname . "}} Olá! O nome de usuário que você escolheu (" . $newname . ") é igual ao seu nome de usuário atual, por isso não é possível realizar a renomeação. Por favor, abra outro pedido escolhendo um novo nome de usuário que seja diferente do seu atual. Obrigado! ~~~~}}";
+
+      // Log
+      echo $robot->log->log("Novo nome (" . $newname . ") é igual ao antigo;\r\n");
+
+    }elseif($exist==1&&$vanish==0){
+      // Se o novo nome já existe e não é abandono, fecha direto
       $header = $out[0] . "
 {{Respondido2|negado|texto=";
 
@@ -308,17 +320,6 @@ while ($control < $requestNumber) {
 
           // Log
           echo $robot->log->log($newname . " já está em uso, porém é um pedido de esquecimento. Adicionando nota;\r\n");
-
-        }
-
-        // Se o novo nome de usuário e o antigo são iguais
-        if($newname==$actualname){
-
-          $newrequest[$control] = $newrequest[$control] . "
-::'''Nota automática:''' o novo nome de usuário e o antigo parecem iguais. ~~~~";
-
-          // Log
-          echo $robot->log->log("Novo nome (" . $newname . ") parece igual ao antigo;\r\n");
 
         }
 
