@@ -351,6 +351,10 @@ class api{
 			$sectionList[$key] = $value['line'];
 		}
 
+		if(!isset($sectionList)){
+			return 0;
+		}
+
 		return $sectionList;
 	}
 

@@ -54,7 +54,11 @@ foreach ($pages as $key => $value) {
 
   $sections = $robot->api->getSectionList($pages[$key]['título']);
 
-  $total = count($sections)-$pages[$key]['ignorar_seções'];
+  if($sections==0){
+    $total = 0;
+  }else{
+    $total = count($sections)-$pages[$key]['ignorar_seções'];
+  }
 
   // Remove qualquer coisa comentada, geralmente templates de resposta
   $content[$pages[$key]['título']] = preg_replace($htmlcommentRegex,"",$content[$pages[$key]['título']]);
