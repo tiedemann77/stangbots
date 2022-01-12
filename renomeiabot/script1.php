@@ -132,8 +132,10 @@ while ($control < $requestNumber) {
 
   $actualname = str_replace("=== ","",$explode[0]);
   $actualname = str_replace(' <span style="width:200px;">',"",$actualname);
+  $actualname = str_replace("_"," ",$actualname);
   $newname = str_replace("</span> ","",$explode[1]);
   $newname = str_replace(" ===","",$newname);
+  $newname = str_replace("_"," ",$newname);
 
   // Log
   echo $robot->log->log("Verificando pedido número " . $control2 . "...\r\n");
@@ -253,8 +255,10 @@ while ($control < $requestNumber) {
 
     $actualname = str_replace("=== ","",$explode[0]);
     $actualname = str_replace(' <span style="width:200px;">',"",$actualname);
+    $actualname = str_replace('_'," ",$actualname);
     $newname = str_replace("</span> ","",$explode[1]);
     $newname = str_replace(" ===","",$newname);
+    $newname = str_replace("_"," ",$newname);
 
     // Log
     echo $robot->log->log("Fazendo checagens no pedido número " . $control2 . ";\r\n");
