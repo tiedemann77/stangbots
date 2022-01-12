@@ -33,6 +33,8 @@ function getClosedCases($opencases) {
 
   global $BasePage;
 
+  global $closedRegex;
+
   global $redirects;
 
   // Criando array
