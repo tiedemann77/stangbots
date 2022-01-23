@@ -126,7 +126,7 @@ $text .= $text2;
 // Checa se é necessário fazer edições
 $content = $robot->api->getContent($feed, 0);
 
-if($text==$content){
+if($text===$content){
   $robot->bye("Feed já está atualizado. Fechando...\r\n");
 }
 
