@@ -1,10 +1,10 @@
 <?php
 
 // Requer configurações
-require_once(__DIR__ . "/stangbots/stangbot/settings.php");
+require_once(__DIR__ . "/settings.php");
 
 // Requer funções básicas
-require_once(__DIR__ . "/stangbots/common.php");
+require_once(__DIR__ . "/../common.php");
 
 // Settings
 $settings = [
