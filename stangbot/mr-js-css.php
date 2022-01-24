@@ -60,7 +60,7 @@ $domain = array(
 echo $robot->log->log("Consultando as últimas " . $limit . " MRs sobre .js...\r\n");
 
 // Consulta para jss
-$query = "SELECT page_namespace, page_title, page_latest, rev_timestamp, actor_name FROM page, revision, actor WHERE page_content_model = 'javascript' AND page_latest = rev_id AND rev_actor = actor_id AND (page_namespace != 2 OR (page_namespace = 2 AND SUBSTRING_INDEX(REPLACE(page_title, '_', ' '), "/", 1) != actor_name)) ORDER BY page_latest DESC LIMIT $limit;";
+$query = "SELECT page_namespace, page_title, page_latest, rev_timestamp, actor_name FROM page, revision, actor WHERE page_content_model = 'javascript' AND page_latest = rev_id AND rev_actor = actor_id AND (page_namespace != 2 OR (page_namespace = 2 AND SUBSTRING_INDEX(REPLACE(page_title, '_', ' '), '/', 1) != actor_name)) ORDER BY page_latest DESC LIMIT $limit;";
 
 $result = $robot->sql->replicasQuery($query, $params=NULL);
 
@@ -91,7 +91,7 @@ $text .= "
 echo $robot->log->log("Consultando as últimas " . $limit . " MRs sobre .css...\r\n");
 
 // Consulta para css
-$query = "SELECT page_namespace, page_title, page_latest, rev_timestamp, actor_name FROM page, revision, actor WHERE page_content_model = 'css' AND page_latest = rev_id AND rev_actor = actor_id AND (page_namespace != 2 OR (page_namespace = 2 AND SUBSTRING_INDEX(REPLACE(page_title, '_', ' '), "/", 1) != actor_name)) ORDER BY page_latest DESC LIMIT $limit;";
+$query = "SELECT page_namespace, page_title, page_latest, rev_timestamp, actor_name FROM page, revision, actor WHERE page_content_model = 'css' AND page_latest = rev_id AND rev_actor = actor_id AND (page_namespace != 2 OR (page_namespace = 2 AND SUBSTRING_INDEX(REPLACE(page_title, '_', ' '), '/', 1) != actor_name)) ORDER BY page_latest DESC LIMIT $limit;";
 
 $result = $robot->sql->replicasQuery($query, $params=NULL);
 
