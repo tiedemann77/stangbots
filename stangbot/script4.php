@@ -25,9 +25,11 @@ $robot = new bot();
 echo $robot->log->log($robot->username . " - Iniciando " . $robot->script . "\r\n");
 
 // Páginas
-$page1 = "Ajuda:Conteúdo restrito/Lista de imagens com dimensões excessivas";
-$page2 = "Ajuda:Conteúdo restrito/Lista de arquivos com múltiplas versões";
-$page3 = "Ajuda:Conteúdo restrito/Lista de áudios com duração excessiva";
+$pages = [
+    "Ajuda:Conteúdo restrito/Lista de imagens com dimensões excessivas",
+    "Ajuda:Conteúdo restrito/Lista de arquivos com múltiplas versões",
+    "Ajuda:Conteúdo restrito/Lista de áudios com duração excessiva"
+];
 
 // Relatório 1
 function firstReport(){
@@ -296,42 +298,42 @@ function thirdReport(){
 
 }
 
-// Executa as funções
-$report1 = firstReport();
-$report2 = secondReport();
-$report3 = thirdReport();
+// Obtém conteúdo atual das páginas
+$content = $robot->api->getMultipleContent($pages);
 
-// Checa se é necessário fazer edições
-$content1 = $robot->api->getContent($page1, 0);
-$content2 = $robot->api->getContent($page2, 0);
-$content3 = $robot->api->getContent($page3, 0);
+// Processa relatório por relatório
+$report = firstReport();
 
-if($report1[0]!==$content1||$report2[0]!==$content2||$report3[0]!==$content3){
-
-  if($report1[0]!==$content1){
-    echo $robot->log->log("Editando relatório 1...\r\n");
-    $robot->edit($page1, $report1[0], "[[WP:Bot|bot]]: atualizando lista (" . $report1[1] . " entradas)", 0, 0);
-  }
-
-  if($report2[0]!==$content2){
-    echo $robot->log->log("Editando relatório 2...\r\n");
-    $robot->edit($page2, $report2[0], "[[WP:Bot|bot]]: atualizando lista (" . $report2[1] . " entradas)", 0, 0);
-  }
-
-  if($report3[0]!==$content3){
-    echo $robot->log->log("Editando relatório 3...\r\n");
-    $robot->edit($page3, $report3[0], "[[WP:Bot|bot]]: atualizando lista (" . $report3[1] . " entradas)", 0, 0);
-  }
-
+if($report[0]!==$content[$pages[0]]){
+  echo $robot->log->log("Editando relatório 1...\r\n");
+  $robot->edit($pages[0], $report[0], "[[WP:Bot|bot]]: atualizando lista (" . $report[1] . " entradas)", 0, 0);
 }else{
-  $robot->bye("Todas as listas já estão atualizadas. Fechando...\r\n");
+  echo $robot->log->log("Relatório 1 já está atualizado...\r\n");
 }
 
-// PARA TESTE
-// ADICIONAR O CONTEÚDO DA EDIÇÃO EM LOG
-//$robot->log->log("Conteúdo da variável report1[0]:\r\n" . $report1[0]. "\r\n");
-//$robot->log->log("Conteúdo da variável report2[0]:\r\n" . $report2[0]. "\r\n");
-//$robot->log->log("Conteúdo da variável report3[0]:\r\n" . $report3[0]. "\r\n");
+unset($content[$pages[0]]);
+
+$report = secondReport();
+
+if($report[0]!==$content[$pages[1]]){
+  echo $robot->log->log("Editando relatório 2...\r\n");
+  $robot->edit($pages[1], $report[0], "[[WP:Bot|bot]]: atualizando lista (" . $report[1] . " entradas)", 0, 0);
+}else{
+  echo $robot->log->log("Relatório 2 já está atualizado...\r\n");
+}
+
+unset($content[$pages[1]]);
+
+$report = thirdReport();
+
+if($report[0]!==$content[$pages[2]]){
+  echo $robot->log->log("Editando relatório 3...\r\n");
+  $robot->edit($pages[2], $report[0], "[[WP:Bot|bot]]: atualizando lista (" . $report[1] . " entradas)", 0, 0);
+}else{
+  echo $robot->log->log("Relatório 3 já está atualizado...\r\n");
+}
+
+unset($content[$pages[2]]);
 
 // Fechar log
 $robot->bye($robot->script . " concluído!\r\n");
