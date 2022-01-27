@@ -197,7 +197,6 @@ class api{
 	public $url;
 	public $maxlag;
 	private $cookies;
-	private $checked;
 	private $revids;
 	public $log;
 
@@ -205,7 +204,6 @@ class api{
 		$this->url = $url;
 		$this->maxlag = $maxlag;
 		$this->cookies = "/tmp/stangbots_cookie_" . rand() . ".inc";
-		$this->checked = FALSE;
 		$this->log = $log;
 	}
 
@@ -213,25 +211,31 @@ class api{
 		unlink($this->cookies);
 	}
 
-	private function checkLag($params){
+	public function request($params){
+
+		$try = 1;
+
 		$params["maxlag"] = $this->maxlag;
 
 		$result = $this->doCurl($params);
 
-		if(isset($result["error"]["lag"])){
-			exit($this->log->log("Maxlag excedido, limite: " . $this->maxlag . "; valor atual: " . $result["error"]["lag"] . ". Fechando...\r\n"));
-		}else{
-			$this->checked = TRUE;
-			return $result;
-		}
-	}
+		while(isset($result["error"]["lag"])){
+			echo $this->log->log("PROBLEMA: " . $try . "/3 maxlag excedido, limite: " . $this->maxlag . "; valor atual: " . $result["error"]["lag"] . ".\r\n");
 
-	public function request($params){
-		if($this->checked===FALSE){
-			return $this->checkLag($params);
-		}else{
-			return $this->doCurl($params);
+			if($try===3){
+				exit($this->log->log("Maxlag continua excedido após 3 tentativas. Fechando...\r\n"));
+			}
+
+			sleep(5);
+
+			$result = $this->doCurl($params);
+
+			$try++;
+
 		}
+
+		return $result;
+
 	}
 
 	private function doCurl($params){
