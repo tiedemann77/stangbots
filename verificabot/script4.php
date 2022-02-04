@@ -145,6 +145,18 @@ foreach ($opencases as $key => $value) {
 // Começando a fazer as alterações necessárias na página principal
 $contentBase = $robot->api->getSectionContent($BasePage, 1);
 
+// Se não houver nenhum, substituir por template em branco
+if(preg_match("/\{\{(N|n)enhum\}\}/",$contentBase)){
+  $contentBase = '= Investigações em andamento =
+{| class="wikitable sortable center"
+|+
+!Caso
+!(Re)Aberto em
+<!--{{Wikipédia:Pedidos a verificadores/Listar|Usuário Exemplo|~~~~~}}-->
+|-
+|}';
+}
+
 // Remover qualquer coisa que esteja comentanda (normalmente exemplos)
 $newContentBase = preg_replace($htmlcommentRegex, "", $contentBase);
 
