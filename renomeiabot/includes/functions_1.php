@@ -21,7 +21,7 @@ function hasRenames($name){
     // Formatando data
     $year = substr($result[0]['log_timestamp'], 0, 4);
     $month = substr($result[0]['log_timestamp'], 4, 2);
-    $day = substr($result[0]['log_timestamp'], 4, 2);
+    $day = substr($result[0]['log_timestamp'], 6, 2);
 
     $month = monthstoPT($month);
 
