@@ -525,8 +525,8 @@ class log{
 		$settings['stats'] = $this->stats;
 		$this->start = new DateTime(date("Y-m-d H:i:s"));
 		$this->check();
-		$this->clear();
 		$this->log($this->start->format('d-m-Y H:i:s') . " - Iniciando log\r\n");
+		$this->clear();
 	}
 
 	public function __destruct(){
@@ -550,9 +550,11 @@ class log{
 	}
 
 	private function clear(){
-		if(filesize($this->file)>4194304){//4 MB
+		if(filesize($this->file)>4194304){ //4 MB
+			$this->log("MANUTENÇÃO: " . $this->file . " está com " . number_format((filesize($this->file)/1024/1024),2,".",",") . " MB, realizando limpeza\r\n");
 			$file = file($this->file);
-			$file = array_slice($file, 1000);//1000 linhas
+			$delete = round(count($file)/10); //10%
+			$file = array_slice($file, $delete);
 			file_put_contents($this->file, $file);
 			unset($file);
 		}
