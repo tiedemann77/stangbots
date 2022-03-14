@@ -233,7 +233,7 @@ class api{
 
 		}
 
-		return json_decode($result,true);
+		return $result;
 
 	}
 
@@ -248,7 +248,7 @@ class api{
 		curl_setopt($ch, CURLOPT_COOKIEJAR, $this->cookies);
 		curl_setopt($ch, CURLOPT_COOKIEFILE, $this->cookies);
 
-		$result = curl_exec($ch);
+		$result = json_decode(curl_exec($ch),true);
 		curl_close($ch);
 		$this->log->setStats("api");
 		return $result;
