@@ -38,8 +38,7 @@ $params = [
   "action" => "query",
   "list" => "prefixsearch",
   "pslimit" => 500,
-  "pssearch" => $prefix,
-  "format" => "json"
+  "pssearch" => $prefix
 ];
 
 $result = $robot->api->request($params);

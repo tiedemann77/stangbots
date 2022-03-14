@@ -39,8 +39,7 @@ $params = [
   "titles" => $page,
   "rvprop" => "timestamp|content",
   "rvlimit" => "1",
-  "rvslots" => "main",
-  "format" => "json"
+  "rvslots" => "main"
 ];
 
 $result = $robot->api->request($params);

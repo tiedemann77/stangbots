@@ -64,8 +64,7 @@ function run($content){
         "list" => "logevents",
         "letype" => "gblrename",
         "leend" => $start,
-        "lelimit" => "500",
-        "format" => "json"
+        "lelimit" => "500"
       ];
 
       // Faz consulta a API

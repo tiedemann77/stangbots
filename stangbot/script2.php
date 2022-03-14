@@ -35,8 +35,7 @@ $params = [
   "action" => "query",
   "list" => "allusers",
   "augroup" => "sysop",
-  "aulimit" => "150",
-  "format" => "json"
+  "aulimit" => "150"
 ];
 
 // Faz consulta a API
@@ -66,8 +65,7 @@ $params = [
   "list" => "logevents",
   "leprop" => "ids",
   "leend" => $start,
-  "lelimit" => "15",
-  "format" => "json"
+  "lelimit" => "15"
 ];
 
 foreach ($sysops as $key => $value) {
@@ -189,8 +187,7 @@ $params = [
   "list" => "usercontribs",
   "ucprop" => "ids",
   "uclimit" => "500",
-  "ucend" => $start,
-  "format" => "json"
+  "ucend" => $start
 ];
 
 // Domínio Wikipédia

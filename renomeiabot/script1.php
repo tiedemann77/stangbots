@@ -147,8 +147,7 @@ while ($control < $requestNumber) {
 		"action" => "query",
 		"list" => "logevents",
 		"letype" => "gblrename",
-		"letitle" => "Special:CentralAuth/" . $newname,
-		"format" => "json"
+		"letitle" => "Special:CentralAuth/" . $newname
 	];
 
   // Faz consulta a API
