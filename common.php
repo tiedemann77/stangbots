@@ -219,7 +219,7 @@ class api{
 		$result = $this->doCurl($params);
 
 		while(isset($result["error"]["lag"])){
-			echo $this->log->log("PROBLEMA: " . $try . "/3 maxlag excedido, limite: " . $this->maxlag . "; valor atual: " . $result["error"]["lag"] . ".\r\n");
+			echo $this->log->log("PROBLEMA: " . $try . "/3 maxlag excedido, limite: " . $this->maxlag . "; valor atual: " . number_format($result["error"]["lag"],2) . ".\r\n");
 
 			if($try===3){
 				exit($this->log->log("Maxlag continua excedido após 3 tentativas. Fechando...\r\n"));
