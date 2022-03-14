@@ -217,6 +217,10 @@ class api{
 
 		$params["maxlag"] = $this->maxlag;
 
+		if(!isset($params["format"])){ //Definir como padrão após transição
+			$params["format"] = "json";
+		}
+
 		$result = $this->doCurl($params);
 
 		while(isset($result["error"]["lag"])){
@@ -234,7 +238,7 @@ class api{
 
 		}
 
-		return $result;
+		return json_decode($result,true);
 
 	}
 
@@ -249,7 +253,7 @@ class api{
 		curl_setopt($ch, CURLOPT_COOKIEJAR, $this->cookies);
 		curl_setopt($ch, CURLOPT_COOKIEFILE, $this->cookies);
 
-		$result = json_decode(curl_exec($ch),true);
+		$result = curl_exec($ch);
 		curl_close($ch);
 		$this->log->setStats("api");
 		return $result;
