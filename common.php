@@ -466,9 +466,9 @@ class api{
 	public function resolveRedir($page){
 
 		$params = [
-			'action' 		=> 'query',
-			'titles' 		=> $page,
-			'redirects' => 'true',
+			'action'		=> 'query',
+			'titles'		=> $page,
+			'redirects'	=> 'true',
 			'format'		=> 'json'
 		];
 
