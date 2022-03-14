@@ -69,7 +69,8 @@ foreach ($pages as $key => $value) {
   $open = $total-$closed;
 
   if($open<0){
-    $robot->bye("Número de pedidos em aberto para " . $pages[$key]['título'] . " menor que 0. Fechando...\r\n");
+    $robot->log->log("PROBLEMA: número de pedidos em aberto para " . $pages[$key]['título'] . " menor que 0. Verifique a página.\r\n");
+    $open = "-1";
   }
 
   $replacekey1 .= "
