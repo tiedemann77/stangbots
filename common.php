@@ -53,8 +53,7 @@ class bot{
 		$params = [
 			"action" => "query",
 			"meta" => "tokens",
-			"type" => "login",
-			"format" => "json"
+			"type" => "login"
 		];
 
 		$result = $this->api->request($params);
@@ -65,8 +64,7 @@ class bot{
 			"action" => "login",
 			"lgname" => $this->credentials[0],
 			"lgpassword" => $this->credentials[1],
-			"lgtoken" => $result["query"]["tokens"]["logintoken"],
-			"format" => "json"
+			"lgtoken" => $result["query"]["tokens"]["logintoken"]
 		];
 
 		$result = $this->api->request($params);
@@ -85,8 +83,7 @@ class bot{
 			}
 			$params = [
 				"action" => "logout",
-				"token" => $this->tokens['csrf'],
-				"format" => "json"
+				"token" => $this->tokens['csrf']
 			];
 			$this->api->request($params);
 		}
@@ -100,8 +97,7 @@ class bot{
 		$params = [
 			"action" => "query",
 			"meta" => "tokens",
-			"type" => "csrf|deleteglobalaccount|patrol|rollback|setglobalaccountstatus|userrights|watch",
-			"format" => "json"
+			"type" => "csrf|deleteglobalaccount|patrol|rollback|setglobalaccountstatus|userrights|watch"
 		];
 
 		$result = $this->api->request($params);
@@ -143,8 +139,7 @@ class bot{
 			"title" => $target[0],
 			"text" => $text,
 			"summary" => $summary,
-			"token" => $this->tokens['csrf'],
-			"format" => "json"
+			"token" => $this->tokens['csrf']
 		];
 
 		if($type=="section"){
@@ -273,8 +268,7 @@ class api{
 	    "titles" => $page,
 	    "rvprop" => "content|ids",
 	    "rvlimit" => "1",
-	    "rvslots" => "main",
-	    "format" => "json"
+	    "rvslots" => "main"
 		];
 
 		// Requisita o conteúdo a API
@@ -323,8 +317,7 @@ class api{
 			"prop" => "revisions",
 			"titles" => $titles,
 			"rvprop" => "content|ids",
-			"rvslots" => "main",
-			"format" => "json"
+			"rvslots" => "main"
 		];
 
 		$result = $this->request($params);
@@ -349,8 +342,7 @@ class api{
 		$params = [
 	    "action" => "parse",
 	    "page" => $page,
-	    "prop" => "sections",
-	    "format" => "json"
+	    "prop" => "sections"
 		];
 
 		$result = $this->request($params);
@@ -373,8 +365,7 @@ class api{
 			"action" => "parse",
 			"page" => $page,
 			"prop" => "wikitext|revid",
-			"section" => $section,
-			"format" => "json"
+			"section" => $section
 		];
 
 		$result = $this->request($params);
@@ -393,8 +384,7 @@ class api{
 		$params = [
 			"action" => "query",
 			"meta" => "globaluserinfo",
-			"guiuser" => $account,
-			"format" => "json"
+			"guiuser" => $account
 		];
 
 		$result = $this->request($params);
@@ -415,8 +405,7 @@ class api{
 			"action" => "query",
 			"list" => "logevents",
 			"letype" => "block",
-			"letitle" => "User:" . $account,
-			"format" => "json"
+			"letitle" => "User:" . $account
 		];
 
 		$result = $this->request($params);
@@ -440,8 +429,7 @@ class api{
 
 		$params = [
 			"action" => "antispoof",
-			"username" => $account,
-			"format" => "json"
+			"username" => $account
 		];
 
 		// Faz consulta a API
@@ -472,8 +460,7 @@ class api{
 		$params = [
 			'action'		=> 'query',
 			'titles'		=> $page,
-			'redirects'	=> 'true',
-			'format'		=> 'json'
+			'redirects'	=> 'true'
 		];
 
 		$result = $this->request($params);
