@@ -248,8 +248,8 @@ function thirdReport(){
     // Insere cada linha se for maior que 31
     foreach ($result as $key => $value) {
       $name = $result[$key][0];
-      $metadata = unserialize($result[$key][1]);
-      $lenght = $metadata['length'];
+      $metadata = json_decode($result[$key][1],true);
+      $lenght = $metadata['data']['length'];
       if($lenght>31){
         $text .= "
 |-
