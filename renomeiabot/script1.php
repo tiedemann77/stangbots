@@ -46,7 +46,7 @@ run($content);
 $sectionList = $robot->api->getSectionList($BasePage);
 
 // Exclui a primeira seção, irrelevante
-$deleted = array_shift($sectionList);
+array_shift($sectionList);
 
 // Contando o número de seções
 $sectionNumber = count($sectionList);
