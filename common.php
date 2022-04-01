@@ -502,6 +502,34 @@ class api{
 
 	}
 
+	// Links na(s) página(s)
+	public function linksOnPage($pages){
+
+		$params = [
+			'action'	=> 'query',
+			'titles'	=> $pages,
+			'prop'		=> 'links',
+			'pllimit'	=> '500'
+		];
+
+		$result = $this->request($params);
+
+		$result = $result['query']['pages'];
+
+		foreach ($result as $key => $value) {
+
+			$links[$value['title']] = array();
+
+			foreach ($value['links'] as $key2 => $value2) {
+				$links[$value['title']][] = $value2['title'];
+			}
+
+		}
+
+		return $links;
+
+	}
+
 }
 
 // Log
