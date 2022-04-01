@@ -474,6 +474,34 @@ class api{
 
 	}
 
+	// Transclusões
+	public function transclusions($pages){
+
+		$params = [
+			'action'		=> 'query',
+			'prop'			=> 'transcludedin',
+			'titles'		=> $pages,
+			'tilimit'		=> '500'
+		];
+
+		$result = $this->request($params);
+
+		$result = $result['query']['pages'];
+
+		foreach ($result as $key => $value) {
+
+			$transclusions[$result[$key]['title']] = array();
+
+			foreach ($result[$key]['transcludedin'] as $key2 => $value2) {
+				$transclusions[$result[$key]['title']][] = $value2['title'];
+			}
+
+		}
+
+		return $transclusions;
+
+	}
+
 }
 
 // Log
