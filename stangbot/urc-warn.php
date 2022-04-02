@@ -173,7 +173,7 @@ if(count($reuploads_v1)==0){
 echo $robot->log->log("Mandando mensagens...\r\n");
 
 foreach ($reuploads_v1 as $key => $value) {
-  $robot->editSection("User talk:" . $value["user"],"new","{{subst:Usuário(a):Stangbot/URC-Aviso/Predefinição|" . $value['title'] . "}}","Aviso sobre seu upload recente",1,0);
+  $robot->editSection("User talk:" . $value["user"],"new","{{subst:Usuário(a):Stangbot/URC-Aviso/Predefinição|" . $value['title'] . "}}","Aviso sobre seu (re)upload recente",1,0);
   echo $robot->log->log($value["user"] . " avisado!\r\n");
 }
 
