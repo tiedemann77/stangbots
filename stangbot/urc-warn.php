@@ -72,7 +72,7 @@ foreach ($reuploads as $key => $value) {
     $temp_title = str_replace(" ","_",$value['title']);
     $temp_img = "Ficheiro:" . $value2['img_name'];
     if(preg_match("/" . $temp_title . "/", $temp_img)){
-      echo $robot->log->log($value['title'] . ", carregado por " . $value['user'] . " contém versão antiga;\r\n");
+      echo $robot->log->log("Encontrada (mais uma) versão antiga de " . $value['title'] . ", carregada por " . $value['user'] . ";\r\n");
       $reuploads_v1[] = [
         'user' => $value['user'],
         'title' => $value['title']
@@ -85,6 +85,9 @@ if(!isset($reuploads_v1)){
   $robot->bye("Nenhuma imagem carregada recentemente contém versões antigas. Fechando...\r\n");
 }
 
+echo $robot->log->log("Removendo usuários duplicados...\r\n");
+$reuploads_v1 = array_intersect_key($reuploads_v1, array_unique(array_column($reuploads_v1, 'user')));
+
 echo $robot->log->log("Obtendo afluentes da predefinição {{URC reduzido}}...\r\n");
 
 $transclusions = $robot->api->transclusions("Predefinição:URC reduzido");
@@ -93,12 +96,8 @@ if(count($transclusions['Predefinição:URC reduzido'])>0){
   foreach ($reuploads_v1 as $key => $value) {
     foreach ($transclusions['Predefinição:URC reduzido'] as $key2 => $value2) {
       if(preg_match("/" . $value['title'] . "/", $value2)){
-        echo $robot->log->log($value['title'] . " foi marcado com {{URC reduzido}}, desconsiderando;\r\n");
-          if(count($reuploads_v1)==1){
-            $reuploads_v1 = array();
-          }else{
-            array_slice($reuploads_v1,$key,1);
-          }
+        echo $robot->log->log($value['title'] . ", carregado por " . $value['user'] . " foi marcado com {{URC reduzido}}, desconsiderando;\r\n");
+        unset($reuploads_v1[$key]);
       }
     }
   }
@@ -117,11 +116,7 @@ if(count($links['Usuário(a):Stangbot/URC-Aviso/Descadastro'])>0){
     foreach ($links['Usuário(a):Stangbot/URC-Aviso/Descadastro'] as $key2 => $value2) {
       if(preg_match("/" . $value['user'] . "/", $value2)){
         echo $robot->log->log($value['user'] . " optou por não receber mensagens, desconsiderando;\r\n");
-        if(count($reuploads_v1)==1){
-          $reuploads_v1 = array();
-        }else{
-          array_slice($reuploads_v1,$key,1);
-        }
+        unset($reuploads_v1[$key]);
       }
     }
   }
@@ -155,11 +150,7 @@ foreach ($reuploads_v1 as $key => $value) {
       foreach ($users as $key3 => $value3) {
         if(preg_match("/" . $robot->username . "/", $value3)){
           echo $robot->log->log($value['user'] . " já recebeu alertas nos últimos 5 dias, desconsiderando;\r\n");
-          if(count($reuploads_v1)==1){
-            $reuploads_v1 = array();
-          }else{
-            array_slice($reuploads_v1,$key,1);
-          }
+          unset($reuploads_v1[$key]);
         }
       }
     }
