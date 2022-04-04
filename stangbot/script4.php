@@ -306,7 +306,7 @@ $report = firstReport();
 
 if($report[0]!==$content[$pages[0]]){
   echo $robot->log->log("Editando relatório 1...\r\n");
-  $robot->edit($pages[0], $report[0], "[[WP:Bot|bot]]: atualizando lista (" . $report[1] . " entradas)", 0, 0);
+  $robot->edit($pages[0], $report[0], "[[WP:Bot|bot]]: atualizando lista (" . $report[1] . " entradas)", 0, 1);
 }else{
   echo $robot->log->log("Relatório 1 já está atualizado...\r\n");
 }
@@ -317,7 +317,7 @@ $report = secondReport();
 
 if($report[0]!==$content[$pages[1]]){
   echo $robot->log->log("Editando relatório 2...\r\n");
-  $robot->edit($pages[1], $report[0], "[[WP:Bot|bot]]: atualizando lista (" . $report[1] . " entradas)", 0, 0);
+  $robot->edit($pages[1], $report[0], "[[WP:Bot|bot]]: atualizando lista (" . $report[1] . " entradas)", 0, 1);
 }else{
   echo $robot->log->log("Relatório 2 já está atualizado...\r\n");
 }
@@ -328,7 +328,7 @@ $report = thirdReport();
 
 if($report[0]!==$content[$pages[2]]){
   echo $robot->log->log("Editando relatório 3...\r\n");
-  $robot->edit($pages[2], $report[0], "[[WP:Bot|bot]]: atualizando lista (" . $report[1] . " entradas)", 0, 0);
+  $robot->edit($pages[2], $report[0], "[[WP:Bot|bot]]: atualizando lista (" . $report[1] . " entradas)", 0, 1);
 }else{
   echo $robot->log->log("Relatório 3 já está atualizado...\r\n");
 }

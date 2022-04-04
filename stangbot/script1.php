@@ -96,7 +96,7 @@ if($content[$pages['feed']['título']]==$template){
 }
 
 // Editando
-$robot->edit($pages['feed']['título'],$template,"[[WP:Bot|bot]]: atualizando",1,0);
+$robot->edit($pages['feed']['título'],$template,"[[WP:Bot|bot]]: atualizando",1,1);
 
 $robot->bye($robot->script . " concluído!\r\n");
 
