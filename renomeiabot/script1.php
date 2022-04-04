@@ -408,7 +408,7 @@ if($newcontent==$content){
 }
 
 // Editando a página de pedidos
-$robot->edit($BasePage, $newcontent, "[[WP:Bot|bot]]: processando pedidos", 0, 0);
+$robot->edit($BasePage, $newcontent, "[[WP:Bot|bot]]: processando pedidos", 0, 1);
 
 // Depois da edição, obtém o conteúdo de novo por causa da assinatura
 $content = $robot->api->getContent($BasePage, 1);
