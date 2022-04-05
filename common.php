@@ -18,6 +18,14 @@ $blanklineRegex = "/(^[\r\n]*|[\r\n]+)[\s\t]*[\r\n]+/";
 // Comentários HTML
 $htmlcommentRegex = "/\<\!\-\-(?:.|\n|\r)*?-->/";
 
+abstract class common{
+
+	protected $debug;
+
+	abstract protected function isDebug();
+
+}
+
 // Classe para realizar testes
 class debug{
 
@@ -56,7 +64,7 @@ class debug{
 }
 
 // Classe do robô
-class bot{
+class bot extends common{
 
 	public $username;
 	private $credentials;
@@ -67,7 +75,6 @@ class bot{
 	public $sql;
 	private $tokens;
 	private $login;
-	private $debug;
 
 	public function __construct(){
 		global $settings;
@@ -87,7 +94,7 @@ class bot{
 		$this->login = FALSE;
 	}
 
-	private function isDebug(){
+	protected function isDebug(){
 
 		if(!isset($this->debug)){
 
@@ -252,14 +259,13 @@ class bot{
 }
 
 // Classe da API
-class api{
+class api extends common{
 
 	public $url;
 	public $maxlag;
 	private $cookies;
 	private $revids;
 	public $log;
-	private $debug;
 
 	public function __construct($url,$maxlag,$log){
 		$this->url = $url;
@@ -275,7 +281,7 @@ class api{
 		}
 	}
 
-	private function isDebug(){
+	protected function isDebug(){
 
 		if(!isset($this->debug)){
 			$this->debug = debug::isDebug();
@@ -617,13 +623,12 @@ class api{
 }
 
 // Log
-class log{
+class log extends common{
 
 	public $file;
 	public $stats;
 	private $start;
 	public $end;
-	private $debug;
 
 	public function __construct($file){
 		global $settings;
@@ -649,7 +654,7 @@ class log{
 		$this->log($this->end->format('d-m-Y H:i:s') . " - Fechando log\r\n");
 	}
 
-	private function isDebug(){
+	protected function isDebug(){
 
 		if(!isset($this->debug)){
 			$this->debug = debug::isDebug();
@@ -706,7 +711,7 @@ class log{
 }
 
 // Toolforge database
-class toolforgeSQL{
+class toolforgeSQL extends common{
 
 	private $replicasDB;
 	private $replicasConnection;
@@ -715,7 +720,6 @@ class toolforgeSQL{
 	private $personalConnection;
 	private $personalStatus;
 	public $log;
-	private $debug;
 
 	public function __construct($replicasDB,$personalDB,$log){
 
@@ -735,7 +739,7 @@ class toolforgeSQL{
 
 	}
 
-	private function isDebug(){
+	protected function isDebug(){
 
 		if(!isset($this->debug)){
 			$this->debug = debug::isDebug();
