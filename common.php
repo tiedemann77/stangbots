@@ -24,6 +24,8 @@ abstract class common{
 
 	abstract protected function isDebug();
 
+	abstract public function bye($message);
+
 }
 
 // Classe para realizar testes
@@ -89,9 +91,9 @@ class bot extends common{
 		$this->log = new log($settings['file']);
 		$this->api = new api($settings['url'], $settings['maxlag'], $this->log);
 		$this->isDebug();
-		$this->checkPower();
 		$this->sql = new toolforgeSQL($settings['replicasDB'], $settings['personalDB'], $this->log);
 		$this->login = FALSE;
+		$this->checkPower();
 	}
 
 	protected function isDebug(){
@@ -244,7 +246,7 @@ class bot extends common{
 		$content = $this->api->getContent($this->power,1);
 
 		if($content!="run"){
-			exit($this->log->log("Bot desligado em " . $this->power . ", verifique. Fechando...\r\n"));
+			$this->bye("Bot desligado em " . $this->power . ", verifique. Fechando...\r\n");
 		}
 
 	}
@@ -281,6 +283,11 @@ class api extends common{
 		}
 	}
 
+	public function bye($message){
+		echo $this->log->log($message);
+		exit();
+	}
+
 	protected function isDebug(){
 
 		if(!isset($this->debug)){
@@ -312,7 +319,7 @@ class api extends common{
 			echo $this->log->log("PROBLEMA: " . $try . "/3 maxlag excedido, limite: " . $this->maxlag . "; valor atual: " . number_format($result["error"]["lag"],2) . ".\r\n");
 
 			if($try===3){
-				exit($this->log->log("Maxlag continua excedido após 3 tentativas. Fechando...\r\n"));
+				$this->bye("Maxlag continua excedido após 3 tentativas. Fechando...\r\n");
 			}
 
 			sleep(5);
@@ -382,10 +389,10 @@ class api extends common{
 					return 0;
 				}elseif($mode==1){
 					// Se 1, para o script;
-					exit($this->log->log("Página solicitada (" . $page . ") em modo ativo não existe. Fechando...\r\n"));
+					$this->bye("Página solicitada (" . $page . ") em modo ativo não existe. Fechando...\r\n");
 				}else{
 					// Indefinido
-					exit($this->log->log("Modo desconhecido para getContent (" . $mode . "). Verifique seu script. Fechando...\r\n"));
+					$this->bye("Modo desconhecido para getContent (" . $mode . "). Verifique seu script. Fechando...\r\n");
 				}
 			}
 		}
@@ -413,7 +420,7 @@ class api extends common{
 		$result = $this->request($params);
 
 		if(isset($result['query']['pages'][-1])){
-			exit($this->log->log("Uma (ou mais) das páginas solicitadas em getMultipleContent não existe. Fechando...\r\n"));
+			$this->bye("Uma (ou mais) das páginas solicitadas em getMultipleContent não existe. Fechando...\r\n");
 		}
 
 		foreach ($result['query']['pages'] as $key => $value) {
@@ -629,6 +636,7 @@ class log extends common{
 	public $stats;
 	private $start;
 	public $end;
+	private $ready;
 
 	public function __construct($file){
 		global $settings;
@@ -654,6 +662,11 @@ class log extends common{
 		$this->log($this->end->format('d-m-Y H:i:s') . " - Fechando log\r\n");
 	}
 
+	public function bye($message){
+		echo $this->log($message);
+		exit();
+	}
+
 	protected function isDebug(){
 
 		if(!isset($this->debug)){
@@ -670,20 +683,30 @@ class log extends common{
 	}
 
 	public function log($msg){
+
 		if($this->isDebug()){
 			$msg = "(MODO TESTE) $msg";
 		}
 
-		file_put_contents($this->file, $msg, FILE_APPEND);
+		if($this->ready==TRUE){
+			file_put_contents($this->file, $msg, FILE_APPEND);
+		}
+
 		return $msg;
+
 	}
 
 	private function check(){
+
 		if(!file_exists($this->file)){
 			if(!fopen($this->file, 'w')){
-				exit("Não foi possível criar o arquivo de log especificado. Provavelmente um erro de permissão ou o diretório não existe. Script interrompido. Por favor, crie o arquivo manualmente para prosseguir. Fechando...\r\n");
+				$this->ready = FALSE;
+				$this->bye("Não foi possível criar o arquivo de log especificado. Provavelmente um erro de permissão ou o diretório não existe. Script interrompido. Por favor, crie o arquivo manualmente para prosseguir. Fechando...\r\n");
 			}
 		}
+
+		$this->ready = TRUE;
+
 	}
 
 	private function clear(){
@@ -737,6 +760,11 @@ class toolforgeSQL extends common{
 		$this->isDebug();
 		$this->check();
 
+	}
+
+	public function bye($message){
+		echo $this->log->log($message);
+		exit();
 	}
 
 	protected function isDebug(){
@@ -861,7 +889,7 @@ class toolforgeSQL extends common{
 					$stmt->bind_param($types, $params[0][1], $params[1][1], $params[2][1], $params[3][1], $params[4][1], $params[5][1], $params[6][1], $params[7][1], $params[8][1], $params[9][1]);
 					break;
 				default:
-					exit($this->log->log("Mais de dez parâmetros para consulta SQL. O limite máximo é dez. Fechando...\r\n"));
+					$this->bye("Mais de dez parâmetros para consulta SQL. O limite máximo é dez. Fechando...\r\n");
 					break;
 			}
 		}
