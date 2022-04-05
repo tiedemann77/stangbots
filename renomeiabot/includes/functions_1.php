@@ -23,7 +23,7 @@ function hasRenames($name){
     $month = substr($result[0]['log_timestamp'], 4, 2);
     $day = substr($result[0]['log_timestamp'], 6, 2);
 
-    $month = monthstoPT($month);
+    $month = $robot->monthstoPT($month);
 
     $date = $day . " de " . $month . " de " . $year;
 

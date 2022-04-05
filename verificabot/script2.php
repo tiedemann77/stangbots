@@ -56,7 +56,7 @@ $month = date("m");
 $year = date("Y");
 
 // Converte mês para texto
-$monthPT = monthstoPT($month);
+$monthPT = $robot->monthstoPT($month);
 
 // Página de arquivo do mês
 $currentPage = $archivePage . $year . "/" . $month;
@@ -74,7 +74,7 @@ if($previousMonth<10){
 }
 
 // Converte mês para texto
-$previousMonthPT = monthstoPT($previousMonth);
+$previousMonthPT = $robot->monthstoPT($previousMonth);
 
 // Caso seja dezembro, reduzir o ano também;
 if($previousMonth=="12"){

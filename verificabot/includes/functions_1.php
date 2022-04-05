@@ -207,7 +207,7 @@ function updateRecentsList($ClosedCases){
   $year = date("Y");
 
   // Mês por extenso
-	$month = monthstoPT($month);
+	$month = $robot->monthstoPT($month);
 
   // Data de conclusão do caso
   $date =  $day . " de " . $month . " de " . $year;
