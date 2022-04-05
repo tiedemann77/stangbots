@@ -18,6 +18,43 @@ $blanklineRegex = "/(^[\r\n]*|[\r\n]+)[\s\t]*[\r\n]+/";
 // Comentários HTML
 $htmlcommentRegex = "/\<\!\-\-(?:.|\n|\r)*?-->/";
 
+// Classe para realizar testes
+class debug{
+
+	private static $status;
+
+	private function check(){
+
+		global $argv;
+
+		if(isset($_GET['test'])||array_search('test', $argv)){
+			echo "##INICIANDO EM MODO TESTE##\r\n";
+			self::setStatus(TRUE);
+		}else{
+			self::setStatus(FALSE);
+		}
+
+	}
+
+	private function setStatus($value){
+		self::$status = $value;
+	}
+
+	private function getStatus(){
+
+		if(!isset(self::$status)){
+			self::check();
+		}
+
+		return self::$status;
+	}
+
+	public static function isDebug(){
+		 return self::getStatus();
+	}
+
+}
+
 // Classe do robô
 class bot{
 
@@ -29,7 +66,8 @@ class bot{
 	public $api;
 	public $sql;
 	private $tokens;
-	public $login;
+	private $login;
+	private $debug;
 
 	public function __construct(){
 		global $settings;
@@ -43,9 +81,26 @@ class bot{
 		$this->script = $settings['script'];
 		$this->log = new log($settings['file']);
 		$this->api = new api($settings['url'], $settings['maxlag'], $this->log);
+		$this->isDebug();
 		$this->checkPower();
 		$this->sql = new toolforgeSQL($settings['replicasDB'], $settings['personalDB'], $this->log);
 		$this->login = FALSE;
+	}
+
+	private function isDebug(){
+
+		if(!isset($this->debug)){
+
+			$this->debug = debug::isDebug();
+
+			if($this->debug==TRUE){
+				$this->script .= '_teste';
+			}
+
+		}
+
+		return $this->debug;
+
 	}
 
 	public function login(){
@@ -130,6 +185,12 @@ class bot{
 
 	private function doEdit($type,$target,$text,$summary,$minor,$bot){
 
+		if($this->isDebug()){
+			echo $this->log->log("Edição: " . $this->username . " editou " . $target[0] . ($type=="section" ? " (seção " . $target[1] . ")" : "") . " (" . $summary . ") Edição menor: " . $minor . "; Robô: " . $bot . ". Conteúdo salvo no log;\r\n");
+			$this->log->log("Conteúdo:\r\n" . $text . "\r\n");
+			return;
+		}
+
 		if(!isset($this->tokens['csrf'])){
 			$this->getTokens();
 		}
@@ -169,6 +230,10 @@ class bot{
 
 	private function checkPower(){
 
+		if($this->isDebug()){
+			return;
+		}
+
 		$content = $this->api->getContent($this->power,1);
 
 		if($content!="run"){
@@ -178,10 +243,10 @@ class bot{
 	}
 
 	public function bye($message){
-		$this->log->log($message);
+		echo $this->log->log($message);
 		$this->logout();
 		$this->sql->updateStats($this->username, $this->script);
-		exit($message);
+		exit();
 	}
 
 }
@@ -194,16 +259,35 @@ class api{
 	private $cookies;
 	private $revids;
 	public $log;
+	private $debug;
 
 	public function __construct($url,$maxlag,$log){
 		$this->url = $url;
 		$this->maxlag = $maxlag;
 		$this->cookies = "/tmp/stangbots_cookie_" . rand() . ".inc";
 		$this->log = $log;
+		$this->isDebug();
 	}
 
 	public function __destruct(){
-		unlink($this->cookies);
+		if(file_exists($this->cookies)){
+			unlink($this->cookies);
+		}
+	}
+
+	private function isDebug(){
+
+		if(!isset($this->debug)){
+			$this->debug = debug::isDebug();
+
+			if($this->debug==TRUE){
+				$this->maxlag += $this->maxlag;
+			}
+
+		}
+
+		return $this->debug;
+
 	}
 
 	public function request($params){
@@ -539,6 +623,7 @@ class log{
 	public $stats;
 	private $start;
 	public $end;
+	private $debug;
 
 	public function __construct($file){
 		global $settings;
@@ -551,6 +636,7 @@ class log{
 		];
 		$settings['stats'] = $this->stats;
 		$this->start = new DateTime(date("Y-m-d H:i:s"));
+		$this->isDebug();
 		$this->check();
 		$this->log($this->start->format('d-m-Y H:i:s') . " - Iniciando log\r\n");
 		$this->clear();
@@ -563,7 +649,26 @@ class log{
 		$this->log($this->end->format('d-m-Y H:i:s') . " - Fechando log\r\n");
 	}
 
+	private function isDebug(){
+
+		if(!isset($this->debug)){
+			$this->debug = debug::isDebug();
+
+			if($this->debug==TRUE){
+				$this->file .= ".test";
+			}
+
+		}
+
+		return $this->debug;
+
+	}
+
 	public function log($msg){
+		if($this->isDebug()){
+			$msg = "(MODO TESTE) $msg";
+		}
+
 		file_put_contents($this->file, $msg, FILE_APPEND);
 		return $msg;
 	}
@@ -610,6 +715,7 @@ class toolforgeSQL{
 	private $personalConnection;
 	private $personalStatus;
 	public $log;
+	private $debug;
 
 	public function __construct($replicasDB,$personalDB,$log){
 
@@ -624,8 +730,18 @@ class toolforgeSQL{
 
 		$this->replicasStatus = FALSE;
 		$this->personalStatus = FALSE;
-
+		$this->isDebug();
 		$this->check();
+
+	}
+
+	private function isDebug(){
+
+		if(!isset($this->debug)){
+			$this->debug = debug::isDebug();
+		}
+
+		return $this->debug;
 
 	}
 
@@ -754,6 +870,11 @@ class toolforgeSQL{
 	}
 
 	public function updateStats($bot,$script){
+
+		if($this->isDebug()){
+			return;
+		}
+
 		if($this->personalStatus===TRUE){
 			global $settings;
 			global $manualRun;
