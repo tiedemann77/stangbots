@@ -199,7 +199,7 @@ class toolforgeSQL extends common{
 			$api = $stats["api"];
 			$sql = $stats["sql"]+1;
 			$duration = $stats["duration"];
-			$last = $this->stats->getEnd());
+			$last = $this->stats->getEnd();
 			$last = $last->format('d-m-Y H:i:s');
 			$memory = number_format(((memory_get_peak_usage()/1024)/1024),2,".",",");
 			if(isset($result[0])){
