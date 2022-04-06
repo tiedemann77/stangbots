@@ -10,13 +10,13 @@ require_once("debug.php");
 require_once("log.php");
 
 // Classe da API
-class api extends common{
+class api extends common {
 
-	public $url;
-	public $maxlag;
-	private $cookies;
-	private $revids;
-	public $log;
+	private 	$cookies;
+	public 		$log;
+	public 		$maxlag;
+	private 	$revids;
+	public 		$url;
 
 	public function __construct($url,$maxlag,$log){
 		$this->url = $url;
@@ -32,55 +32,61 @@ class api extends common{
 		}
 	}
 
+	public function accountExist($account){
+
+		$params = [
+			"action" => "query",
+			"meta" => "globaluserinfo",
+			"guiuser" => $account
+		];
+
+		$result = $this->request($params);
+
+		if(isset($result['query']['globaluserinfo']['name'])){
+			return 1;
+		}
+
+		// Padrão
+		return 0;
+
+	}
+
+	public function antispoof($account,$ignore){
+
+		// Troca temporariamente a URL da API
+		$old = $this->url;
+		$this->url = "https://meta.wikimedia.org/w/api.php";
+
+		$params = [
+			"action" => "antispoof",
+			"username" => $account
+		];
+
+		// Faz consulta a API
+		$result = $this->request($params);
+		//Retorna
+		$this->url = $old;
+
+		if($result['antispoof']['result']=="pass"){
+			$antispoof = 0;
+		}else{
+			$antispoof = $result['antispoof']['users'][0];
+			if($antispoof==$ignore){
+				if(isset($result['antispoof']['users'][1])){
+					$antispoof = $result['antispoof']['users'][1];
+				}else {
+					$antispoof = 0;
+				}
+			}
+		}
+
+		return $antispoof;
+
+	}
+
 	public function bye($message){
 		echo $this->log->log($message);
 		exit();
-	}
-
-	protected function isDebug(){
-
-		if(!isset($this->debug)){
-			$this->debug = debug::isDebug();
-
-			if($this->debug==TRUE){
-				$this->maxlag += $this->maxlag;
-			}
-
-		}
-
-		return $this->debug;
-
-	}
-
-	public function request($params){
-
-		$try = 1;
-
-		$params["maxlag"] = $this->maxlag;
-
-		if(!isset($params["format"])){ //Definir como padrão após transição
-			$params["format"] = "json";
-		}
-
-		$result = $this->doCurl($params);
-
-		while(isset($result["error"]["lag"])){
-			echo $this->log->log("PROBLEMA: " . $try . "/3 maxlag excedido, limite: " . $this->maxlag . "; valor atual: " . number_format($result["error"]["lag"],2) . ".\r\n");
-
-			if($try===3){
-				$this->bye("Maxlag continua excedido após 3 tentativas. Fechando...\r\n");
-			}
-
-			sleep(5);
-
-			$result = $this->doCurl($params);
-
-			$try++;
-
-		}
-
-		return $result;
-
 	}
 
 	private function doCurl($params){
@@ -100,13 +106,8 @@ class api extends common{
 		return $result;
 	}
 
-	public function getRevids() {
-		return $this->revids;
-	}
-
-	// Função para obter o conteúdo de qualquer página com dois modos:
-	// 0 não para se inexistente; 1 para o script;
 	public function getContent($page,$mode) {
+		// $mode = 1 para o script, $mode = 0 não para
 
 		$params = [
 	    "action" => "query",
@@ -147,7 +148,6 @@ class api extends common{
 		}
 	}
 
-	// Função para obter o conteúdo de múltiplas páginas
 	public function getMultipleContent($pages) {
 
 		foreach ($pages as $key => $value) {
@@ -182,7 +182,25 @@ class api extends common{
 		return $content;
 	}
 
-	// Função para obter a lista de seções de uma página
+	public function getSectionContent($page,$section) {
+
+		$params = [
+			"action" => "parse",
+			"page" => $page,
+			"prop" => "wikitext|revid",
+			"section" => $section
+		];
+
+		$result = $this->request($params);
+
+		$this->revids[$page] = $result['parse']['revid'];
+
+		$result = $result['parse']['wikitext']['*'];
+
+		return $result;
+
+	}
+
 	public function getSectionList($page) {
 
 		$params = [
@@ -204,47 +222,10 @@ class api extends common{
 		return $sectionList;
 	}
 
-	// Função para obter o conteúdo de uma determinada seção em uma página
-	public function getSectionContent($page,$section) {
-
-		$params = [
-			"action" => "parse",
-			"page" => $page,
-			"prop" => "wikitext|revid",
-			"section" => $section
-		];
-
-		$result = $this->request($params);
-
-		$this->revids[$page] = $result['parse']['revid'];
-
-		$result = $result['parse']['wikitext']['*'];
-
-		return $result;
-
+	public function getRevids() {
+		return $this->revids;
 	}
 
-	// Função para verificar se uma conta global existe
-	public function accountExist($account){
-
-		$params = [
-			"action" => "query",
-			"meta" => "globaluserinfo",
-			"guiuser" => $account
-		];
-
-		$result = $this->request($params);
-
-		if(isset($result['query']['globaluserinfo']['name'])){
-			return 1;
-		}
-
-		// Padrão
-		return 0;
-
-	}
-
-	// Função para verificar se um usuário teve bloqueios no passado
 	public function hasBlocks($account){
 
 		$params = [
@@ -266,89 +247,21 @@ class api extends common{
 
 	}
 
-	// Função para verificar antispoof, retorna 0 ou o primeiro nome caso dispare
-	public function antispoof($account,$ignore){
+	protected function isDebug(){
 
-		// Troca temporariamente a URL da API
-		$old = $this->url;
-		$this->url = "https://meta.wikimedia.org/w/api.php";
+		if(!isset($this->debug)){
+			$this->debug = debug::isDebug();
 
-		$params = [
-			"action" => "antispoof",
-			"username" => $account
-		];
-
-		// Faz consulta a API
-		$result = $this->request($params);
-		//Retorna
-		$this->url = $old;
-
-		if($result['antispoof']['result']=="pass"){
-			$antispoof = 0;
-		}else{
-			$antispoof = $result['antispoof']['users'][0];
-			if($antispoof==$ignore){
-				if(isset($result['antispoof']['users'][1])){
-					$antispoof = $result['antispoof']['users'][1];
-				}else {
-					$antispoof = 0;
-				}
-			}
-		}
-
-		return $antispoof;
-
-	}
-
-	// Função para detectar o destino de redirects
-	public function resolveRedir($page){
-
-		$params = [
-			'action'		=> 'query',
-			'titles'		=> $page,
-			'redirects'	=> 'true'
-		];
-
-		$result = $this->request($params);
-
-		if(isset($result['query']['redirects'])){
-			$last = end($result['query']['redirects']);
-			$page = $last['to'];
-		}
-
-		return $page;
-
-	}
-
-	// Transclusões
-	public function transclusions($pages){
-
-		$params = [
-			'action'		=> 'query',
-			'prop'			=> 'transcludedin',
-			'titles'		=> $pages,
-			'tilimit'		=> '500'
-		];
-
-		$result = $this->request($params);
-
-		$result = $result['query']['pages'];
-
-		foreach ($result as $key => $value) {
-
-			$transclusions[$result[$key]['title']] = array();
-
-			foreach ($result[$key]['transcludedin'] as $key2 => $value2) {
-				$transclusions[$result[$key]['title']][] = $value2['title'];
+			if($this->debug==TRUE){
+				$this->maxlag += $this->maxlag;
 			}
 
 		}
 
-		return $transclusions;
+		return $this->debug;
 
 	}
 
-	// Links na(s) página(s)
 	public function linksOnPage($pages){
 
 		$params = [
@@ -373,6 +286,83 @@ class api extends common{
 		}
 
 		return $links;
+
+	}
+
+	public function request($params){
+
+		$try = 1;
+
+		$params["maxlag"] = $this->maxlag;
+
+		if(!isset($params["format"])){ //Definir como padrão após transição
+			$params["format"] = "json";
+		}
+
+		$result = $this->doCurl($params);
+
+		while(isset($result["error"]["lag"])){
+			echo $this->log->log("PROBLEMA: " . $try . "/3 maxlag excedido, limite: " . $this->maxlag . "; valor atual: " . number_format($result["error"]["lag"],2) . ".\r\n");
+
+			if($try===3){
+				$this->bye("Maxlag continua excedido após 3 tentativas. Fechando...\r\n");
+			}
+
+			sleep(5);
+
+			$result = $this->doCurl($params);
+
+			$try++;
+
+		}
+
+		return $result;
+
+	}
+
+	public function resolveRedir($page){
+
+		$params = [
+			'action'		=> 'query',
+			'titles'		=> $page,
+			'redirects'	=> 'true'
+		];
+
+		$result = $this->request($params);
+
+		if(isset($result['query']['redirects'])){
+			$last = end($result['query']['redirects']);
+			$page = $last['to'];
+		}
+
+		return $page;
+
+	}
+
+	public function transclusions($pages){
+
+		$params = [
+			'action'		=> 'query',
+			'prop'			=> 'transcludedin',
+			'titles'		=> $pages,
+			'tilimit'		=> '500'
+		];
+
+		$result = $this->request($params);
+
+		$result = $result['query']['pages'];
+
+		foreach ($result as $key => $value) {
+
+			$transclusions[$result[$key]['title']] = array();
+
+			foreach ($result[$key]['transcludedin'] as $key2 => $value2) {
+				$transclusions[$result[$key]['title']][] = $value2['title'];
+			}
+
+		}
+
+		return $transclusions;
 
 	}
 

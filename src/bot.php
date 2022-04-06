@@ -14,15 +14,15 @@ require_once("toolforgeSQL.php");
 // Classe do robô
 class bot extends common{
 
-	public $username;
+	public 	$api;
 	private $credentials;
-	public $power;
-	public $script;
-	public $log;
-	public $api;
-	public $sql;
-	private $tokens;
+	public 	$log;
 	private $login;
+	public 	$power;
+	public 	$script;
+	public 	$sql;
+	private $tokens;
+	public 	$username;
 
 	public function __construct(){
 		global $settings;
@@ -40,6 +40,111 @@ class bot extends common{
 		$this->sql = new toolforgeSQL($settings['replicasDB'], $settings['personalDB'], $this->log);
 		$this->login = FALSE;
 		$this->checkPower();
+	}
+
+	public function bye($message){
+		echo $this->log->log($message);
+		$this->logout();
+		$this->sql->updateStats($this->username, $this->script);
+		exit();
+	}
+
+	private function checkPower(){
+
+		if($this->isDebug()){
+			return;
+		}
+
+		$content = $this->api->getContent($this->power,1);
+
+		if($content!="run"){
+			$this->bye("Bot desligado em " . $this->power . ", verifique. Fechando...\r\n");
+		}
+
+	}
+
+	private function doEdit($type,$target,$text,$summary,$minor,$bot){
+
+		if($this->isDebug()){
+			echo $this->log->log("Edição: " . $this->username . " editou " . $target[0] . ($type=="section" ? " (seção " . $target[1] . ")" : "") . " (" . $summary . ") Edição menor: " . $minor . "; Robô: " . $bot . ". Conteúdo salvo no log;\r\n");
+			$this->log->log("Conteúdo:\r\n" . $text . "\r\n");
+			return;
+		}
+
+		if(!isset($this->tokens['csrf'])){
+			$this->getTokens();
+		}
+
+		$params = [
+			"action" => "edit",
+			"title" => $target[0],
+			"text" => $text,
+			"summary" => $summary,
+			"token" => $this->tokens['csrf']
+		];
+
+		if($type=="section"){
+			$params["section"] = $target[1];
+		}
+
+		if($minor==1){
+			$params["minor"] = "1";
+		}
+
+		if($bot==1){
+			$params["bot"] = "1";
+		}
+
+		$revids = $this->api->getRevids();
+		if(isset($revids[$target[0]])){
+			$params["baserevid"] = $revids[$target[0]];
+		}
+
+		$result = $this->api->request($params);
+
+		if(isset($result['error'])){
+			$this->bye("Erro ao editar '" . $target[0] . "': " . $result['error']['code'] . ". Fechando...\r\n");
+		}
+
+	}
+
+	public function edit($page, $text, $summary, $minor, $bot){
+
+		$target = array($page);
+
+		$this->doEdit("entire", $target, $text, $summary, $minor, $bot);
+
+	}
+
+	public function editSection($page,$section,$text,$summary,$minor,$bot){
+
+		$target = array($page,$section);
+
+		$this->doEdit("section", $target, $text, $summary, $minor, $bot);
+
+	}
+
+	private function getTokens(){
+		if($this->login===FALSE){
+			$this->login();
+		}
+
+		$params = [
+			"action" => "query",
+			"meta" => "tokens",
+			"type" => "csrf|deleteglobalaccount|patrol|rollback|setglobalaccountstatus|userrights|watch"
+		];
+
+		$result = $this->api->request($params);
+
+		$this->tokens['csrf'] = $result['query']['tokens']['csrftoken'];
+		$this->tokens['deleteglobalaccount'] = $result['query']['tokens']['deleteglobalaccounttoken'];
+		$this->tokens['patrol'] = $result['query']['tokens']['patroltoken'];
+		$this->tokens['rollback'] = $result['query']['tokens']['rollbacktoken'];
+		$this->tokens['setglobalaccountstatus'] = $result['query']['tokens']['setglobalaccountstatustoken'];
+		$this->tokens['userrights'] = $result['query']['tokens']['userrightstoken'];
+		$this->tokens['watch'] = $result['query']['tokens']['watchtoken'];
+
 	}
 
 	protected function isDebug(){
@@ -97,111 +202,6 @@ class bot extends common{
 			];
 			$this->api->request($params);
 		}
-	}
-
-	private function getTokens(){
-		if($this->login===FALSE){
-			$this->login();
-		}
-
-		$params = [
-			"action" => "query",
-			"meta" => "tokens",
-			"type" => "csrf|deleteglobalaccount|patrol|rollback|setglobalaccountstatus|userrights|watch"
-		];
-
-		$result = $this->api->request($params);
-
-		$this->tokens['csrf'] = $result['query']['tokens']['csrftoken'];
-		$this->tokens['deleteglobalaccount'] = $result['query']['tokens']['deleteglobalaccounttoken'];
-		$this->tokens['patrol'] = $result['query']['tokens']['patroltoken'];
-		$this->tokens['rollback'] = $result['query']['tokens']['rollbacktoken'];
-		$this->tokens['setglobalaccountstatus'] = $result['query']['tokens']['setglobalaccountstatustoken'];
-		$this->tokens['userrights'] = $result['query']['tokens']['userrightstoken'];
-		$this->tokens['watch'] = $result['query']['tokens']['watchtoken'];
-
-	}
-
-	public function edit($page, $text, $summary, $minor, $bot){
-
-		$target = array($page);
-
-		$this->doEdit("entire", $target, $text, $summary, $minor, $bot);
-
-	}
-
-	public function editSection($page,$section,$text,$summary,$minor,$bot){
-
-		$target = array($page,$section);
-
-		$this->doEdit("section", $target, $text, $summary, $minor, $bot);
-
-	}
-
-	private function doEdit($type,$target,$text,$summary,$minor,$bot){
-
-		if($this->isDebug()){
-			echo $this->log->log("Edição: " . $this->username . " editou " . $target[0] . ($type=="section" ? " (seção " . $target[1] . ")" : "") . " (" . $summary . ") Edição menor: " . $minor . "; Robô: " . $bot . ". Conteúdo salvo no log;\r\n");
-			$this->log->log("Conteúdo:\r\n" . $text . "\r\n");
-			return;
-		}
-
-		if(!isset($this->tokens['csrf'])){
-			$this->getTokens();
-		}
-
-		$params = [
-			"action" => "edit",
-			"title" => $target[0],
-			"text" => $text,
-			"summary" => $summary,
-			"token" => $this->tokens['csrf']
-		];
-
-		if($type=="section"){
-			$params["section"] = $target[1];
-		}
-
-		if($minor==1){
-			$params["minor"] = "1";
-		}
-
-		if($bot==1){
-			$params["bot"] = "1";
-		}
-
-		$revids = $this->api->getRevids();
-		if(isset($revids[$target[0]])){
-			$params["baserevid"] = $revids[$target[0]];
-		}
-
-		$result = $this->api->request($params);
-
-		if(isset($result['error'])){
-			$this->bye("Erro ao editar '" . $target[0] . "': " . $result['error']['code'] . ". Fechando...\r\n");
-		}
-
-	}
-
-	private function checkPower(){
-
-		if($this->isDebug()){
-			return;
-		}
-
-		$content = $this->api->getContent($this->power,1);
-
-		if($content!="run"){
-			$this->bye("Bot desligado em " . $this->power . ", verifique. Fechando...\r\n");
-		}
-
-	}
-
-	public function bye($message){
-		echo $this->log->log($message);
-		$this->logout();
-		$this->sql->updateStats($this->username, $this->script);
-		exit();
 	}
 
 }

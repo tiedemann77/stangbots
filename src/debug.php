@@ -18,10 +18,6 @@ class debug{
 
 	}
 
-	private function setStatus($value){
-		self::$status = $value;
-	}
-
 	private function getStatus(){
 
 		if(!isset(self::$status)){
@@ -33,6 +29,10 @@ class debug{
 
 	public static function isDebug(){
 		 return self::getStatus();
+	}
+
+	private function setStatus($value){
+		self::$status = $value;
 	}
 
 }

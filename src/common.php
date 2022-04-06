@@ -4,9 +4,9 @@ abstract class common{
 
 	protected $debug;
 
-	abstract protected function isDebug();
-
 	abstract public function bye($message);
+
+	abstract protected function isDebug();
 
 	// Função para converter meses em números em meses por extenso
 	public function monthstoPT($month){

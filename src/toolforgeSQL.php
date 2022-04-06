@@ -12,13 +12,13 @@ require_once("log.php");
 // Toolforge database
 class toolforgeSQL extends common{
 
-	private $replicasDB;
-	private $replicasConnection;
-	private $replicasStatus;
-	private $personalDB;
+	public 	$log;
 	private $personalConnection;
+	private $personalDB;
 	private $personalStatus;
-	public $log;
+	private $replicasConnection;
+	private $replicasDB;
+	private $replicasStatus;
 
 	public function __construct($replicasDB,$personalDB,$log){
 
@@ -43,16 +43,6 @@ class toolforgeSQL extends common{
 		exit();
 	}
 
-	protected function isDebug(){
-
-		if(!isset($this->debug)){
-			$this->debug = debug::isDebug();
-		}
-
-		return $this->debug;
-
-	}
-
 	private function check(){
 
 		$ts_pw = posix_getpwuid(posix_getuid());
@@ -74,17 +64,6 @@ class toolforgeSQL extends common{
 
 	}
 
-	private function checkReplicas($user,$pass){
-
-		$this->replicasConnection = new mysqli($this->replicasDB . '.analytics.db.svc.wikimedia.cloud', $user, $pass, $this->replicasDB . '_p');
-		if($this->replicasConnection->connect_error){
-			echo $this->log->log("Erro de conexão com a base de dados do Toolforge: " . $this->replicasConnection->connect_error . "\r\n");
-		}else{
-			$this->replicasStatus = TRUE;
-		}
-
-	}
-
 	private function checkPersonal($user,$pass){
 
 		$this->personalConnection = new mysqli('tools.db.svc.wikimedia.cloud', $user, $pass, $this->personalDB);
@@ -96,22 +75,32 @@ class toolforgeSQL extends common{
 
 	}
 
-	public function getReplicasStatus(){
-		return $this->replicasStatus;
+	private function checkReplicas($user,$pass){
+
+		$this->replicasConnection = new mysqli($this->replicasDB . '.analytics.db.svc.wikimedia.cloud', $user, $pass, $this->replicasDB . '_p');
+		if($this->replicasConnection->connect_error){
+			echo $this->log->log("Erro de conexão com a base de dados do Toolforge: " . $this->replicasConnection->connect_error . "\r\n");
+		}else{
+			$this->replicasStatus = TRUE;
+		}
+
 	}
 
 	public function getPersonalStatus(){
 		return $this->personalStatus;
 	}
 
-	public function replicasQuery($query,$params){
+	public function getReplicasStatus(){
+		return $this->replicasStatus;
+	}
 
-		if($this->replicasStatus){
-			$stmt = $this->replicasConnection->prepare($query);
-			return $this->query($stmt,$params);
-		}else{
-			return 0;
+	protected function isDebug(){
+
+		if(!isset($this->debug)){
+			$this->debug = debug::isDebug();
 		}
+
+		return $this->debug;
 
 	}
 
@@ -175,6 +164,17 @@ class toolforgeSQL extends common{
 		if(gettype($result)!="boolean"){
 			return $result->fetch_all(MYSQLI_BOTH);
 		}
+	}
+
+	public function replicasQuery($query,$params){
+
+		if($this->replicasStatus){
+			$stmt = $this->replicasConnection->prepare($query);
+			return $this->query($stmt,$params);
+		}else{
+			return 0;
+		}
+
 	}
 
 	public function updateStats($bot,$script){

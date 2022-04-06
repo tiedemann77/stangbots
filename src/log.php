@@ -6,11 +6,11 @@ require_once("debug.php");
 // Log
 class log extends common{
 
-	public $file;
-	public $stats;
-	private $start;
-	public $end;
+	public 	$end;
+	public 	$file;
 	private $ready;
+	private $start;
+	public 	$stats;
 
 	public function __construct($file){
 		global $settings;
@@ -41,6 +41,30 @@ class log extends common{
 		exit();
 	}
 
+	private function check(){
+
+		if(!file_exists($this->file)){
+			if(!fopen($this->file, 'w')){
+				$this->ready = FALSE;
+				$this->bye("Não foi possível criar o arquivo de log especificado. Provavelmente um erro de permissão ou o diretório não existe. Script interrompido. Por favor, crie o arquivo manualmente para prosseguir. Fechando...\r\n");
+			}
+		}
+
+		$this->ready = TRUE;
+
+	}
+
+	private function clear(){
+		if(filesize($this->file)>4194304){ //4 MB
+			$this->log("MANUTENÇÃO: " . $this->file . " está com " . number_format((filesize($this->file)/1024/1024),2,".",",") . " MB, realizando limpeza\r\n");
+			$file = file($this->file);
+			$delete = round(count($file)/10); //10%
+			$file = array_slice($file, $delete);
+			file_put_contents($this->file, $file);
+			unset($file);
+		}
+	}
+
 	protected function isDebug(){
 
 		if(!isset($this->debug)){
@@ -68,30 +92,6 @@ class log extends common{
 
 		return $msg;
 
-	}
-
-	private function check(){
-
-		if(!file_exists($this->file)){
-			if(!fopen($this->file, 'w')){
-				$this->ready = FALSE;
-				$this->bye("Não foi possível criar o arquivo de log especificado. Provavelmente um erro de permissão ou o diretório não existe. Script interrompido. Por favor, crie o arquivo manualmente para prosseguir. Fechando...\r\n");
-			}
-		}
-
-		$this->ready = TRUE;
-
-	}
-
-	private function clear(){
-		if(filesize($this->file)>4194304){ //4 MB
-			$this->log("MANUTENÇÃO: " . $this->file . " está com " . number_format((filesize($this->file)/1024/1024),2,".",",") . " MB, realizando limpeza\r\n");
-			$file = file($this->file);
-			$delete = round(count($file)/10); //10%
-			$file = array_slice($file, $delete);
-			file_put_contents($this->file, $file);
-			unset($file);
-		}
 	}
 
 	public function setStats($type){
