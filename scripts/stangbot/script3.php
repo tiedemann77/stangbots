@@ -4,7 +4,7 @@
 require_once(__DIR__ . "/settings.php");
 
 // Basic functions
-require_once(__DIR__ . "/../common.php");
+require_once(__DIR__ . "/../../autoloader.php");
 
 // Settings
 $settings = [
@@ -14,7 +14,7 @@ $settings = [
   'script' => "Script 3",
   'url' => "https://www.wikidata.org/w/api.php",
   'maxlag' => 4,
-  'file' => __DIR__ .  "/../log.log",
+  'file' => __DIR__ .  "/log.log",
   'stats' => array(),
   'replicasDB' => "wikidatawiki",
   'personalDB' => "s54852__stangbots"

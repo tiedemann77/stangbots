@@ -8,7 +8,7 @@
 require_once(__DIR__ . "/settings.php");
 
 // Requer funções básicas
-require_once(__DIR__ . "/../common.php");
+require_once(__DIR__ . "/../../autoloader.php");
 
 // Classe para lidar com a totalidade dos uploads
 class objects{
@@ -149,7 +149,7 @@ $settings = [
   'script' => "urc-warn",
   'url' => "https://pt.wikipedia.org/w/api.php",
   'maxlag' => 4,
-  'file' => __DIR__ .  "/../log.log",
+  'file' => __DIR__ .  "/log.log",
   'stats' => array(),
   'replicasDB' => "ptwiki",
   'personalDB' => "s54852__stangbots"
