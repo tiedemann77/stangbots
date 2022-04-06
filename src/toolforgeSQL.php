@@ -8,6 +8,7 @@
 require_once("common.php");
 require_once("debug.php");
 require_once("log.php");
+require_once("stats.php");
 
 // Toolforge database
 class toolforgeSQL extends common{
@@ -19,10 +20,12 @@ class toolforgeSQL extends common{
 	private $replicasConnection;
 	private $replicasDB;
 	private $replicasStatus;
+	public	$stats;
 
-	public function __construct($replicasDB,$personalDB,$log){
+	public function __construct($replicasDB,$personalDB,$log,$stats){
 
 		$this->log = $log;
+		$this->stats = $stats;
 
 		if($replicasDB!=NULL){
 			$this->replicasDB = $replicasDB;
@@ -159,7 +162,7 @@ class toolforgeSQL extends common{
 			}
 		}
 		$stmt->execute();
-		$this->log->setStats("sql");
+		$this->stats->increaseStats("sql");
 		$result = $stmt->get_result();
 		if(gettype($result)!="boolean"){
 			return $result->fetch_all(MYSQLI_BOTH);
@@ -184,7 +187,6 @@ class toolforgeSQL extends common{
 		}
 
 		if($this->personalStatus===TRUE){
-			global $settings;
 			global $manualRun;
 			if($manualRun===TRUE){
 				$manual = 0;
@@ -193,11 +195,12 @@ class toolforgeSQL extends common{
 			}
 			$query = "SELECT * FROM stats WHERE bot = '$bot' AND script_name = '$script'";
 			$result = $this->personalQuery($query,$params=NULL);
-			$api = $settings["stats"]["api"];
-			$sql = $settings["stats"]["sql"]+1;
-			$this->log->setStats("duration");
-			$duration = $settings["stats"]["duration"];
-			$last = $this->log->end->format('d-m-Y H:i:s');
+			$stats = $this->stats->getStats();
+			$api = $stats["api"];
+			$sql = $stats["sql"]+1;
+			$duration = $stats["duration"];
+			$last = $this->stats->getEnd());
+			$last = $last->format('d-m-Y H:i:s');
 			$memory = number_format(((memory_get_peak_usage()/1024)/1024),2,".",",");
 			if(isset($result[0])){
 				$query = "UPDATE stats SET api_requests = $api, sql_requests = $sql, duration = $duration, last = '$last', do_manual = $manual, memory = '$memory' WHERE bot = '$bot' AND script_name = '$script';";

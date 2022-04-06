@@ -6,34 +6,23 @@ require_once("debug.php");
 // Log
 class log extends common{
 
-	public 	$end;
 	public 	$file;
 	private $ready;
-	private $start;
 	public 	$stats;
 
-	public function __construct($file){
-		global $settings;
-
+	public function __construct($file,$stats){
 		$this->file = $file;
-		$this->stats = [
-			"api" => 0,
-			"sql" => 0,
-			"duration" => 0
-		];
-		$settings['stats'] = $this->stats;
-		$this->start = new DateTime(date("Y-m-d H:i:s"));
+		$this->stats = $stats;
 		$this->isDebug();
 		$this->check();
-		$this->log($this->start->format('d-m-Y H:i:s') . " - Iniciando log\r\n");
+		$start = new DateTime(date("Y-m-d H:i:s"));
+		$this->log($start->format('d-m-Y H:i:s') . " - Iniciando log\r\n");
 		$this->clear();
 	}
 
 	public function __destruct(){
-		if(!isset($this->end)){
-			$this->end = new DateTime(date("Y-m-d H:i:s"));
-		}
-		$this->log($this->end->format('d-m-Y H:i:s') . " - Fechando log\r\n");
+		$end = $this->stats->getEnd();
+		$this->log($end->format('d-m-Y H:i:s') . " - Fechando log\r\n");
 	}
 
 	public function bye($message){
@@ -92,17 +81,6 @@ class log extends common{
 
 		return $msg;
 
-	}
-
-	public function setStats($type){
-		global $settings;
-		if($type=="duration"){
-			$this->end = new DateTime(date("Y-m-d H:i:s"));
-			$this->stats["duration"] = $this->end->getTimestamp() - $this->start->getTimestamp();
-		}else{
-			$this->stats[$type]++;
-		}
-		$settings['stats'] = $this->stats;
 	}
 
 }

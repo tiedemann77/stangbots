@@ -8,6 +8,7 @@
 require_once("common.php");
 require_once("debug.php");
 require_once("log.php");
+require_once("stats.php");
 
 // Classe da API
 class api extends common {
@@ -16,12 +17,14 @@ class api extends common {
 	public 		$log;
 	public 		$maxlag;
 	private 	$revids;
+	public		$stats;
 	public 		$url;
 
-	public function __construct($url,$maxlag,$log){
+	public function __construct($url,$maxlag,$log,$stats){
 		$this->url = $url;
 		$this->maxlag = $maxlag;
 		$this->cookies = "/tmp/stangbots_cookie_" . rand() . ".inc";
+		$this->stats = $stats;
 		$this->log = $log;
 		$this->isDebug();
 	}
@@ -102,7 +105,7 @@ class api extends common {
 
 		$result = json_decode(curl_exec($ch),true);
 		curl_close($ch);
-		$this->log->setStats("api");
+		$this->stats->increaseStats("api");
 		return $result;
 	}
 
