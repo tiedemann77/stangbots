@@ -1,6 +1,7 @@
 <?php
 
 require_once("common.php");
+require_once("debug.php");
 
 // Log
 class log extends common{

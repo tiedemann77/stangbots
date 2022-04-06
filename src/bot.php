@@ -5,8 +5,9 @@
 		LICENSED UNDER MIT LICENSE***
 */
 
-require_once("common.php");
 require_once("api.php");
+require_once("common.php");
+require_once("debug.php");
 require_once("log.php");
 require_once("toolforgeSQL.php");
 

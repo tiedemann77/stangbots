@@ -6,6 +6,7 @@
 */
 
 require_once("common.php");
+require_once("debug.php");
 require_once("log.php");
 
 // Toolforge database
