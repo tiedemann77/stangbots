@@ -7,13 +7,30 @@ require_once "debug.php";
 class stats extends common
 {
 
-		private $start;
+    private $stats;
     private $time;
 
     public function __construct()
     {
         $this->stats = array();
         $this->startDuration();
+    }
+
+    public function __destruct()
+    {
+        if($this->isDebug()) {
+            if(count($this->stats)>0) {
+
+                $this->endDuration();
+
+                echo "Exibindo estatísticas para o modo de teste:\r\n";
+
+                foreach ($this->stats as $key => $value) {
+                     echo $key . ": " . $value . "\r\n";
+                }
+
+            }
+        }
     }
 
     public function bye($message)
