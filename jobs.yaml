@@ -1,84 +1,84 @@
 ---
 - name: renomeiabot-1
   command: php stangbots/scripts/renomeiabot/script1.php
-  image: tf-bullseye-std
+  image: tf-php74
   no-filelog: true
   schedule: "24 * * * * "
   emails: none
 
 - name: stangbot-1-1
   command: php stangbots/scripts/stangbot/script1.php
-  image: tf-bullseye-std
+  image: tf-php74
   no-filelog: true
   schedule: "7,27,47 0,14-23 * * *"
   emails: none
 
 - name: stangbot-1-2
   command: php stangbots/scripts/stangbot/script1.php
-  image: tf-bullseye-std
+  image: tf-php74
   no-filelog: true
   schedule: "7 1-6,8,11-13 * * *"
   emails: none
 
 - name: stangbot-2
   command: php stangbots/scripts/stangbot/script2.php
-  image: tf-bullseye-std
+  image: tf-php74
   no-filelog: true
   schedule: "4 0 */5 * *"
   emails: none
 
 - name: stangbot-3
   command: php stangbots/scripts/stangbot/script3.php
-  image: tf-bullseye-std
+  image: tf-php74
   no-filelog: true
   schedule: "43 * * * *"
   emails: none
 
 - name: stangbot-4
   command: php stangbots/scripts/stangbot/script4.php
-  image: tf-bullseye-std
+  image: tf-php74
   no-filelog: true
   schedule: "35 5 * * *"
   emails: none
 
 - name: stangbot-mr-js-css
   command: php stangbots/scripts/stangbot/mr-js-css.php
-  image: tf-bullseye-std
+  image: tf-php74
   no-filelog: true
   schedule: "29 3,15 * * *"
   emails: none
 
 - name: stangbot-urc-warn
   command: php stangbots/scripts/stangbot/urc-warn.php test
-  image: tf-bullseye-std
+  image: tf-php74
   no-filelog: true
   schedule: "21 4 * * *"
   emails: none
 
 - name: verificabot-1
   command: php stangbots/scripts/verificabot/script1.php
-  image: tf-bullseye-std
+  image: tf-php74
   no-filelog: true
   schedule: "13 1,7,13,19 * * *"
   emails: none
 
 - name: verificabot-2
   command: php stangbots/scripts/verificabot/script2.php
-  image: tf-bullseye-std
+  image: tf-php74
   no-filelog: true
   schedule: "44 4 * * *"
   emails: none
 
 - name: verificabot-3
   command: php stangbots/scripts/verificabot/script3.php
-  image: tf-bullseye-std
+  image: tf-php74
   no-filelog: true
   schedule: "55 4 18 * *"
   emails: none
 
 - name: verificabot-4
   command: php stangbots/scripts/verificabot/script4.php
-  image: tf-bullseye-std
+  image: tf-php74
   no-filelog: true
   schedule: "8 5 */7 * *"
   emails: none
