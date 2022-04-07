@@ -46,6 +46,38 @@ class toolforgeSQL extends common{
 		exit();
 	}
 
+	private function change( $newDB, $type ){
+
+		unset($this->personalConnection);
+		$this->personalStatus = FALSE;
+
+		unset($this->replicasConnection);
+		$this->replicasStatus = FALSE;
+
+		if($type=="personal"){
+			$this->personalDB = $newDB;
+		}
+
+		if($type=="replicas"){
+			$this->replicasDB = $newDB;
+		}
+
+		$this->check();
+
+	}
+
+	public function changePersonalDB( $personalDB ){
+
+		$this->change( $personalDB, "personal" );
+
+	}
+
+	public function changeReplicasDB( $replicasDB ){
+
+		$this->change( $replicasDB, "replicas" );
+
+	}
+
 	private function check(){
 
 		$ts_pw = posix_getpwuid(posix_getuid());
