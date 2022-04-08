@@ -15,14 +15,12 @@ class log extends common{
 		$this->stats = $stats;
 		$this->isDebug();
 		$this->check();
-		$start = new DateTime(date("Y-m-d H:i:s"));
-		$this->log($start->format('d-m-Y H:i:s') . " - Iniciando log\r\n");
+		$this->log($this->stats->getStart()->format('d-m-Y H:i:s') . " - Iniciando log\r\n");
 		$this->clear();
 	}
 
 	public function __destruct(){
-		$end = $this->stats->getEnd();
-		$this->log($end->format('d-m-Y H:i:s') . " - Fechando log\r\n");
+		$this->log($this->stats->getEnd()->format('d-m-Y H:i:s') . " - Fechando log\r\n");
 	}
 
 	public function bye($message){
