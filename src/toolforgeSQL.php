@@ -37,7 +37,6 @@ class toolforgeSQL extends common{
 		$this->replicasStatus = FALSE;
 		$this->personalStatus = FALSE;
 		$this->isDebug();
-		$this->check();
 
 	}
 
@@ -48,12 +47,6 @@ class toolforgeSQL extends common{
 
 	private function change( $newDB, $type ){
 
-		unset($this->personalConnection);
-		$this->personalStatus = FALSE;
-
-		unset($this->replicasConnection);
-		$this->replicasStatus = FALSE;
-
 		if($type=="personal"){
 			$this->personalDB = $newDB;
 		}
@@ -62,7 +55,10 @@ class toolforgeSQL extends common{
 			$this->replicasDB = $newDB;
 		}
 
-		$this->check();
+		$this->personalStatus = FALSE;
+		$this->replicasStatus = FALSE;
+		unset($this->personalConnection);
+		unset($this->replicasConnection);
 
 	}
 
@@ -79,6 +75,11 @@ class toolforgeSQL extends common{
 	}
 
 	private function check(){
+
+		$this->personalStatus = FALSE;
+		$this->replicasStatus = FALSE;
+		unset($this->personalConnection);
+		unset($this->replicasConnection);
 
 		$ts_pw = posix_getpwuid(posix_getuid());
 		if(!file_exists($ts_pw['dir'] . "/replica.my.cnf")){
@@ -141,6 +142,10 @@ class toolforgeSQL extends common{
 
 	public function personalQuery($query,$params){
 
+		if($this->personalStatus===FALSE){
+			$this->check();
+		}
+
 		if($this->personalStatus){
 			$stmt = $this->personalConnection->prepare($query);
 			return $this->query($stmt,$params);
@@ -202,6 +207,10 @@ class toolforgeSQL extends common{
 	}
 
 	public function replicasQuery($query,$params){
+
+		if($this->replicasStatus===FALSE){
+			$this->check();
+		}
 
 		if($this->replicasStatus){
 			$stmt = $this->replicasConnection->prepare($query);
