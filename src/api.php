@@ -92,6 +92,10 @@ class api extends common {
 		exit();
 	}
 
+	public function change( $url ){
+		$this->url = $url;
+	}
+
 	private function doCurl($params){
 		$ch = curl_init();
 
