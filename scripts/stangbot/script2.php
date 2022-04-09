@@ -41,20 +41,8 @@ $params = [
 // Faz consulta a API
 $result = $robot->api->request($params);
 
-$sysops = $result['query']['allusers'];
-
-// Removendo usuário do filtro de abusos
-$newkey = 0;
-foreach ($sysops as $key => $value) {
-  if($sysops[$key]['name']!="Filtro de edições"){
-    $temp[$newkey]['name'] = $sysops[$key]['name'];
-    $newkey++;
-  }
-}
-
-$sysops = $temp;
-
-unset($params);
+// Limpando e filtrando
+$sysops = array_diff(array_column($result['query']['allusers'], "name") , array( "Filtro de edições" , "AlbeROBOT" ) );
 
 // Contando logs por usuário
 // Se passar de 14, para porque já cumpre com a política
@@ -70,23 +58,23 @@ $params = [
 
 foreach ($sysops as $key => $value) {
 
-  $params["leuser"] = $sysops[$key]['name'];
+  $params["leuser"] = $value;
 
   // Bloqueios
-  echo $robot->log->log("Checando bloqueios para " . $sysops[$key]['name'] . "\r\n");
+  echo $robot->log->log("Checando bloqueios para " . $value . "\r\n");
 
   $params["letype"] = "block";
 
   $result = $robot->api->request($params);
 
-  $totals[$sysops[$key]['name']] = count($result['query']['logevents']);
+  $totals[$value] = count($result['query']['logevents']);
 
-  if($totals[$sysops[$key]['name']]>14){
+  if($totals[$value]>14){
     continue;
   }
 
   // Eliminações (mais complexo pois precisa remover delete_redir)
-  echo $robot->log->log("Checando eliminações para " . $sysops[$key]['name'] . "\r\n");
+  echo $robot->log->log("Checando eliminações para " . $value . "\r\n");
 
   $params["letype"] = "delete";
 
@@ -96,9 +84,9 @@ foreach ($sysops as $key => $value) {
 
   $result = $robot->api->request($params);
 
-  $totals[$sysops[$key]['name']] += count($result['query']['logevents']);
+  $totals[$value] += count($result['query']['logevents']);
 
-  $note[$sysops[$key]['name']] = "";
+  $note[$value] = "";
 
   if(isset($result['query']['logevents'])){
     $count_delredir = 0;
@@ -109,18 +97,18 @@ foreach ($sysops as $key => $value) {
     }
 
     if($count_delredir>235){
-      $note[$sysops[$key]['name']] = "<ref>Os registros de eliminações para " . $sysops[$key]['name'] . " podem não ter sido completamente contabilizados. Verifique manualmente antes de tomar qualquer decisão.</ref>";
+      $note[$value] = "<ref>Os registros de eliminações para " . $value . " podem não ter sido completamente contabilizados. Verifique manualmente antes de tomar qualquer decisão.</ref>";
     }
 
-    $totals[$sysops[$key]['name']] -= $count_delredir;
+    $totals[$value] -= $count_delredir;
   }
 
-  if($totals[$sysops[$key]['name']]>14){
+  if($totals[$value]>14){
     continue;
   }
 
   // Proteções
-  echo $robot->log->log("Checando proteções para " . $sysops[$key]['name'] . "\r\n");
+  echo $robot->log->log("Checando proteções para " . $value . "\r\n");
 
   // A partir daqui, podemos voltar com valores mais restritos
   $params["lelimit"] = "15";
@@ -130,54 +118,52 @@ foreach ($sysops as $key => $value) {
 
   $result = $robot->api->request($params);
 
-  $totals[$sysops[$key]['name']] += count($result['query']['logevents']);
+  $totals[$value] += count($result['query']['logevents']);
 
-  if($totals[$sysops[$key]['name']]>14){
+  if($totals[$value]>14){
     continue;
   }
 
   // Privilégios
-  echo $robot->log->log("Checando privilégios para " . $sysops[$key]['name'] . "\r\n");
+  echo $robot->log->log("Checando privilégios para " . $value . "\r\n");
 
   $params["letype"] = "rights";
 
   $result = $robot->api->request($params);
 
-  $totals[$sysops[$key]['name']] += count($result['query']['logevents']);
+  $totals[$value] += count($result['query']['logevents']);
 
-  if($totals[$sysops[$key]['name']]>14){
+  if($totals[$value]>14){
     continue;
   }
 
   // Mensagens em massa
-  echo $robot->log->log("Checando mensagens em massa para " . $sysops[$key]['name'] . "\r\n");
+  echo $robot->log->log("Checando mensagens em massa para " . $value . "\r\n");
 
   $params["letype"] = "massmessage";
 
   $result = $robot->api->request($params);
 
-  $totals[$sysops[$key]['name']] += count($result['query']['logevents']);
+  $totals[$value] += count($result['query']['logevents']);
 
-  if($totals[$sysops[$key]['name']]>14){
+  if($totals[$value]>14){
     continue;
   }
 
   // Filtro de abusos
-  echo $robot->log->log("Checando filtros de abuso para " . $sysops[$key]['name'] . "\r\n");
+  echo $robot->log->log("Checando filtros de abuso para " . $value . "\r\n");
 
   $params["letype"] = "abusefilter";
 
   $result = $robot->api->request($params);
 
-  $totals[$sysops[$key]['name']] += count($result['query']['logevents']);
+  $totals[$value] += count($result['query']['logevents']);
 
-  if($totals[$sysops[$key]['name']]>14){
+  if($totals[$value]>14){
     continue;
   }
 
 }
-
-unset($params);
 
 // Obtém contribuições daqueles que não cumpriram o requisito anterior
 
@@ -195,7 +181,7 @@ $params["ucnamespace"] = "4";
 
 // Domínio Wikipédia
 foreach ($totals as $key => $value) {
-  if ($totals[$key]<15){
+  if ($value<15){
 
     echo $robot->log->log("Contando edições no domínio Wikipédia para " . $key . "\r\n");
 
@@ -222,7 +208,7 @@ $params["ucnamespace"] = "8";
 
 // Novamente, em loop para cada usuário
 foreach ($totals as $key => $value) {
-  if ($totals[$key]<15){
+  if ($value<15){
 
     echo $robot->log->log("Contando edições no domínio MediaWiki para " . $key . "\r\n");;
 
@@ -263,12 +249,12 @@ $text = '== Atividade dos administradores no último semestre ==
 // Cada linha do relatório
 foreach ($totals as $key => $value) {
 
-  if($totals[$key]>14)
+  if($value>14)
   {
     $text .= '|-style="background:#ccffcc"
 |{{user2|' . $key . '}}
 ';
-  }elseif(($totals[$key]+$wpedits[$key]+$mwedits[$key])>14){
+}elseif(($value+$wpedits[$key]+$mwedits[$key])>14){
     $text .= '|-style="background:#f5deb3"
 |{{user2|' . $key . '}} ([[Especial:Privilégios/' . $key . '|gerenciar]])
 ';
@@ -278,7 +264,7 @@ foreach ($totals as $key => $value) {
 ';
   }
 
-  if($totals[$key]>14){
+  if($value>14){
     $text .= "|>15
 ";
   }else{
@@ -322,10 +308,6 @@ if($content===$text){
 
 // Editando
 $robot->edit($page, $text, "[[WP:Bot|bot]]: atualizando estatísticas sobre administradores", 0, 1);
-
-// PARA TESTE
-// ADICIONAR O CONTEÚDO DA EDIÇÃO EM LOG
-//$robot->log->log("Conteúdo da variável text:\r\n" . $text. "\r\n");
 
 // Fechar log
 $robot->bye($robot->script . " concluído!\r\n");
