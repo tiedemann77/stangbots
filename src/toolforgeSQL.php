@@ -244,9 +244,9 @@ class toolforgeSQL extends common{
 			$last = $last->format('d-m-Y H:i:s');
 			$memory = number_format(((memory_get_peak_usage()/1024)/1024),2,".",",");
 			if(isset($result[0])){
-				$query = "UPDATE stats SET api_requests = $api, sql_requests = $sql, duration = $duration, last = '$last', do_manual = $manual, memory = '$memory' WHERE bot = '$bot' AND script_name = '$script';";
+				$query = "UPDATE stats SET api_requests = '$api', sql_requests = '$sql', duration = '$duration', last = '$last', do_manual = '$manual', memory = '$memory' WHERE bot = '$bot' AND script_name = '$script';";
 			}else{
-				$query = "INSERT INTO stats (bot, api_requests, sql_requests, duration, last, script_name, do_manual, memory) VALUES ('$bot', $api, $sql, $duration, '$last', '$script', 1, '$memory');";
+				$query = "INSERT INTO stats (bot, api_requests, sql_requests, duration, last, script_name, do_manual, memory) VALUES ('$bot', '$api', '$sql', '$duration', '$last', '$script', 1, '$memory');";
 			}
 			$this->personalQuery($query,$params=NULL);
 		}
