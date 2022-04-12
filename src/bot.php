@@ -66,6 +66,49 @@ class bot extends common{
 
 	}
 
+	public function createStatement( $item , $propertie , $value , $reference, $summary ){
+
+		if($this->isDebug()){
+			echo $this->log->log("Edição: {$this->username} editou {$item}, adicionando {$propertie} ({$summary});\r\n");
+			return;
+		}
+
+		if(!isset($this->tokens['csrf'])){
+			$this->getTokens();
+		}
+
+		$params = [
+			'action' 		=> 'wbcreateclaim',
+			'token'			=> $this->tokens['csrf'],
+			'entity' 		=> $item,
+			'property'	=> $propertie,
+			'snaktype' 	=> 'value',
+			'value' 		=> $value,
+			'summary'		=> $summary
+		];
+
+		$result =  $this->api->request($params);
+
+		if($result['success']==1){
+			$this->createStatementReference( $result['claim']['id'] , $reference );
+		}
+
+	}
+
+	private function createStatementReference( $id , $reference ){
+
+		$params = [
+			'action' 		=> 'wbsetreference',
+			'token'			=> $this->tokens['csrf'],
+			'statement' => $id,
+			'snaks'			=> $reference,
+			'summary'		=> "[[WD:BOT|bot]]: adding references"
+		];
+
+		return $this->api->request($params);
+
+	}
+
 	private function doEdit($type,$target,$text,$summary,$minor,$bot){
 
 		if($this->isDebug()){
