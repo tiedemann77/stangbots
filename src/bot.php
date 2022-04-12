@@ -52,6 +52,30 @@ class bot extends common{
 		exit();
 	}
 
+	public function changeStatement( $id , $value , $summary ){
+
+		if($this->isDebug()){
+			echo $this->log->log("Edição: {$this->username} editou o claim {$id} ({$summary});\r\n");
+			return;
+		}
+
+		if(!isset($this->tokens['csrf'])){
+			$this->getTokens();
+		}
+
+		$params = [
+			'action' 		=> 'wbsetclaimvalue',
+			'token'			=> $this->tokens['csrf'],
+			'claim' 		=> $id,
+			'snaktype' 	=> 'value',
+			'value' 		=> $value,
+			'summary'		=> $summary
+		];
+
+		$this->api->request($params);
+
+	}
+
 	private function checkPower(){
 
 		if($this->isDebug()){
@@ -95,7 +119,7 @@ class bot extends common{
 
 	}
 
-	private function createStatementReference( $id , $reference ){
+	public function createStatementReference( $id , $reference ){
 
 		$params = [
 			'action' 		=> 'wbsetreference',
