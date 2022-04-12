@@ -127,7 +127,7 @@ foreach ($result as $key => $value) {
 
     echo $robot->log->log("Propriedade adicionada no item {$item};\r\n");
 
-  }elseif(intval($result2['claims']['P63'][0]['mainsnak']['datavalue']['value']['amount'])!=$value['voters']){
+  }elseif(intval($result2['claims']['P1831'][0]['mainsnak']['datavalue']['value']['amount'])!=$value['voters']){
     //Caso exista, atualiza
 
     $data = json_encode(['amount' => $value['voters'], 'unit' => '1']);
