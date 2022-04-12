@@ -227,6 +227,10 @@ class toolforgeSQL extends common{
 			return;
 		}
 
+		if($this->personalStatus===FALSE){
+			$this->check();
+		}
+
 		if($this->personalStatus===TRUE){
 			global $manualRun;
 			if($manualRun===TRUE){
