@@ -118,7 +118,7 @@ foreach ($result as $key => $value) {
     // Caso a propriedade não exista, adiciona
 
     $data = json_encode(['amount' => $value['voters'], 'unit' => '1']);
-    $reference = '{"P248":[{"snaktype":"value","property":"P248","datavalue":{"entity-type":"item","numeric-id":111590317}}]}';
+    $reference = '{"P248":[{"snaktype":"value","property":"P248","datavalue":{"type":"wikibase-entityid","value":{"entity-type":"item","numeric-id":111590317}}}]}';
 
     $response = $robot->createStatement( $item , "P1831", $data, $reference, "[[WD:BOT|bot]]: add/update P1831");
 
