@@ -108,7 +108,8 @@ class bot extends common{
 			'property'	=> $propertie,
 			'snaktype' 	=> 'value',
 			'value' 		=> $value,
-			'summary'		=> $summary
+			'summary'		=> $summary,
+			'bot'				=> "1"
 		];
 
 		$result =  $this->api->request($params);
@@ -121,12 +122,17 @@ class bot extends common{
 
 	public function createStatementReference( $id , $reference ){
 
+		if(!isset($this->tokens['csrf'])){
+			$this->getTokens();
+		}
+
 		$params = [
 			'action' 		=> 'wbsetreference',
 			'token'			=> $this->tokens['csrf'],
 			'statement' => $id,
 			'snaks'			=> $reference,
-			'summary'		=> "[[WD:BOT|bot]]: adding references"
+			'summary'		=> "[[WD:BOT|bot]]: adding references",
+			'bot'				=> "1"
 		];
 
 		return $this->api->request($params);
