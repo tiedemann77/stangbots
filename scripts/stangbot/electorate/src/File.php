@@ -21,17 +21,7 @@ class File
 
         $filename = __DIR__ . "/../data/zip/" . $this->state . ".zip";
 
-        // User-Agent personalizado
-        $opts = [
-        "http" => [
-          "method" => "GET",
-          "header" => "User-Agent: Stangbots. A tech project run by [[User:Stanglavine]] on the Wikimedia Movement. More info: https://stangbots.toolforge.org/\r\n"
-        ]
-        ];
-
-        $context = stream_context_create($opts);
-
-        if(file_put_contents($filename, file_get_contents($this->url, false, $context))) {
+        if(file_put_contents($filename, file_get_contents($this->url))) {
             $this->zip = $filename;
             echo $this->log->log("Download de {$this->zip} concluído!\r\n");
             return true;
