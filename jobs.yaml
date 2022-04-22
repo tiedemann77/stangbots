@@ -13,6 +13,13 @@
   schedule: "11 5 * * *"
   emails: none
 
+- name: stangbot-electorate-set
+  command: php stangbots/scripts/stangbot/electorate/scripts/setdata.php
+  image: tf-php74
+  no-filelog: true
+  schedule: "11 4 * * *"
+  emails: none
+
 - name: stangbot-1-1
   command: php stangbots/scripts/stangbot/script1.php
   image: tf-php74
