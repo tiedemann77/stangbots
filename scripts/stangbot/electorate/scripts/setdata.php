@@ -58,9 +58,9 @@ $states = [
   'DF' => 'Q119158'
 ];
 
-echo $robot->log->log("Obtendo valores do DB (limite = 1)...\r\n");
+echo $robot->log->log("Obtendo valores do DB (limite = 10)...\r\n");
 
-$query = "SELECT * FROM electorate WHERE updated = 0 ORDER BY timestamp ASC LIMIT 1;";
+$query = "SELECT * FROM electorate WHERE updated = 0 ORDER BY timestamp ASC LIMIT 10;";
 
 $result = $robot->sql->personalQuery($query, $params=null);
 
