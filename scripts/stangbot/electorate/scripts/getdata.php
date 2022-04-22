@@ -75,11 +75,13 @@ $query = "SELECT * FROM electorate WHERE state = '$state';";
 
 $result = $robot->sql->personalQuery($query, $params=null);
 
+$timestamp = time();
+
 if(!isset($result[0])) {
 
     foreach ($data[$state] as $key => $value) {
 
-        $query = "INSERT INTO electorate (state, municipality, voters, updated) VALUES ('$state', '$key', '$value', 0);";
+        $query = "INSERT INTO electorate (state, municipality, voters, updated, timestamp) VALUES ('$state', '$key', '$value', 0, '$timestamp');";
 
         $robot->sql->personalQuery($query, $params=null);
 
@@ -94,7 +96,7 @@ if(!isset($result[0])) {
             if($value2['state']==$state&&$value2['municipality']==$key) {
 
                 if($value!=$value2['voters']) {
-                    $query = "UPDATE electorate SET voters = '$value', updated = 0 WHERE state = '$state' AND municipality = '$key';";
+                    $query = "UPDATE electorate SET voters = '$value', updated = 0, timestamp = '$timestamp' WHERE state = '$state' AND municipality = '$key';";
                     $robot->sql->personalQuery($query, $params=null);
                 }
 
@@ -107,7 +109,7 @@ if(!isset($result[0])) {
         }
 
         if(!isset($found)) {
-            $query = "INSERT INTO electorate (state, municipality, voters, updated) VALUES ('$state', '$key', '$value', 0);";
+            $query = "INSERT INTO electorate (state, municipality, voters, updated, timestamp) VALUES ('$state', '$key', '$value', 0, '$timestamp');";
             $robot->sql->personalQuery($query, $params=null);
         }else{
             unset($found);
