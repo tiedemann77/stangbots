@@ -109,6 +109,7 @@ if(!isset($result[0])) {
         if(!isset($found)) {
             $query = "INSERT INTO electorate (state, municipality, voters, updated) VALUES ('$state', '$key', '$value', 0);";
             $robot->sql->personalQuery($query, $params=null);
+        }else{
             unset($found);
         }
 
