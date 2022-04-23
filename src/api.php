@@ -6,6 +6,7 @@
 */
 
 require_once("common.php");
+require_once("Curl.php");
 require_once("debug.php");
 require_once("log.php");
 require_once("stats.php");
@@ -96,21 +97,12 @@ class api extends common {
 		$this->url = $url;
 	}
 
-	private function doCurl($params){
-		$ch = curl_init();
+	private function doPostCurl($params){
 
-		curl_setopt($ch, CURLOPT_URL, $this->url);
-		curl_setopt($ch, CURLOPT_POST, true);
-		curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($params));
-		curl_setopt($ch, CURLOPT_USERAGENT, "A bot by User Stanglavine");
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-		curl_setopt($ch, CURLOPT_COOKIEJAR, $this->cookies);
-		curl_setopt($ch, CURLOPT_COOKIEFILE, $this->cookies);
+		return Curl::doPostRequest( $this->url , $params , $this->cookies );
 
-		$result = json_decode(curl_exec($ch),true);
-		curl_close($ch);
 		$this->stats->increaseStats("api");
-		return $result;
+		
 	}
 
 	public function getContent($page,$mode) {
@@ -306,7 +298,7 @@ class api extends common {
 			$params["format"] = "json";
 		}
 
-		$result = $this->doCurl($params);
+		$result = $this->doPostCurl($params);
 
 		while(isset($result["error"]["lag"])){
 			echo $this->log->log("PROBLEMA: " . $try . "/3 maxlag excedido, limite: " . $this->maxlag . "; valor atual: " . number_format($result["error"]["lag"],2) . ".\r\n");
@@ -317,7 +309,7 @@ class api extends common {
 
 			sleep(5);
 
-			$result = $this->doCurl($params);
+			$result = $this->doPostCurl($params);
 
 			$try++;
 
