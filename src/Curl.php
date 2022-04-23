@@ -1,30 +1,65 @@
 <?php
 
 /*
-		***THIS FILE INCLUDES CODE FROM MEDIAWIKI API DEMOS THAT ARE
-		LICENSED UNDER MIT LICENSE***
+        ***THIS FILE INCLUDES CODE FROM MEDIAWIKI API DEMOS THAT ARE
+        LICENSED UNDER MIT LICENSE***
 */
 
 // Classe do cURL
-class Curl {
+class Curl
+{
 
-	public static function doPostRequest($url, $params, $cookies){
+    private static $connection;
 
-		$ch = curl_init();
+    public static function doPostCookies( $url , $params , $cookies )
+    {
 
-		curl_setopt($ch, CURLOPT_URL, $url);
-		curl_setopt($ch, CURLOPT_POST, true);
-		curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($params));
-		curl_setopt($ch, CURLOPT_USERAGENT, "Stangbots (https://github.com/tiedemann77/stangbots). For more info, visit: https://stangbots.toolforge.org/.");
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-		curl_setopt($ch, CURLOPT_COOKIEJAR, $cookies);
-		curl_setopt($ch, CURLOPT_COOKIEFILE, $cookies);
+        self::start($url);
 
-		$result = json_decode(curl_exec($ch),true);
-		curl_close($ch);
-		return $result;
+        curl_setopt(self::$connection, CURLOPT_POST, true);
+        curl_setopt(self::$connection, CURLOPT_POSTFIELDS, http_build_query($params));
+        curl_setopt(self::$connection, CURLOPT_COOKIEJAR, $cookies);
+        curl_setopt(self::$connection, CURLOPT_COOKIEFILE, $cookies);
 
-	}
+        $result = json_decode(curl_exec(self::$connection), true);
+
+        self::stop();
+
+        return $result;
+
+    }
+
+    public static function doPostNoCookies( $url , $params )
+    {
+
+        self::start($url);
+
+        curl_setopt(self::$connection, CURLOPT_POST, true);
+        curl_setopt(self::$connection, CURLOPT_POSTFIELDS, http_build_query($params));
+
+        $result = json_decode(curl_exec($connection), true);
+
+        self::stop();
+
+        return $result;
+
+    }
+
+    private function start( $url )
+    {
+
+        self::$connection = curl_init();
+
+        curl_setopt(self::$connection, CURLOPT_URL, $url);
+        curl_setopt(self::$connection, CURLOPT_USERAGENT, "Stangbots (https://github.com/tiedemann77/stangbots). For more info, visit: https://stangbots.toolforge.org/.");
+        curl_setopt(self::$connection, CURLOPT_RETURNTRANSFER, true);
+
+    }
+
+    private function stop()
+    {
+        curl_close(self::$connection);
+    }
 
 }
 
