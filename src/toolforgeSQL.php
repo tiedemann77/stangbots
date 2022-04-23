@@ -6,6 +6,7 @@
 */
 
 require_once("common.php");
+require_once("Curl.php");
 require_once("debug.php");
 require_once("log.php");
 require_once("stats.php");
@@ -254,6 +255,22 @@ class toolforgeSQL extends common{
 			}
 			$this->personalQuery($query,$params=NULL);
 		}
+	}
+
+	public function wikidataQuery($query){
+
+		// É realizada via webservice, usando cURL
+		$url = "https://query.wikidata.org/sparql";
+
+		$params = [
+		  'query' 	=> 	$query,
+			'format' 	=> 	'json'
+		];
+
+		$this->stats->increaseStats("sql");
+
+		return Curl::doPostNoCookies($url, $params);
+
 	}
 
 }

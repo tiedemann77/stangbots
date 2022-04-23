@@ -85,11 +85,9 @@ foreach ($result as $key => $value) {
 
   }else{
 
-    $params = [
-      'query' => 'SELECT DISTINCT ?item WHERE {?item p:P6555 ?statement0.?statement0 (ps:P6555) "' . $municipality . '".} LIMIT 1'
-    ];
+    $query = 'SELECT DISTINCT ?item WHERE {?item p:P6555 ?statement0.?statement0 (ps:P6555) "' . $municipality . '".} LIMIT 1';
 
-    $result2 = $robot->api->request($params);
+    $result2 = $robot->sql->wikidataQuery($query);
 
     $result2 = $result2['results']['bindings'];
 
