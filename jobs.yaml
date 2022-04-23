@@ -6,13 +6,6 @@
   schedule: "24 * * * * "
   emails: none
 
-- name: stangbot-electorate-get
-  command: php stangbots/scripts/stangbot/electorate/scripts/getdata.php
-  image: tf-php74
-  no-filelog: true
-  schedule: "11 5 * * *"
-  emails: none
-
 - name: stangbot-electorate-set
   command: php stangbots/scripts/stangbot/electorate/scripts/setdata.php
   image: tf-php74

@@ -37,7 +37,7 @@ class Curl
         curl_setopt(self::$connection, CURLOPT_POST, true);
         curl_setopt(self::$connection, CURLOPT_POSTFIELDS, http_build_query($params));
 
-        $result = json_decode(curl_exec($connection), true);
+        $result = json_decode(curl_exec(self::$connection), true);
 
         self::stop();
 

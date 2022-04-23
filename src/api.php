@@ -99,9 +99,9 @@ class api extends common {
 
 	private function doPostCurl($params){
 
-		return Curl::doPostCookies( $this->url , $params , $this->cookies );
-
 		$this->stats->increaseStats("api");
+
+		return Curl::doPostCookies( $this->url , $params , $this->cookies );
 
 	}
 
