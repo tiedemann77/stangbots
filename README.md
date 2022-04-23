@@ -4,7 +4,7 @@ NOTE: These bots were made for use on Portuguese Wikipedia and Wikidata, so (alm
 
 And... This code was made by a non-professional programmer, so don't be rude :) Suggestions are very welcome!
 
-Código-fonte utilizado nas operações de alguns robôs na Wikipédia em Português e no Wikidata. Para replicá-los, basta clonar os repositórios e ajustar as configurações no aquivo "settings.php" de cada um deles. Há um arquivo de exemplo para cada robô. Lembre-se de que o arquivo "common.php" contém as funções compartilhadas por todos eles, portanto é sempre necessário.
+Código-fonte utilizado nas operações de alguns robôs na Wikipédia em Português e no Wikidata. Para replicá-los, basta clonar os repositórios e ajustar as configurações no aquivo "settings.php" de cada um deles. Há um arquivo de exemplo para cada robô. Veja os scripts existentes para exemplos de utilização.
 
 ## Licença
 MIT License
