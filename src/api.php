@@ -59,7 +59,7 @@ class api extends common {
 
 		// Troca temporariamente a URL da API
 		$old = $this->url;
-		$this->url = "https://meta.wikimedia.org/w/api.php";
+		$this->change("https://meta.wikimedia.org/w/api.php");
 
 		$params = [
 			"action" => "antispoof",
@@ -69,7 +69,7 @@ class api extends common {
 		// Faz consulta a API
 		$result = $this->request($params);
 		//Retorna
-		$this->url = $old;
+		$this->change($old);
 
 		if($result['antispoof']['result']=="pass"){
 			$antispoof = 0;

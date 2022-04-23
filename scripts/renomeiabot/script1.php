@@ -141,7 +141,7 @@ while ($control < $requestNumber) {
   echo $robot->log->log("Verificando pedido número " . $control2 . "...\r\n");
 
   // Troca temporária
-  $robot->api->url = "https://meta.wikimedia.org/w/api.php";
+  $robot->api->change("https://meta.wikimedia.org/w/api.php");
 
   $params = [
 		"action" => "query",
@@ -153,7 +153,7 @@ while ($control < $requestNumber) {
   // Faz consulta a API
   $result = $robot->api->request($params);
   // Retorna
-  $robot->api->url = "https://pt.wikipedia.org/w/api.php";
+  $robot->api->change("https://pt.wikipedia.org/w/api.php");
 
   // Verificando se há registro de renonomeação
   if(isset($result['query']['logevents'][0])){

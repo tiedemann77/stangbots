@@ -55,7 +55,7 @@ function run($content){
     if($content===$cache){
 
       // Troca temporária
-      $robot->api->url = "https://meta.wikimedia.org/w/api.php";
+      $robot->api->change("https://meta.wikimedia.org/w/api.php");
 
       $start = date("Y-m-d H:i:s", strtotime("-1 hour"));
 
@@ -70,7 +70,7 @@ function run($content){
       // Faz consulta a API
       $result = $robot->api->request($params);
       // Retornando
-      $robot->api->url = "https://pt.wikipedia.org/w/api.php";
+      $robot->api->change("https://pt.wikipedia.org/w/api.php");
 
       // Verifica se houveram renomeações
       if(isset($result['query']['logevents']['0'])){
