@@ -96,8 +96,15 @@ if(!isset($result[0])) {
             if($value2['state']==$state&&$value2['municipality']==$key) {
 
                 if($value!=$value2['voters']) {
+
+                  if($value['updated']==0){
+                    $query = "UPDATE electorate SET voters = '$value' WHERE state = '$state' AND municipality = '$key';";
+                  }else{
                     $query = "UPDATE electorate SET voters = '$value', updated = 0, timestamp = '$timestamp' WHERE state = '$state' AND municipality = '$key';";
+                  }
+
                     $robot->sql->personalQuery($query, $params=null);
+
                 }
 
                 $found = true;
