@@ -75,8 +75,6 @@ foreach ($result as $key => $value) {
   $state = $value['state'];
   $municipality = $value['municipality'];
 
-  $robot->api->change("https://query.wikidata.org/sparql");
-
   // Parte 1: obter o item
   if($municipality==0){
 
@@ -102,8 +100,6 @@ foreach ($result as $key => $value) {
   }
 
   // Parte 2: editar a propriedade
-  $robot->api->change("https://www.wikidata.org/w/api.php");
-
   $params = [
     'action'    => 'wbgetclaims',
     'entity'    => $item,
