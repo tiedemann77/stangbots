@@ -162,7 +162,7 @@ class bot extends common{
 			'snaktype'	=> 'value',
 			'property'	=> $qualifier[0],
 			'value'			=> $qualifier[1],
-			'summary'		=> '[[WD:BOT|bot]]: adding qualifiers'
+			'summary'		=> '[[WD:BOT|bot]]: adding qualifier'
 		];
 
 		if($bot==1){
