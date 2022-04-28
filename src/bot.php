@@ -90,7 +90,7 @@ class bot extends common{
 
 	}
 
-	public function createStatement( $item , $propertie , $value , $reference, $summary ){
+	public function createStatement( $item , $propertie , $value , $qualifier , $reference, $summary, $bot ){
 
 		if($this->isDebug()){
 			echo $this->log->log("Edição: {$this->username} editou {$item}, adicionando {$propertie} ({$summary});\r\n");
@@ -109,18 +109,25 @@ class bot extends common{
 			'snaktype' 	=> 'value',
 			'value' 		=> $value,
 			'summary'		=> $summary,
-			'bot'				=> "1"
 		];
+
+		if($bot==1){
+			$params["bot"] = "1";
+		}
 
 		$result =  $this->api->request($params);
 
 		if($result['success']==1){
-			$this->createStatementReference( $result['claim']['id'] , $reference );
+			$this->createStatementReference( $result['claim']['id'] , $reference , $bot );
+
+			if($qualifier!=NULL){
+				$this->createStatementQualifier( $result['claim']['id'] , $qualifier , $bot );
+			}
 		}
 
 	}
 
-	public function createStatementReference( $id , $reference ){
+	public function createStatementReference( $id , $reference, $bot ){
 
 		if(!isset($this->tokens['csrf'])){
 			$this->getTokens();
@@ -131,9 +138,36 @@ class bot extends common{
 			'token'			=> $this->tokens['csrf'],
 			'statement' => $id,
 			'snaks'			=> $reference,
-			'summary'		=> "[[WD:BOT|bot]]: adding references",
-			'bot'				=> "1"
+			'summary'		=> '[[WD:BOT|bot]]: adding reference',
 		];
+
+		if($bot==1){
+			$params["bot"] = "1";
+		}
+
+		return $this->api->request($params);
+
+	}
+
+	public function createStatementQualifier( $id , $qualifier , $bot ){
+
+		if(!isset($this->tokens['csrf'])){
+			$this->getTokens();
+		}
+
+		$params = [
+			'action' 		=> 'wbsetqualifier',
+			'token'			=> $this->tokens['csrf'],
+			'claim' 		=> $id,
+			'snaktype'	=> 'value',
+			'property'	=> $qualifier[0],
+			'value'			=> $qualifier[1],
+			'summary'		=> '[[WD:BOT|bot]]: adding qualifiers'
+		];
+
+		if($bot==1){
+			$params["bot"] = "1";
+		}
 
 		return $this->api->request($params);
 

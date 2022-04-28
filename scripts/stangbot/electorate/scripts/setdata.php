@@ -27,6 +27,9 @@ $robot = new bot();
 
 echo $robot->log->log($robot->username . " - Iniciando " . $robot->script . "\r\n");
 
+// ATUALIZAR: utilizada em P585 (point in time)
+$date = '+2022-03-00T00:00:00Z';
+
 // Lista de itens para os estados
 $states = [
   'AC' => 'Q40780',
@@ -100,45 +103,16 @@ foreach ($result as $key => $value) {
   }
 
   // Parte 2: editar a propriedade
-  $params = [
-    'action'    => 'wbgetclaims',
-    'entity'    => $item,
-    'property'  => 'P1831'
-  ];
+  $data = json_encode(['amount' => $value['voters'], 'unit' => '1']);
+  $reference = '{"P248":[{"snaktype":"value","property":"P248","datavalue":{"type":"wikibase-entityid","value":{"entity-type":"item","numeric-id":111590317}}}]}';
+  $qualifier = array("P585", json_encode(['time' => $date, 'timezone' => 0, 'before' => 0, 'after' => 0, 'precision' => 10, 'calendarmodel' => 'http://www.wikidata.org/entity/Q1985727']));
 
-  $result2 = $robot->api->request($params);
+  $robot->createStatement( $item , "P1831", $data, $qualifier, $reference, "[[WD:BOT|bot]]: add/update P1831", 1);
 
-  if(count($result2['claims'])==0){
-    // Caso a propriedade não exista, adiciona
+  $query = "UPDATE electorate SET updated = 1 WHERE state = '$state' AND municipality = '$municipality';";
+  $robot->sql->personalQuery($query, $params=null);
 
-    $data = json_encode(['amount' => $value['voters'], 'unit' => '1']);
-    $reference = '{"P248":[{"snaktype":"value","property":"P248","datavalue":{"type":"wikibase-entityid","value":{"entity-type":"item","numeric-id":111590317}}}]}';
-
-    $response = $robot->createStatement( $item , "P1831", $data, $reference, "[[WD:BOT|bot]]: add/update P1831");
-
-    $query = "UPDATE electorate SET updated = 1 WHERE state = '$state' AND municipality = '$municipality';";
-    $robot->sql->personalQuery($query, $params=null);
-
-    echo $robot->log->log("Propriedade adicionada no item {$item};\r\n");
-
-  }elseif(intval($result2['claims']['P1831'][0]['mainsnak']['datavalue']['value']['amount'])!=$value['voters']){
-    //Caso exista, atualiza
-
-    $data = json_encode(['amount' => $value['voters'], 'unit' => '1']);
-    $robot->changeStatement( $result2['claims']['P1831'][0]['id'] , $data, "[[WD:BOT|bot]]: add/update P1831");
-
-    $query = "UPDATE electorate SET updated = 1 WHERE state = '$state' AND municipality = '$municipality';";
-    $robot->sql->personalQuery($query, $params=null);
-
-    echo $robot->log->log("Propriedade modificada no item {$item};\r\n");
-
-  }else{
-
-    $query = "UPDATE electorate SET updated = 1 WHERE state = '$state' AND municipality = '$municipality';";
-    $robot->sql->personalQuery($query, $params=null);
-
-    echo $robot->log->log("Propriedade já está atualizada no item {$item};\r\n");
-  }
+  echo $robot->log->log("Propriedade adicionada no item {$item};\r\n");
 
 }
 
