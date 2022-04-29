@@ -314,6 +314,37 @@ class bot extends common{
 		}
 	}
 
+	public function rollback($page,$user,$summary,$bot){
+
+		if($this->isDebug()){
+			echo $this->log->log("Reversão: " . $this->username . " reverteu " . $user . " em " . $page . " (" . $summary . ") Robô: " . $bot . ";\r\n");
+			return;
+		}
+
+		if(!isset($this->tokens['rollback'])){
+			$this->getTokens();
+		}
+
+		$params = [
+			"action" 	=> "rollback",
+			"title" 	=> $page,
+			"user" 		=> $user,
+			"summary" => $summary,
+			"token" 	=> $this->tokens['rollback']
+		];
+
+		if($bot==1){
+			$params["markbot"] = "1";
+		}
+
+		$result = $this->api->request($params);
+
+		if(isset($result['error'])){
+			$this->bye("Erro ao reverter '" . $user . "' em '" . $page . "': " . $result['error']['code'] . ". Fechando...\r\n");
+		}
+
+	}
+
 }
 
 ?>
