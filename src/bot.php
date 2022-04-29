@@ -59,13 +59,9 @@ class bot extends common{
 			return;
 		}
 
-		if(!isset($this->tokens['csrf'])){
-			$this->getTokens();
-		}
-
 		$params = [
 			'action' 		=> 'wbsetclaimvalue',
-			'token'			=> $this->tokens['csrf'],
+			'token'			=> $this->getTokens('csrf'),
 			'claim' 		=> $id,
 			'snaktype' 	=> 'value',
 			'value' 		=> $value,
@@ -97,13 +93,9 @@ class bot extends common{
 			return;
 		}
 
-		if(!isset($this->tokens['csrf'])){
-			$this->getTokens();
-		}
-
 		$params = [
 			'action' 		=> 'wbcreateclaim',
-			'token'			=> $this->tokens['csrf'],
+			'token'			=> $this->getTokens('csrf'),
 			'entity' 		=> $item,
 			'property'	=> $propertie,
 			'snaktype' 	=> 'value',
@@ -129,13 +121,9 @@ class bot extends common{
 
 	public function createStatementReference( $id , $reference, $bot ){
 
-		if(!isset($this->tokens['csrf'])){
-			$this->getTokens();
-		}
-
 		$params = [
 			'action' 		=> 'wbsetreference',
-			'token'			=> $this->tokens['csrf'],
+			'token'			=> $this->getTokens('csrf'),
 			'statement' => $id,
 			'snaks'			=> $reference,
 			'summary'		=> '[[WD:BOT|bot]]: adding reference',
@@ -151,13 +139,9 @@ class bot extends common{
 
 	public function createStatementQualifier( $id , $qualifier , $bot ){
 
-		if(!isset($this->tokens['csrf'])){
-			$this->getTokens();
-		}
-
 		$params = [
 			'action' 		=> 'wbsetqualifier',
-			'token'			=> $this->tokens['csrf'],
+			'token'			=> $this->getTokens('csrf'),
 			'claim' 		=> $id,
 			'snaktype'	=> 'value',
 			'property'	=> $qualifier[0],
@@ -181,16 +165,12 @@ class bot extends common{
 			return;
 		}
 
-		if(!isset($this->tokens['csrf'])){
-			$this->getTokens();
-		}
-
 		$params = [
-			"action" => "edit",
-			"title" => $target[0],
-			"text" => $text,
+			"action"	=> "edit",
+			"title"		=> $target[0],
+			"text"		=> $text,
 			"summary" => $summary,
-			"token" => $this->tokens['csrf']
+			"token" 	=> $this->getTokens('csrf')
 		];
 
 		if($type=="section"){
@@ -234,7 +214,12 @@ class bot extends common{
 
 	}
 
-	private function getTokens(){
+	private function getTokens($type){
+
+		if(isset($this->tokens[$type])){
+			return $this->tokens[$type];
+		}
+
 		if($this->login===FALSE){
 			$this->login();
 		}
@@ -254,6 +239,8 @@ class bot extends common{
 		$this->tokens['setglobalaccountstatus'] = $result['query']['tokens']['setglobalaccountstatustoken'];
 		$this->tokens['userrights'] = $result['query']['tokens']['userrightstoken'];
 		$this->tokens['watch'] = $result['query']['tokens']['watchtoken'];
+
+		return $this->tokens[$type];
 
 	}
 
@@ -303,14 +290,14 @@ class bot extends common{
 
 	public function logout(){
 		if($this->login===TRUE){
-			if(!isset($this->tokens['csrf'])){
-				$this->getTokens();
-			}
+
 			$params = [
-				"action" => "logout",
-				"token" => $this->tokens['csrf']
+				"action" 	=> "logout",
+				"token" 	=> $this->getTokens('csrf')
 			];
+
 			$this->api->request($params);
+
 		}
 	}
 
@@ -321,16 +308,12 @@ class bot extends common{
 			return;
 		}
 
-		if(!isset($this->tokens['rollback'])){
-			$this->getTokens();
-		}
-
 		$params = [
 			"action" 	=> "rollback",
 			"title" 	=> $page,
 			"user" 		=> $user,
 			"summary" => $summary,
-			"token" 	=> $this->tokens['rollback']
+			"token" 	=> $this->getTokens('rollback')
 		];
 
 		if($bot==1){
