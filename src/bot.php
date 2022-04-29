@@ -63,7 +63,7 @@ class bot extends common{
 			'action' 		=> 'wbsetclaimvalue',
 			'token'			=> $this->getTokens('csrf'),
 			'claim' 		=> $id,
-			'snaktype' 	=> 'value',
+			'snaktype'	=> 'value',
 			'value' 		=> $value,
 			'summary'		=> $summary
 		];
