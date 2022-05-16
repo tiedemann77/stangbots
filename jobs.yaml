@@ -56,7 +56,7 @@
   emails: none
 
 - name: stangbot-urc-warn
-  command: php stangbots/scripts/stangbot/urc-warn.php test
+  command: php stangbots/scripts/stangbot/urc-warn.php
   image: tf-php74
   no-filelog: true
   schedule: "21 4 * * *"
