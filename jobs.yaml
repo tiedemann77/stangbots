@@ -1,11 +1,4 @@
 ---
-- name: stanglavinflood
-  command: php cat-a-lot.php
-  image: tf-php74
-  no-filelog: true
-  schedule: "* * 18 * * "
-  emails: none
-
 - name: renomeiabot-1
   command: php stangbots/scripts/renomeiabot/script1.php
   image: tf-php74
