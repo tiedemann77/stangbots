@@ -72,7 +72,7 @@ function getClosedCases($opencases) {
     if($content!="0"){
 
       // Conta seções com o padrão dd mm yyyy
-      preg_match_all("/== [0-9]{1,2}( de){0,1} .{4,9}( de){0,1} [0-9]{4,4} .*==/", $content, $out);
+      preg_match_all("/== *[0-9]{1,2}( de){0,1} .{4,9}( de){0,1} [0-9]{4,4}.*==/", $content, $out);
       $numberSections = count($out[0]);
 
       // Se o número de seções = 0 é uma página mal-configurada, ignorar
