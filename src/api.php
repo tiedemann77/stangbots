@@ -288,6 +288,41 @@ class api extends common {
 
 	}
 
+	public function pagesFromCategory($category,$namespace){
+
+		$params = [
+		  'action' 			=> 'query',
+		  'list' 				=> 'categorymembers',
+		  'cmtitle' 		=> $category,
+		  'cmlimit' 		=> '500',
+		];
+
+		if($namespace!=FALSE){
+			$params['cmnamespace'] = $namespace;
+		}
+
+		$result = $this->request($params);
+
+		foreach($result['query']['categorymembers'] as $key => $value){
+			$pages[] = $value['title'];
+		}
+
+		while(isset($result['continue'])){
+
+			$params['cmcontinue'] = $result['continue']['cmcontinue'];
+
+			$result = $this->request($params);
+
+			foreach($result['query']['categorymembers'] as $key => $value){
+				$pages[] = $value['title'];
+			}
+
+		}
+
+		return $pages;
+
+	}
+
 	public function request($params){
 
 		$try = 1;
