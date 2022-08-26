@@ -297,7 +297,7 @@ class api extends common {
 		  'cmlimit' 		=> '500',
 		];
 
-		if($namespace!=FALSE){
+		if($namespace!=NULL){
 			$params['cmnamespace'] = $namespace;
 		}
 
