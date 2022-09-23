@@ -288,6 +288,41 @@ class api extends common {
 
 	}
 
+	public function linksToPage($page,$namespace){
+
+		$params = [
+		  'action' 			=> 'query',
+		  'list' 				=> 'backlinks',
+		  'bltitle' 		=> $page,
+		  'bllimit' 		=> '500',
+		];
+
+		if($namespace!=NULL){
+			$params['blnamespace'] = $namespace;
+		}
+
+		$result = $this->request($params);
+
+		foreach($result['query']['backlinks'] as $key => $value){
+			$pages[] = $value['title'];
+		}
+
+		while(isset($result['continue'])){
+
+			$params['blcontinue'] = $result['continue']['blcontinue'];
+
+			$result = $this->request($params);
+
+			foreach($result['query']['backlinks'] as $key => $value){
+				$pages[] = $value['title'];
+			}
+
+		}
+
+		return $pages;
+
+	}
+
 	public function pagesFromCategory($category,$namespace){
 
 		$params = [
