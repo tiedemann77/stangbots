@@ -290,6 +290,8 @@ class api extends common {
 
 	public function linksToPage($page,$namespace){
 
+		$pages = array();
+
 		$params = [
 		  'action' 			=> 'query',
 		  'list' 				=> 'backlinks',
