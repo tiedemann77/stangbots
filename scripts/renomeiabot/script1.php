@@ -18,7 +18,6 @@ $settings = [
   'url' => "https://pt.wikipedia.org/w/api.php",
   'maxlag' => 4,
   'file' => __DIR__ .  "/log.log",
-  'stats' => array(),
   'replicasDB' => "metawiki",
   'personalDB' => "s54852__stangbots"
 ];

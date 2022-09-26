@@ -18,7 +18,6 @@ $settings = [
   'url' => "https://www.wikidata.org/w/api.php",
   'maxlag' => 4,
   'file' => __DIR__ .  "/log.log",
-  'stats' => array(),
   'replicasDB' => "wikidatawiki",
   'personalDB' => "s54852__stangbots"
 ];
