@@ -9,7 +9,11 @@ class debug{
 
 		global $argv;
 
-		if(isset($_GET['test'])||array_search('test', $argv)){
+		if(is_array($argv)){
+			$test = array_search('test', $argv);
+		}
+
+		if(isset($_GET['test'])||$test){
 			echo "##INICIANDO EM MODO TESTE##\r\n";
 			self::setStatus(TRUE);
 		}else{
@@ -28,7 +32,7 @@ class debug{
 	}
 
 	public static function isDebug(){
-		 return self::getStatus();
+		return self::getStatus();
 	}
 
 	private function setStatus($value){
