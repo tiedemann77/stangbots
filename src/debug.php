@@ -11,6 +11,8 @@ class debug{
 
 		if(is_array($argv)){
 			$test = array_search('test', $argv);
+		}else{
+			$test = FALSE;
 		}
 
 		if(isset($_GET['test'])||$test){
