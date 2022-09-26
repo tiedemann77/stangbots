@@ -327,6 +327,8 @@ class api extends common {
 
 	public function pagesFromCategory($category,$namespace){
 
+		$pages = array();
+
 		$params = [
 		  'action' 			=> 'query',
 		  'list' 				=> 'categorymembers',
