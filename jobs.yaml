@@ -96,3 +96,10 @@
   no-filelog: true
   schedule: "* * * * *"
   emails: none
+  
+- name: mt-new-pages
+  command: php stangbots/scripts/mais-teoria/mt-new-pages.php
+  image: tf-php74
+  no-filelog: true
+  schedule: "12 4 * 4 *"
+  emails: none
