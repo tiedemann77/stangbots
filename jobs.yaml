@@ -89,3 +89,10 @@
   no-filelog: true
   schedule: "8 5 */7 * *"
   emails: none
+  
+- name: mais-teoria
+  command: php stangbots/scripts/mais_teoria/cat-a-lot.php
+  image: tf-php74
+  no-filelog: true
+  schedule: "* * * * *"
+  emails: none
