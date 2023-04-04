@@ -12,7 +12,7 @@ require_once __DIR__ . "/autoloader.php";
 // Settings
 $settings = [
   'credentials' => $uspw,
-  'username' => "Projeto Mais Teoria da História na Wiki",
+  'username' => "Projeto",
   'power' => "User:Projeto Mais Teoria da História na Wiki/Power",
   'script' => "mt-new-pages",
   'url' => "https://pt.wikipedia.org/w/api.php",
