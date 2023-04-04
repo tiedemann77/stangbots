@@ -140,7 +140,7 @@ Esses foram os '''artigos criados e movidos''' pelos participantes do evento {$v
   
   $old_report = $robot->api->getContent("User:" . $settings['username'] . "/Monitoramento/" . $value['evento'] . "/Novas páginas", 0);
   
-  if($old_report==0){
+  if($old_report===0){
 	  
     $robot->edit("User:" . $settings['username'] . "/Monitoramento/" . $value['evento'] . "/Novas páginas",$report,"atualizando relatório",1,0);
 	
