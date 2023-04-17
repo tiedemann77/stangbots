@@ -10,14 +10,14 @@
   command: php stangbots/scripts/stangbot/script1.php
   image: tf-php74
   no-filelog: true
-  schedule: "7,27,47 0,14-23 * * *"
+  schedule: "7,22,37,52 12-23,0-2 * * *"
   emails: none
 
 - name: stangbot-1-2
   command: php stangbots/scripts/stangbot/script1.php
   image: tf-php74
   no-filelog: true
-  schedule: "7 1-6,8,11-13 * * *"
+  schedule: "7,37 3-11 * * *"
   emails: none
 
 - name: stangbot-2
