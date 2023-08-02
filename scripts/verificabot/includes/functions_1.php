@@ -158,12 +158,12 @@ function updateCaseList( $OpenCases, $ClosedCases, $contentBase ){
       // Caso não, remover linhas específicas
       // Loop para remover cada linha
       foreach ($ClosedCases[0] as $key => $value) {
-        $newContent = preg_replace("/{{Wikipédia:Pedidos a verificadores\/Listar\|$value\|.{1,}/",NULL,$newContent);
+        $newContent = preg_replace("/{{Wikipédia:Pedidos a verificadores\/Listar\|" . preg_quote($value) . "\|.{1,}/",NULL,$newContent);
       }
 
       // Loop para remover redirects (que estão em array separado) da lista, se houver
       foreach ($redirects as $key => $value) {
-        $newContent = preg_replace("/{{Wikipédia:Pedidos a verificadores\/Listar\|$value\|.{1,}/",NULL,$newContent);
+        $newContent = preg_replace("/{{Wikipédia:Pedidos a verificadores\/Listar\|" . preg_quote($value) . "\|.{1,}/",NULL,$newContent);
       }
 
 			// Filtrando, para remover linhas em branco
