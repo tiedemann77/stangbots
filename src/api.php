@@ -180,6 +180,41 @@ class api extends common {
 
 		return $content;
 	}
+	
+	public function getUsersByGroups( $groups ) {
+	
+		$params = [
+			"action"	=> "query",
+			"list"		=> "allusers",
+			"augroup" 	=> $groups,
+			"aulimit" 	=> "500"
+		];	
+
+		$result = $this->request($params);
+		
+		foreach($result['query']['allusers'] as $key => $value){
+			
+			$users[] = $value['name'];
+			
+		}
+		
+		while(isset($result['continue'])){
+		
+			$params['aufrom'] = $result['continue']['aufrom'];
+			
+			$result = $this->request($params);
+			
+			foreach($result['query']['allusers'] as $key => $value){
+			
+				$users[] = $value['name'];
+			
+			}
+		
+		}
+		
+		return $users;
+	
+	}
 
 	public function getSectionContent($page,$section) {
 
