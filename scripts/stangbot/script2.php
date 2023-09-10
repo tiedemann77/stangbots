@@ -30,18 +30,18 @@ $page = "Wikipédia:Burocratas/Atividade dos administradores";
 $start = date("Y-m-d", strtotime("-6 months")) . " 00:00:00";
 
 // Obtendo lista de sysops
-$params = [
-  "action" => "query",
-  "list" => "allusers",
-  "augroup" => "sysop",
-  "aulimit" => "150"
-];
+$sysops = $robot->api->getUsersByGroups( "sysop" );
 
-// Faz consulta a API
-$result = $robot->api->request($params);
-
-// Limpando e filtrando
-$sysops = array_diff(array_column($result['query']['allusers'], "name") , array( "Filtro de edições" , "AlbeROBOT" ) );
+// Removendo robôs
+foreach($sysops as $key => $value){
+	
+		if(preg_match("(Filtro de edições|AlbeROBOT)",$value)){
+			
+			unset($sysops[$key]);
+			
+		}
+		
+}
 
 // Contando logs por usuário
 // Se passar de 14, para porque já cumpre com a política
