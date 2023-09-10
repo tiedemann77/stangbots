@@ -104,6 +104,41 @@ class api extends common {
 		return Curl::doPostCookies( $this->url , $params , $this->cookies );
 
 	}
+	
+	public function getActiveUsers(){
+	
+		$params = [
+			"action"		=> "query",
+			"list"			=> "allusers",
+			"auactiveusers" => TRUE,
+			"aulimit" 		=> "500"
+		];
+
+		$result = $this->request($params);
+		
+		foreach($result['query']['allusers'] as $key => $value){
+			
+			$users[] = $value['name'];
+			
+		}
+		
+		while(isset($result['continue'])){
+		
+			$params['aufrom'] = $result['continue']['aufrom'];
+			
+			$result = $this->request($params);
+			
+			foreach($result['query']['allusers'] as $key => $value){
+			
+				$users[] = $value['name'];
+			
+			}
+		
+		}
+				
+		return $users;
+	
+	}
 
 	public function getContent($page,$mode) {
 		// $mode = 1 para o script, $mode = 0 não para
