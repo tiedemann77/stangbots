@@ -29,9 +29,9 @@ echo $robot->log->log($robot->username . " - Iniciando " . $robot->script . "\r\
 
 $n = 1;
 
-$day = "0" . $n;
-
 while( $n < 10){
+
+  $day = "0" . $n;
 
   //Definições
   $period['start'] = "2023-10-" . $day . " 23:59:59";
@@ -74,11 +74,11 @@ while( $n < 10){
     $users = array();
   
     $content = "
-  Essa é uma lista de usuáries inscrites no evento {$value['evento']}, sincronizada automaticamente a partir do Outreach Dashboard. Por favor, não faça modificações manuais nesta página pois elas serão eliminadas na próxima atualização :)
+Essa é uma lista de usuáries inscrites no evento {$value['evento']}, sincronizada automaticamente a partir do Outreach Dashboard. Por favor, não faça modificações manuais nesta página pois elas serão eliminadas na próxima atualização :)
   
-  '''Última atualização''': {{REVISIONDAY2}}-{{REVISIONMONTH}}-{{REVISIONYEAR}}
+'''Última atualização''': {{REVISIONDAY2}}-{{REVISIONMONTH}}-{{REVISIONYEAR}}
   
-  == Lista de inscrites ==";
+== Lista de inscrites ==";
   
     while (($row = fgetcsv($file, 0, ",")) !== false) {
   
@@ -106,9 +106,9 @@ while( $n < 10){
   
     //Iniciamos a checagem de cada editor
     $report = "== {$yesterday} ==
-  Esses foram os '''artigos criados e movidos''' pelos participantes do evento {$value['evento']}. Total de inscrites: " . count($users) . ".
+Esses foram os '''artigos criados e movidos''' pelos participantes do evento {$value['evento']}. Total de inscrites: " . count($users) . ".
   
-  <small>{{ping|RGhidini (Projeto Mais+)}} uma atualização está disponível, jovem padawan. ~~~~</small>
+<small>{{ping|RGhidini (Projeto Mais+)}} uma atualização está disponível, jovem padawan. ~~~~</small>
   ";
   
     foreach($users as $key2 => $user){
@@ -127,7 +127,7 @@ while( $n < 10){
   	
       if($creations_report!=FALSE||$moves_report!=FALSE){
         $report .= "
-  === {$user} ===";
+=== {$user} ===";
       }
   
       if($creations_report!=FALSE){
@@ -155,7 +155,7 @@ while( $n < 10){
     }else{
   	  
   	$report .= "
-  " . $old_report;
+" . $old_report;
   
       $robot->edit("User:" . $settings['username'] . "/Monitoramento/" . $value['evento'] . "/Novas páginas",$report,"atualizando relatório",1,0);
   	
