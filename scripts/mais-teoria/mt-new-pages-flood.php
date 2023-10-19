@@ -27,11 +27,9 @@ $robot = new bot();
 
 echo $robot->log->log($robot->username . " - Iniciando " . $robot->script . "\r\n");
 
-$n = 1;
+$day = 10;
 
-while( $n < 10){
-
-  $day = "0" . $n;
+while( $day < 18){
 
   //Definições
   $period['start'] = "2023-10-" . $day . " 23:59:59";
@@ -165,7 +163,7 @@ Esses foram os '''artigos criados e movidos''' pelos participantes do evento {$v
   
   }
   
-  $n++;
+  $day++;
 
 }
 
