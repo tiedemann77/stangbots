@@ -27,9 +27,9 @@ $robot = new bot();
 
 echo $robot->log->log($robot->username . " - Iniciando " . $robot->script . "\r\n");
 
-$day = 10;
+$day = 31;
 
-while( $day < 18){
+while( $day === 31){
 
   //Definições
   $period['start'] = "2023-10-" . $day . " 23:59:59";
