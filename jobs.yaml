@@ -83,16 +83,16 @@
   schedule: "8 5 */7 * *"
   emails: none
   
-- name: mt-new-pages
-  command: php stangbots/scripts/mais-teoria/mt-new-pages.php
-  image: tf-php74
-  no-filelog: true
-  schedule: "12 4 * 9,10 *"
-  emails: none
+#- name: mt-new-pages
+#  command: php stangbots/scripts/mais-teoria/mt-new-pages.php
+#  image: tf-php74
+#  no-filelog: true
+#  schedule: "12 4 * 9,10 *"
+#  emails: none
 
-- name: mt-cat-a-lot
-  command: php stangbots/scripts/mais-teoria/cat-a-lot.php
-  image: tf-php74
-  no-filelog: true
-  schedule: "* * 29 * *"
-  emails: none
+#- name: mt-cat-a-lot
+#  command: php stangbots/scripts/mais-teoria/cat-a-lot.php
+#  image: tf-php74
+#  no-filelog: true
+#  schedule: "* * 29 * *"
+#  emails: none
