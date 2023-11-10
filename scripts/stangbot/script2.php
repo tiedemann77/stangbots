@@ -230,13 +230,7 @@ foreach ($totals as $key => $value) {
 }
 
 // Cabeçalho do relatório
-$text = '== Atividade dos administradores no último semestre ==
-{| class="wikitable"
-|-
-| style="background:#ccffcc" | Ativo(a)
-| style="background:#f5deb3" | Possivelmente inativo(a)
-! style="background:#ffcccc" | Provavelmente inativo(a)
-|}
+$text = '== Atividade de administradores(as) no último semestre ==
 {| class="wikitable sortable center"
 |+
 !Administrador(a)
@@ -264,7 +258,7 @@ foreach ($totals as $key => $value) {
   }
 
   if($value>14){
-    $text .= "|>15
+    $text .= "|OK
 ";
   }else{
     $text .= "|" . $totals[$key] . $note[$key] . "
@@ -295,9 +289,26 @@ foreach ($totals as $key => $value) {
 
 // Rodapé do relatório
 $text .= "|}
-'''Última atualização: ~~~~~'''
+'''Última atualização: ~~~~~'''" . '
 
-===Notas===";
+== Legenda ==
+{| class="wikitable"
+|-
+| style="background:#ccffcc" | Ativo(a)
+| style="background:#f5deb3" | Possivelmente inativo(a)
+! style="background:#ffcccc" | Provavelmente inativo(a)
+|}' . "
+'''Ativo(a):''' administrador(a) com 15 ou mais [[Especial:Registo|ações registradas]], cumprindo o requisito de atividade.
+
+'''Possivelmente inativo(a):''' administrador(a) com menos de 15 [[Especial:Registo|ações registradas]], mas com 15 ou mais ações administrativas quando consideradas, também, as edições nos domínios Wikipédia e MediaWiki.<ref>Edições nos domínios Wikipédia e MediaWiki nem sempre são ações administrativas, por isso precisam ser checadas manualmente.</ref>
+
+'''Provavelmente inativo(a):''' administrador(a) cuja soma das [[Especial:Registo|ações registradas]] e edições nos domínios Wikipédia e MediaWiki não atinge 15 ações administrativas.
+
+== Ver também ==
+
+* [[Wikipédia:Política de administradores#Remoção automática por absenteísmo ou renúncia|Política de administradores]]
+
+{{Referências|título=Notas}}";
 
 //Checando se precisa atualizar desde o último relatório
 $content = $robot->api->getContent($page, 0);
