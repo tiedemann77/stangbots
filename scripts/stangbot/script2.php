@@ -191,7 +191,7 @@ foreach ($totals as $key => $value) {
     $wpedits[$key] = count($result['query']['usercontribs']);
 
     if($wpedits[$key]==500){
-      $wpedits_text[$key] = "+500";
+      $wpedits_text[$key] = ">500";
     }else{
       $wpedits_text[$key] = $wpedits[$key];
     }
@@ -218,7 +218,7 @@ foreach ($totals as $key => $value) {
     $mwedits[$key] = count($result['query']['usercontribs']);
 
     if($mwedits[$key]==500){
-      $mwedits_text[$key] = "+500";
+      $mwedits_text[$key] = ">500";
     }else{
       $mwedits_text[$key] = $mwedits[$key];
     }
