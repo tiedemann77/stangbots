@@ -1,7 +1,7 @@
 <?php
 
 // Requer configurações
-require_once(__DIR__ . "/cat-settings.php");
+require_once(__DIR__ . "/settings.php");
 
 // Requer funções básicas
 require_once(__DIR__ . "/../../autoloader.php");
@@ -9,7 +9,7 @@ require_once(__DIR__ . "/../../autoloader.php");
 // Settings
 $settings = [
   'credentials' => $uspw,
-  'username' => "RGhidini (Projeto Mais+)",
+  'username' => "Projeto Mais Teoria da História na Wiki",
   'power' => "User:Stangbot/Power",
   'script' => "cat-a-lot",
   'url' => "https://pt.wikipedia.org/w/api.php",
@@ -20,11 +20,21 @@ $settings = [
   'personalDB' => "s54852__stangbots"
 ];
 
+################### DEFINICOES #############################
+
+// Lista de artigos para editar
+$filename = __DIR__ .  "/list.txt";
+
+// Categoria para adicionar
+$category = "Categoria:!Mais Mulheres em Teoria da História na Wiki";
+
+$summary = "adicionando temporariamente categoria de WikiConcurso";
+
+################### FINAL DAS DEFINICOES ####################
+
 $robot = new bot();
 
 echo $robot->log->log($robot->username . " - Iniciando " . $robot->script . "\r\n");
-
-$filename = __DIR__ .  "/list.txt";
 
 $file = file($filename);
 
@@ -95,9 +105,9 @@ while ($limit <= 2) {
   }
 
   $content .= "
-[[Categoria:!Mais Teoria da História na Wiki (Mais Diversidade)]]";
+[[" . $category . "]]";
 
-  $robot->edit($title,$content,"adicionando temporariamente categoria de WikiConcurso",1,0);
+  $robot->edit($title,$content,$summary,1,0);
 
   $limit++;
 
