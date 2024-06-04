@@ -5,7 +5,7 @@ class debug{
 
 	private static $status;
 
-	private function check(){
+	private static function check(){
 
 		global $argv;
 
@@ -24,7 +24,7 @@ class debug{
 
 	}
 
-	private function getStatus(){
+	private static function getStatus(){
 
 		if(!isset(self::$status)){
 			self::check();
@@ -37,7 +37,7 @@ class debug{
 		return self::getStatus();
 	}
 
-	private function setStatus($value){
+	private static function setStatus($value){
 		self::$status = $value;
 	}
 

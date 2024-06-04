@@ -45,7 +45,7 @@ class Curl
 
     }
 
-    private function start( $url )
+    private static function start( $url )
     {
 
         self::$connection = curl_init();
@@ -56,7 +56,7 @@ class Curl
 
     }
 
-    private function stop()
+    private static function stop()
     {
         curl_close(self::$connection);
     }
