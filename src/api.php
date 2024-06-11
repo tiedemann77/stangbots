@@ -402,22 +402,10 @@ class api extends common {
 			$params['cmnamespace'] = $namespace;
 		}
 
-		$result = $this->request($params);
+		$result = $this->continuosRequest($params);
 
-		foreach($result['query']['categorymembers'] as $key => $value){
+		foreach($result as $key => $value){
 			$pages[] = $value['title'];
-		}
-
-		while(isset($result['continue'])){
-
-			$params['cmcontinue'] = $result['continue']['cmcontinue'];
-
-			$result = $this->request($params);
-
-			foreach($result['query']['categorymembers'] as $key => $value){
-				$pages[] = $value['title'];
-			}
-
 		}
 
 		return $pages;
