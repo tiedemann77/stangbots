@@ -97,6 +97,38 @@ class api extends common {
 		$this->url = $url;
 	}
 
+	public function continuosRequest($params){
+
+		$content = array();
+
+		$result = $this->request($params);
+
+		$dynamicKey = array_keys($result['query'])[0];
+
+		foreach($result['query'][$dynamicKey] as $key => $value){
+			$content[] = $value;
+		}
+
+		while(isset($result['continue'])){
+
+			$dynamicKey = array_keys($result['continue'])[0];
+
+			$params[$dynamicKey] = $result['continue'][$dynamicKey];
+
+			$result = $this->request($params);
+
+			$dynamicKey = array_keys($result['query'])[0];
+
+			foreach($result['query'][$dynamicKey] as $key => $value){
+				$content[] = $value;
+			}
+
+		}
+
+		return $content;
+
+	}
+
 	private function doPostCurl($params){
 
 		$this->stats->increaseStats("api");
