@@ -257,26 +257,12 @@ class api extends common {
 			"aulimit" 	=> "500"
 		];	
 
-		$result = $this->request($params);
+		$result = $this->continuosRequest($params);
 		
-		foreach($result['query']['allusers'] as $key => $value){
+		foreach($result as $key => $value){
 			
 			$users[] = $value['name'];
 			
-		}
-		
-		while(isset($result['continue'])){
-		
-			$params['aufrom'] = $result['continue']['aufrom'];
-			
-			$result = $this->request($params);
-			
-			foreach($result['query']['allusers'] as $key => $value){
-			
-				$users[] = $value['name'];
-			
-			}
-		
 		}
 		
 		return $users;
