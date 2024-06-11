@@ -401,7 +401,7 @@ class api extends common {
 
 		$params = [
 		  'action' 			=> 'query',
-		  'list' 				=> 'categorymembers',
+		  'list' 			=> 'categorymembers',
 		  'cmtitle' 		=> $category,
 		  'cmlimit' 		=> '500',
 		];
