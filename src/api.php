@@ -368,7 +368,7 @@ class api extends common {
 
 		$params = [
 		  'action' 			=> 'query',
-		  'list' 				=> 'backlinks',
+		  'list' 			=> 'backlinks',
 		  'bltitle' 		=> $page,
 		  'bllimit' 		=> '500',
 		];
@@ -377,22 +377,10 @@ class api extends common {
 			$params['blnamespace'] = $namespace;
 		}
 
-		$result = $this->request($params);
+		$result = $this->continuosRequest($params);
 
-		foreach($result['query']['backlinks'] as $key => $value){
+		foreach($result as $key => $value){
 			$pages[] = $value['title'];
-		}
-
-		while(isset($result['continue'])){
-
-			$params['blcontinue'] = $result['continue']['blcontinue'];
-
-			$result = $this->request($params);
-
-			foreach($result['query']['backlinks'] as $key => $value){
-				$pages[] = $value['title'];
-			}
-
 		}
 
 		return $pages;
