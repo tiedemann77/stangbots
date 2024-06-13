@@ -97,7 +97,7 @@ class api extends common {
 		$this->url = $url;
 	}
 
-	public function continuosRequest($params){
+	public function continuousRequest($params){
 
 		$content = array();
 
@@ -146,7 +146,7 @@ class api extends common {
 			"aulimit" 		=> "500"
 		];
 
-		$result = $this->continuosRequest($params);
+		$result = $this->continuousRequest($params);
 		
 		foreach($result as $key => $value){
 			
@@ -243,7 +243,7 @@ class api extends common {
 			"aulimit" 	=> "500"
 		];	
 
-		$result = $this->continuosRequest($params);
+		$result = $this->continuousRequest($params);
 		
 		foreach($result as $key => $value){
 			
@@ -377,7 +377,7 @@ class api extends common {
 			$params['blnamespace'] = $namespace;
 		}
 
-		$result = $this->continuosRequest($params);
+		$result = $this->continuousRequest($params);
 
 		foreach($result as $key => $value){
 			$pages[] = $value['title'];
@@ -402,7 +402,7 @@ class api extends common {
 			$params['cmnamespace'] = $namespace;
 		}
 
-		$result = $this->continuosRequest($params);
+		$result = $this->continuousRequest($params);
 
 		foreach($result as $key => $value){
 			$pages[] = $value['title'];
