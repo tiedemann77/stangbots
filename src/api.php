@@ -159,45 +159,48 @@ class api extends common {
 	}
 
 	public function getContent($page,$mode) {
-		// $mode = 1 para o script, $mode = 0 não para
+
+		// $mode = 1 para o script, invocando $this->bye; $mode = 0 não para, retornando 0
 
 		$params = [
-	    "action" => "query",
-	    "prop" => "revisions",
-	    "titles" => $page,
-	    "rvprop" => "content|ids",
-	    "rvlimit" => "1",
-	    "rvslots" => "main"
+	    	"action"	=> "query",
+	    	"prop"		=> "revisions",
+	    	"rvlimit"	=> "1",
+	    	"rvprop"	=> "content|ids",
+	    	"rvslots"	=> "main",
+	    	"titles"	=> $page
 		];
 
-		// Requisita o conteúdo a API
 		$result = $this->request($params);
 
-	  // Verifica o resultado
-	  foreach ($result['query']['pages'] as $key => $value) {
+		$pageId = array_keys($result['query']['pages'])[0];
 
-	  	// Verifica se a página existe
-	  	if(isset($result['query']['pages'][$key]['revisions'])){
+		if($pageId!=-1){
 
-				$this->revids[$page] = $result['query']['pages'][$key]['revisions']['0']['revid'];
+			$this->revids[$page] = $result['query']['pages'][$pageId]['revisions']['0']['revid'];
 
-	    	// Retorna o conteúdo
-	    	return $result['query']['pages'][$key]['revisions']['0']['slots']['main']['*'];
+			$content = $result['query']['pages'][$pageId]['revisions']['0']['slots']['main']['*'];
 
-	  	}else{
-				// Se a página não existe, verifica o modo
-				// Se 0, retorna 0;
-				if($mode==0){
-					return 0;
-				}elseif($mode==1){
-					// Se 1, para o script;
-					$this->bye("Página solicitada (" . $page . ") em modo ativo não existe. Fechando...\r\n");
-				}else{
-					// Indefinido
-					$this->bye("Modo desconhecido para getContent (" . $mode . "). Verifique seu script. Fechando...\r\n");
-				}
+			return $content;
+
+		}else{
+
+			if($mode==0){
+
+				return 0;
+
+			}elseif($mode==1){
+
+				$this->bye("Página solicitada (" . $page . ") em modo ativo não existe. Fechando...\r\n");
+
+			}else{
+
+				$this->bye("Modo desconhecido para getContent (" . $mode . "). Verifique seu script. Fechando...\r\n");
+
 			}
+
 		}
+
 	}
 
 	public function getMultipleContent($pages) {
