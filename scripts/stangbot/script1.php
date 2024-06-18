@@ -29,10 +29,6 @@ $pages = json_decode($robot->api->getContent($list,1), true);
 
 foreach ($pages as $key => $value) {
 
-  if($key==="feed"){
-    continue;
-  }
-
   $content[] = $pages[$key]['título'];
 
 }
