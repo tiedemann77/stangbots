@@ -28,7 +28,13 @@ $list = "User:Stangbot/páginas.json";
 $pages = json_decode($robot->api->getContent($list,1), true);
 
 foreach ($pages as $key => $value) {
+
+  if($key==="feed"){
+    continue;
+  }
+
   $content[] = $pages[$key]['título'];
+
 }
 
 $template = '<noinclude>= Painel de pedidos em aberto =
@@ -89,10 +95,6 @@ foreach ($pages as $key => $value) {
 // Aplica novo conteúdo no template
 $template = str_replace("[[replacekey1]]",$replacekey1,$template);
 $template = str_replace("[[replacekey2]]",$replacekey2,$template);
-
-if($content[$pages['feed']['título']]==$template){
-  $robot->bye("Nenhuma edição precisa ser feita. Fechando...\r\n");
-}
 
 // Editando
 $robot->edit($pages['feed']['título'],$template,"[[WP:Bot|bot]]: atualizando",1,1);

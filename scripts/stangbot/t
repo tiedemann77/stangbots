@@ -1,0 +1,36 @@
+<?php
+echo "Memory: " . ((memory_get_usage() / 1024) / 1024) . "\r\n";
+// Requer configurações
+require_once(__DIR__ . "/settings.php");
+
+// Requer funções básicas
+require_once(__DIR__ . "/../../autoloader.php");
+
+// Settings
+$settings = [
+  'credentials' => $uspw,
+  'username' => "Stangbot",
+  'power' => "User:Stangbot/Power",
+  'script' => "Teste",
+  'url' => "https://pt.wikipedia.org/w/api.php",
+  'maxlag' => 4,
+  'file' => __DIR__ .  "/log.log",
+  'replicasDB' => "ptwiki",
+  'personalDB' => "s54852__stangbots"
+];
+echo "Memory: " . ((memory_get_usage() / 1024) / 1024) . "\r\n";
+$robot = new bot();
+echo "Memory: " . ((memory_get_usage() / 1024) / 1024) . "\r\n";
+
+echo $robot->log->log($robot->username . " - Iniciando " . $robot->script . "\r\n");
+
+$pages[] = "Brazil";
+$pages[] = "USA";
+
+#$users = $robot->api->getMultipleContent($pages);
+
+echo 'Peak usage: ' . memory_get_peak_usage() / 1024 / 1024 . ' MBs';
+
+$robot->bye($robot->script . " concluído!\r\n");
+
+?>
