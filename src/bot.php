@@ -200,6 +200,14 @@ class bot extends common{
 
 	public function edit($page, $text, $summary, $minor, $bot){
 
+		if($this->api->compareEditChecksum( $page , $text )){
+
+			echo $this->log->log("A página " . $page . " não foi editada. Seu novo conteúdo é igual ao anterior. Cancelando operação de edição.\r\n");
+
+			return;
+
+		}
+
 		$target = array($page);
 
 		$this->doEdit("entire", $target, $text, $summary, $minor, $bot);
@@ -207,6 +215,14 @@ class bot extends common{
 	}
 
 	public function editSection($page,$section,$text,$summary,$minor,$bot){
+
+		if($this->api->compareEditChecksum( array('title'	=>	$page , 'section'	=>	$section) , $text )){
+
+			echo $this->log->log("A página " . $page . " (seção " . $section . ") não foi editada. Seu novo conteúdo é igual ao anterior. Cancelando operação de edição.\r\n");
+
+			return;
+
+		}
 
 		$target = array($page,$section);
 

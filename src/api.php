@@ -15,6 +15,7 @@ require_once("stats.php");
 class api extends common {
 
 	private 	$cookies;
+	private 	$editChecksum;
 	public 		$log;
 	public 		$maxlag;
 	private 	$revids;
@@ -28,6 +29,7 @@ class api extends common {
 		$this->stats = $stats;
 		$this->log = $log;
 		$this->isDebug();
+		$this->startEditChecksum();
 	}
 
 	public function __destruct(){
@@ -95,6 +97,40 @@ class api extends common {
 
 	public function change( $url ){
 		$this->url = $url;
+	}
+
+	public function compareEditChecksum( $page, $content ){
+
+		if(is_array($page)){
+
+			$title		= $page['title'];
+			$section	= $page['section'];
+
+		}else{
+
+			$title 		= $page;
+			$section	= 'entire';
+
+		}
+
+		if(!isset($this->editChecksum[$title][$section])){
+
+			return FALSE;
+
+		}
+
+		$contentChecksum = sha1($content);
+
+		if($this->editChecksum[$title][$section]===$contentChecksum){
+
+			return TRUE;
+
+		}else{
+
+			return FALSE;
+
+		}
+
 	}
 
 	public function continuousRequest($params){
@@ -181,6 +217,8 @@ class api extends common {
 
 			$content = $result['query']['pages'][$pageId]['revisions']['0']['slots']['main']['*'];
 
+			$this->updateEditChecksum( $page , $content );
+
 			return $content;
 
 		}else{
@@ -232,6 +270,9 @@ class api extends common {
 			$this->revids[$result['query']['pages'][$key]['title']] = $result['query']['pages'][$key]['revisions']['0']['revid'];
 
 			$content[$result['query']['pages'][$key]['title']] = $result['query']['pages'][$key]['revisions']['0']['slots']['main']['*'];
+
+			$this->updateEditChecksum( $result['query']['pages'][$key]['title'] , $result['query']['pages'][$key]['revisions']['0']['slots']['main']['*'] );
+
 		}
 
 		return $content;
@@ -271,9 +312,11 @@ class api extends common {
 
 		$this->revids[$page] = $result['parse']['revid'];
 
-		$result = $result['parse']['wikitext']['*'];
+		$content = $result['parse']['wikitext']['*'];
 
-		return $result;
+		$this->updateEditChecksum(array('title'	=>	$page , 'section'	=>	$section), $content);
+
+		return $content;
 
 	}
 
@@ -465,6 +508,12 @@ class api extends common {
 
 	}
 
+	private function startEditChecksum(){
+
+		$this->editChecksum = array();
+
+	}
+
 	public function transclusions($pages){
 
 		$params = [
@@ -489,6 +538,20 @@ class api extends common {
 		}
 
 		return $transclusions;
+
+	}
+
+	private function updateEditChecksum( $page, $content ){
+
+		if(is_array($page)){
+
+			$this->editChecksum[$page['title']][$page['section']] =	sha1($content);
+
+		}else{
+
+			$this->editChecksum[$page]['entire'] =	sha1($content);
+
+		}
 
 	}
 
