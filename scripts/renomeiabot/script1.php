@@ -415,10 +415,6 @@ $content = $robot->api->getContent($BasePage, 1);
 // Salva o novo conteúdo, para evitar múltiplas consultas para conteúdo não alterado
 file_put_contents($cachefile, $content);
 
-// PARA TESTE
-// ADICIONAR O CONTEÚDO DA EDIÇÃO EM LOG
-//$robot->log->log("Conteúdo da variável content:\r\n" . $newcontent . "\r\n");
-
 // Fim
 $robot->bye($robot->script . " concluído!\r\n");
 

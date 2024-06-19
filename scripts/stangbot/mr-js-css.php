@@ -132,10 +132,6 @@ if($text===$content){
 echo $robot->log->log("Editando feed...\r\n");
 $robot->edit($feed, $text, "[[WP:Bot|bot]]: atualizando edições recentes", 1, 1);
 
-// PARA TESTE
-// ADICIONAR O CONTEÚDO DA EDIÇÃO EM LOG
-//$robot->log->log("Conteúdo da variável text:\r\n" . $text. "\r\n");
-
 // Fechar log
 $robot->bye($robot->script . " concluído!\r\n");
 

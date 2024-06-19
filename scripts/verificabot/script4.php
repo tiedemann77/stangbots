@@ -190,10 +190,6 @@ if($newContentBase==$contentBase){
 // Editando a página de pedidos
 $robot->editSection($BasePage, 1, $newContentBase, "[[WP:Bot|bot]]: adicionando casos não listados", 0, 1);
 
-// PARA TESTE
-// ADICIONAR O CONTEÚDO DA EDIÇÃO EM LOG
-//$robot->log->log("Content of newContentBase string:\r\n" . $newContentBase . "\r\n");
-
 // Fim
 $robot->bye($robot->script . " concluído!\r\n");
 

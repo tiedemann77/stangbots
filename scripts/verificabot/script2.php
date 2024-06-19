@@ -140,21 +140,14 @@ if(isset($olderCasesFilter[1])){
 // Edita a página de recentes
 $robot->edit($recentsPage, $newrecentsContent, "[[WP:Bot|bot]]: arquivando casos antigos", 1, 1);
 
-// PARA TESTE
-//$robot->log->log("Content of newrecentsContent string:\r\n" . $newrecentsContent . "\r\n");
-
 // Edita o arquivo do mês anterior, se necessário
 if(isset($newPreviousContent)){
   $robot->edit($previousPage, $newPreviousContent, "[[WP:Bot|bot]]: arquivando casos antigos", 1, 1);
-  // PARA TESTE
-  //$robot->log->log("Content of newPreviousContent string:\r\n" . $newPreviousContent . "\r\n");
 }
 
 // Edita o arquivo do mês atual, se necessário
 if(isset($newCurrentContent)){
   $robot->edit($currentPage, $newCurrentContent, "[[WP:Bot|bot]]: arquivando casos antigos", 1, 1);
-  // PARA TESTE
-  //$robot->log->log("Content of newCurrentContent string:\r\n" . $newCurrentContent . "\r\n");
 }
 
 // Fim

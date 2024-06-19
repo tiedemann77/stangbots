@@ -70,11 +70,6 @@ $robot->editSection($BasePage, 1, $newContentBase, "[[WP:Bot|bot]]: removendo ca
 // Editando a página de recentes
 $robot->edit($recentsPage, $newContentRecents, "[[WP:Bot|bot]]: adicionando casos encerrados recentemente", 1, 1);
 
-// PARA TESTE
-// ADICIONAR O CONTEÚDO DA EDIÇÃO EM LOG
-//$robot->log->log("Content of newContentBase string:\r\n" . $newContentBase . "\r\n");
-//$robot->log->log("Content of newContentRecents string:\r\n" . $newContentRecents . "\r\n");
-
 // Fim
 $robot->bye($robot->script . " concluído!\r\n");
 

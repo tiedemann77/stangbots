@@ -74,10 +74,6 @@ $archiveContent = str_ireplace("|pato}}","|{{subst:pato}}}}",$archiveContent);
 // Edita a página
 $robot->edit($page, $archiveContent, "[[WP:Bot|bot]]: substituindo predefinições", 1, 1);
 
-// PARA TESTE
-// Registra em log ao invés de editar
-//$robot->log->log("Content of archiveContent string:\r\n" . $archiveContent . "\r\n");
-
 // Fim
 $robot->bye($robot->script . " concluído!\r\n");
 
