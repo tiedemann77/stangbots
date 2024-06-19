@@ -183,10 +183,6 @@ $newContentBase = str_replace($textKey, $example, $newContentBase);
 // Filtrando, para remover linhas em branco
 $newContentBase = preg_replace("/(^[\r\n]*|[\r\n]+)[\s\t]*[\r\n]+/", "\n", $newContentBase);
 
-if($newContentBase==$contentBase){
-  $robot->bye("Nenhuma edição precisa ser feita. Fechando...\r\n");
-}
-
 // Editando a página de pedidos
 $robot->editSection($BasePage, 1, $newContentBase, "[[WP:Bot|bot]]: adicionando casos não listados", 0, 1);
 
