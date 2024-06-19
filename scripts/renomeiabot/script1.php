@@ -396,16 +396,6 @@ while ($control < $requestNumber) {
 
 }
 
-// Se os dois foram iguais, nenhuma edição precisa ser feita, parar
-if($newcontent==$content){
-
-  // Salva o novo conteúdo, para evitar múltiplas consultas para conteúdo não alterado
-  file_put_contents($cachefile, $content);
-
-  $robot->bye("Nenhuma edição precisa ser feita. Fechando...\r\n");
-
-}
-
 // Editando a página de pedidos
 $robot->edit($BasePage, $newcontent, "[[WP:Bot|bot]]: processando pedidos", 0, 1);
 
