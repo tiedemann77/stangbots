@@ -310,11 +310,8 @@ $text .= "|}
 
 {{Referências|título=Notas}}";
 
-//Checando se precisa atualizar desde o último relatório
-$content = $robot->api->getContent($page, 0);
-if($content===$text){
-  $robot->bye("Nenhuma edição precisa ser feita. Fechando...\r\n");
-}
+//Obtendo conteúdo para checksum
+$robot->api->getContent($page, 0);
 
 // Editando
 $robot->edit($page, $text, "[[WP:Bot|bot]]: atualizando estatísticas sobre administradores", 0, 1);
