@@ -1,6 +1,6 @@
 <?php
 
-abstract class common{
+abstract class Common{
 
 	protected $debug;
 

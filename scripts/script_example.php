@@ -20,7 +20,7 @@ $settings = [
 ];
 
 // Criando o robô, básico e sempre necessário
-$robot = new bot();
+$robot = new Bot();
 
 // Log padrão
 echo $robot->log->log($robot->username . " - Iniciando " . $robot->script . "\r\n");

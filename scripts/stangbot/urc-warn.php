@@ -154,7 +154,7 @@ $settings = [
   'personalDB' => "s54852__stangbots"
 ];
 
-$robot = new bot();
+$robot = new Bot();
 
 $objects = new objects();
 

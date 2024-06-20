@@ -19,7 +19,7 @@ $settings = [
   'personalDB' => "s54852__stangbots"
 ];
 
-$robot = new bot();
+$robot = new Bot();
 
 //Necessário para aumentar os limites de consulta
 $robot->login();

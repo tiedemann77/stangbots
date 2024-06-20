@@ -1,7 +1,7 @@
 <?php
 
 // Classe para realizar testes
-class debug{
+class Debug{
 
 	private static $status;
 

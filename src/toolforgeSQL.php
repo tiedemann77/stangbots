@@ -5,14 +5,14 @@
 		LICENSED UNDER MIT LICENSE***
 */
 
-require_once("common.php");
+require_once("Common.php");
 require_once("Curl.php");
-require_once("debug.php");
-require_once("log.php");
-require_once("stats.php");
+require_once("Debug.php");
+require_once("Log.php");
+require_once("Stats.php");
 
 // Toolforge database
-class toolforgeSQL extends common{
+class ToolforgeSQL extends Common{
 
 	public 	$log;
 	private $personalConnection;

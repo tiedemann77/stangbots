@@ -32,7 +32,7 @@ $summary = "adicionando temporariamente categoria de WikiConcurso";
 
 ################### FINAL DAS DEFINICOES ####################
 
-$robot = new bot();
+$robot = new Bot();
 
 echo $robot->log->log($robot->username . " - Iniciando " . $robot->script . "\r\n");
 

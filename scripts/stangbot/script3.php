@@ -20,7 +20,7 @@ $settings = [
 ];
 
 //Creating bot
-$robot = new bot();
+$robot = new Bot();
 
 // Definitions
 $page = "Wikidata:Sandbox";
