@@ -308,7 +308,9 @@ $text .= "|}
 
 * [[Wikipédia:Política de administradores#Remoção automática por absenteísmo ou renúncia|Política de administradores]]
 
-{{Referências|título=Notas}}";
+{{Referências|título=Notas}}
+
+[[Categoria:!Administradores]]";
 
 //Obtendo conteúdo para checksum
 $robot->api->getContent($page, 0);
