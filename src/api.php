@@ -25,17 +25,17 @@ class api extends common {
 	public function __construct($url,$maxlag,$log,$stats){
 		$this->url = $url;
 		$this->maxlag = $maxlag;
-		$this->cookies = "/tmp/stangbots_cookie_" . rand() . ".inc";
 		$this->stats = $stats;
 		$this->log = $log;
+		$this->setCookieFile();
 		$this->isDebug();
 		$this->startEditChecksum();
 	}
 
 	public function __destruct(){
-		if(file_exists($this->cookies)){
-			unlink($this->cookies);
-		}
+
+		$this->unsetCookieFile();
+
 	}
 
 	public function accountExist($account){
@@ -514,6 +514,12 @@ class api extends common {
 
 	}
 
+	private function setCookieFile(){
+
+		$this->cookies = "/tmp/stangbots_cookie_" . rand() . ".inc";
+
+	}
+
 	public function transclusions($pages){
 
 		$params = [
@@ -538,6 +544,16 @@ class api extends common {
 		}
 
 		return $transclusions;
+
+	}
+
+	private function unsetCookieFile(){
+
+		if(file_exists($this->cookies)){
+
+			unlink($this->cookies);
+			
+		}
 
 	}
 
