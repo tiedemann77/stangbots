@@ -1,10 +1,10 @@
 <?php
 
-require_once "common.php";
-require_once "debug.php";
+require_once "Common.php";
+require_once "Debug.php";
 
 // Classe para estatísticas
-class stats extends common
+class Stats extends Common
 {
 
     private $stats;

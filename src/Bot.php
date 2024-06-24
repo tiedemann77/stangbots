@@ -5,15 +5,15 @@
 		LICENSED UNDER MIT LICENSE***
 */
 
-require_once("api.php");
-require_once("common.php");
-require_once("debug.php");
-require_once("log.php");
-require_once("stats.php");
-require_once("toolforgeSQL.php");
+require_once("Api.php");
+require_once("Common.php");
+require_once("Debug.php");
+require_once("Log.php");
+require_once("Stats.php");
+require_once("ToolforgeSQL.php");
 
 // Classe do robô
-class bot extends common{
+class Bot extends Common{
 
 	public 	$api;
 	private $credentials;
@@ -36,11 +36,11 @@ class bot extends common{
 		$this->credentials = $settings['credentials'];
 		$this->power = $settings['power'];
 		$this->script = $settings['script'];
-		$this->stats = new stats();
-		$this->log = new log($settings['file'],$this->stats);
-		$this->api = new api($settings['url'], $settings['maxlag'], $this->log, $this->stats);
+		$this->stats = new Stats();
+		$this->log = new Log($settings['file'],$this->stats);
+		$this->api = new Api($settings['url'], $settings['maxlag'], $this->log, $this->stats);
 		$this->isDebug();
-		$this->sql = new toolforgeSQL($settings['replicasDB'], $settings['personalDB'], $this->log, $this->stats);
+		$this->sql = new ToolforgeSQL($settings['replicasDB'], $settings['personalDB'], $this->log, $this->stats);
 		$this->login = FALSE;
 		$this->checkPower();
 	}

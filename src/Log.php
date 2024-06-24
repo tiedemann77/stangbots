@@ -1,10 +1,10 @@
 <?php
 
-require_once("common.php");
-require_once("debug.php");
+require_once("Common.php");
+require_once("Debug.php");
 
 // Log
-class log extends common{
+class Log extends Common{
 
 	public 	$file;
 	private $ready;

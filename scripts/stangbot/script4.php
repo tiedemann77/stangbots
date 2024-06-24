@@ -19,7 +19,7 @@ $settings = [
   'personalDB' => "s54852__stangbots"
 ];
 
-$robot = new bot();
+$robot = new Bot();
 
 echo $robot->log->log($robot->username . " - Iniciando " . $robot->script . "\r\n");
 
