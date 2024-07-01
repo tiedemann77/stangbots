@@ -102,7 +102,7 @@ Essa é uma lista de usuáries inscrites no evento {$value['evento']}, sincroniz
   $report = "== {$yesterday} ==
 Esses foram os '''artigos criados e movidos''' pelos participantes do evento {$value['evento']}. Total de inscrites: " . count($users) . ".
 
-<small>{{ping|RGhidini (Projeto Mais+)}} uma atualização está disponível, jovem padawan. ~~~~</small>
+<small>{{ping|Vsdetoni (Projeto Mais+)}} uma atualização está disponível, jovem padawan. ~~~~</small>
 ";
 
   foreach($users as $key2 => $user){
