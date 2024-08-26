@@ -231,6 +231,7 @@ foreach ($totals as $key => $value) {
 
 // Cabeçalho do relatório
 $text = '== Atividade de administradores(as) no último semestre ==
+<small>Por favor, não edite essa tabela manualmente. Qualquer modificação será sobrescrita na próxima atualização. Se necessário, edite as seções seguintes.</small>
 {| class="wikitable sortable center"
 |+
 !Administrador(a)
@@ -289,34 +290,13 @@ foreach ($totals as $key => $value) {
 
 // Rodapé do relatório
 $text .= "|}
-'''Última atualização: ~~~~~'''" . '
-
-== Legenda ==
-{| class="wikitable"
-|-
-| style="background:#ccffcc" | Ativo(a)
-| style="background:#f5deb3" | Possivelmente inativo(a)
-! style="background:#ffcccc" | Provavelmente inativo(a)
-|}' . "
-'''Ativo(a):''' administrador(a) com 15 ou mais [[Especial:Registo|ações registradas]], cumprindo o requisito de atividade.
-
-'''Possivelmente inativo(a):''' administrador(a) com menos de 15 [[Especial:Registo|ações registradas]], mas com 15 ou mais ações administrativas quando consideradas, também, as edições nos domínios Wikipédia e MediaWiki.<ref>Edições nos domínios Wikipédia e MediaWiki nem sempre são ações administrativas, por isso precisam ser checadas manualmente.</ref>
-
-'''Provavelmente inativo(a):''' administrador(a) cuja soma das [[Especial:Registo|ações registradas]] e edições nos domínios Wikipédia e MediaWiki não atinge 15 ações administrativas.
-
-== Ver também ==
-
-* [[Wikipédia:Política de administradores#Remoção automática por absenteísmo ou renúncia|Política de administradores]]
-
-{{Referências|título=Notas}}
-
-[[Categoria:!Administradores]]";
+'''Última atualização: ~~~~~'''";
 
 //Obtendo conteúdo para checksum
-$robot->api->getContent($page, 0);
+$robot->api->getSectionContent($page, 1);
 
 // Editando
-$robot->edit($page, $text, "[[WP:Bot|bot]]: atualizando estatísticas sobre administradores", 0, 1);
+$robot->editSection($page, 1, $text, "[[WP:Bot|bot]]: atualizando estatísticas sobre administradores", 0, 1);
 
 // Fechar log
 $robot->bye($robot->script . " concluído!\r\n");
