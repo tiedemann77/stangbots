@@ -292,9 +292,6 @@ foreach ($totals as $key => $value) {
 $text .= "|}
 '''Última atualização: ~~~~~'''";
 
-//Obtendo conteúdo para checksum
-$robot->api->getSectionContent($page, 1);
-
 // Editando
 $robot->editSection($page, 1, $text, "[[WP:Bot|bot]]: atualizando estatísticas sobre administradores", 0, 1);
 
