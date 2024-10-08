@@ -7,6 +7,8 @@ class Debug{
 
 	private static $environment;
 
+	private static $windows;
+
 	private static function check(){
 
 		self::checkDebug();
@@ -38,6 +40,22 @@ class Debug{
 
 		self::setEnvironment(php_uname('s'));
 
+		self::checkWindows();
+
+	}
+
+	private static function CheckWindows(){
+
+		if(preg_match("/(W|w)indows/",self::getEnvironment())){
+
+			self::setWindows(TRUE);
+
+		}else{
+
+			self::setWindows(FALSE);
+
+		}
+
 	}
 
 	public static function getEnvironment(){
@@ -60,6 +78,16 @@ class Debug{
 
 	}
 
+	public static function isWindows(){
+	// Getter
+		if(!isset(self::$windows)){
+			self::check();
+		}
+
+		return self::$windows;
+
+	}
+
 	private static function setEnvironment($value){
 
 		self::$environment = $value;
@@ -69,6 +97,12 @@ class Debug{
 	private static function setDebug($value){
 
 		self::$debug = $value;
+
+	}
+
+	private static function setWindows($value){
+
+		self::$windows = $value;
 
 	}
 
