@@ -77,6 +77,12 @@ class ToolforgeSQL extends Common{
 
 	private function check(){
 
+		if($this->isToolforge()===FALSE){
+
+			return;
+
+		}
+
 		$this->personalStatus = FALSE;
 		$this->replicasStatus = FALSE;
 		unset($this->personalConnection);
@@ -138,6 +144,16 @@ class ToolforgeSQL extends Common{
 		}
 
 		return $this->debug;
+
+	}
+
+	private function isToolforge(){
+
+		if(debug::isWindows()===TRUE){
+
+			return FALSE;
+
+		}
 
 	}
 
