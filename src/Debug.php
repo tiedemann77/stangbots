@@ -47,7 +47,15 @@ class Debug{
 
 	private static function checkEnvironment(){
 
-		self::setEnvironment(php_uname('s'));
+		self::setEnvironment('os', php_uname('s'));
+
+		self::setEnvironment('host', php_uname('n'));
+
+		self::setEnvironment('release', php_uname('r'));
+
+		self::setEnvironment('version', php_uname('v'));
+
+		self::setEnvironment('machine', php_uname('m'));
 
 		self::checkWindows();
 
@@ -55,7 +63,7 @@ class Debug{
 
 	private static function CheckWindows(){
 
-		if(preg_match("/(W|w)indows/",self::getEnvironment())){
+		if(preg_match("/(W|w)indows/",self::getEnvironment('os'))){
 
 			self::setWindows(TRUE);
 
@@ -67,7 +75,7 @@ class Debug{
 
 	}
 
-	public static function getEnvironment(){
+	public static function getEnvironment($type){
 
 		if(!isset(self::$environment)){
 
@@ -75,7 +83,7 @@ class Debug{
 
 		}
 
-		return self::$environment;
+		return self::$environment[$type];
 
 	}
 
@@ -109,9 +117,9 @@ class Debug{
 
 	}
 
-	private static function setEnvironment($value){
+	private static function setEnvironment( $type, $value ){
 
-		self::$environment = $value;
+		self::$environment[$type] = $value;
 
 	}
 
