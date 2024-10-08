@@ -3,7 +3,7 @@
 // Classe para realizar testes
 class Debug{
 
-	private static $status;
+	private static $debug;
 
 	private static $environment;
 
@@ -27,9 +27,9 @@ class Debug{
 
 		if(isset($_GET['test'])||$test){
 			echo "##INICIANDO EM MODO TESTE##\r\n";
-			self::setStatus(TRUE);
+			self::setDebug(TRUE);
 		}else{
-			self::setStatus(FALSE);
+			self::setDebug(FALSE);
 		}
 
 	}
@@ -40,7 +40,7 @@ class Debug{
 
 	}
 
-	private static function getEnvironment(){
+	public static function getEnvironment(){
 
 		if(!isset(self::$environment)){
 			self::check();
@@ -50,29 +50,26 @@ class Debug{
 
 	}
 
-	private static function getStatus(){
-
-		if(!isset(self::$status)){
+	public static function isDebug(){
+	// Getter
+		if(!isset(self::$debug)){
 			self::check();
 		}
 
-		return self::$status;
-	}
+		return self::$debug;
 
-	public static function isDebug(){
-		return self::getStatus();
 	}
 
 	private static function setEnvironment($value){
+
 		self::$environment = $value;
+
 	}
 
-	private static function setStatus($value){
-		self::$status = $value;
-	}
+	private static function setDebug($value){
 
-	public static function whichEnvironment(){
-		return self::getEnvironment();
+		self::$debug = $value;
+
 	}
 
 }
