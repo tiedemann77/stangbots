@@ -16,6 +16,7 @@ class Log extends Common{
 		$this->isDebug();
 		$this->check();
 		$this->log($this->stats->getStart()->format('d-m-Y H:i:s') . " - Iniciando log\r\n");
+		$this->log("Ambiente de execução: ". debug::getEnvironment('host') . " - " . debug::getEnvironment('os') . " - " . debug::getEnvironment('release') . " - " . debug::getEnvironment('version') . " - " . debug::getEnvironment('machine') . "\r\n");
 		$this->clear();
 	}
 
