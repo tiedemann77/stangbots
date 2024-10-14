@@ -87,7 +87,7 @@
   command: php stangbots/scripts/mais-teoria/mt-new-pages.php
   image: tf-php74
   no-filelog: true
-  schedule: "12 4 * 7 *"
+  schedule: "12 4 * 10,11 *"
   emails: none
 
 #- name: mt-cat-a-lot
