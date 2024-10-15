@@ -1,10 +1,10 @@
 ---
-- name: renomeiabot-1
-  command: php stangbots/scripts/renomeiabot/script1.php
-  image: tf-php74
-  no-filelog: true
-  schedule: "24 * * * * "
-  emails: none
+#- name: renomeiabot-1
+#  command: php stangbots/scripts/renomeiabot/script1.php
+#  image: tf-php74
+#  no-filelog: true
+#  schedule: "24 * * * * "
+#  emails: none
 
 - name: stangbot-1-1
   command: php stangbots/scripts/stangbot/script1.php
