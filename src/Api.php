@@ -90,6 +90,70 @@ class Api extends Common {
 
 	}
 
+	public function articlesFromCategoryAtTalkPage( $category ){
+
+		$articles = array();
+
+		$talkPages = $this->pagesFromCategory( $category , 1 );
+
+		$params = [
+			"action" => "query"
+		];
+
+		$count = count( $talkPages );
+
+		$realized = 0;
+
+		foreach ($talkPages as $key => $value) {
+
+			$value = preg_replace( "/^[^\:]+\:/" , "" , $value );
+
+			$realized++;
+
+			if( !isset( $params['titles'] ) && $realized != $count ){
+
+				$params['titles'] = $value;
+
+				$limit = 1;
+
+			}elseif( $limit < 49 && $realized != $count ){
+
+				$params['titles'] .= '|' . $value;
+
+				$limit++;
+
+			}else{
+
+				$params['titles'] .= '|' . $value;
+
+				$result = $this->request( $params );
+
+				foreach ( $result['query']['pages'] as $key2 => $value2 ) {
+
+					if( $key2 < 0 ){
+
+						echo $this->log->log( "Erro ao obter artigo a partir de categoria em página de discussão: [[" . $value2['title'] . "]] não existe.\r\n" );
+
+					}else{
+
+						$articles[] = $value2['title'];
+
+					}
+
+				}
+
+				unset( $limit );
+
+				unset( $params['titles'] );
+
+			}
+
+		}
+
+		return $articles;
+
+	}
+
 	public function bye($message){
 		echo $this->log->log($message);
 		exit();
