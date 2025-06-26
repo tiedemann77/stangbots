@@ -7,7 +7,7 @@ function getOpenCasesList($content) {
 	// Obtendo nome do usuário)
   preg_match_all("/\|.{0,}\|/", $content, $out);
 
-  $out2 = array();
+  $out2 = [];
 
   foreach ($out as $key => $value) {
   	$out2[$key] = str_replace("|","",$value);
@@ -38,7 +38,7 @@ function getClosedCases($opencases) {
   global $redirects;
 
   // Criando array
-  $ClosedCases = array();
+  $ClosedCases = [];
 
   // Controle para o loop
   $control = 0;

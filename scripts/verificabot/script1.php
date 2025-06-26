@@ -33,7 +33,7 @@ $BasePage = "Wikipédia:Pedidos a verificadores";
 $recentsPage = $BasePage . "/Recentes";
 
 // Cria array para armazenar redirects, utilizado em mais de uma função
-$redirects = array();
+$redirects = [];
 
 // Obtendo o conteúdo da página de pedidos
 $contentBase = $robot->api->getSectionContent($BasePage, 1);

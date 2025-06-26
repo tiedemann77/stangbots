@@ -69,7 +69,7 @@ class File
         $file = fopen($this->csv, 'r');
 
         // Onde salvar os valores
-        $data = array();
+        $data = [];
 
         while (($row = fgetcsv($file, 0, ";")) !== false) {
 

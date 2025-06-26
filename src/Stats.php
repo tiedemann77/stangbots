@@ -12,7 +12,7 @@ class Stats extends Common
 
     public function __construct()
     {
-        $this->stats = array();
+        $this->stats = [];
         $this->startDuration();
     }
 

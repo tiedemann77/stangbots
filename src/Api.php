@@ -92,7 +92,7 @@ class Api extends Common {
 
 	public function articlesFromCategoryAtTalkPage( $category ){
 
-		$articles = array();
+		$articles = [];
 
 		$talkPages = $this->pagesFromCategory( $category , 1 );
 
@@ -199,7 +199,7 @@ class Api extends Common {
 
 	public function continuousRequest($params){
 
-		$content = array();
+		$content = [];
 
 		$result = $this->request($params);
 
@@ -460,7 +460,7 @@ class Api extends Common {
 
 		foreach ($result as $key => $value) {
 
-			$links[$value['title']] = array();
+			$links[$value['title']] = [];
 
 			foreach ($value['links'] as $key2 => $value2) {
 				$links[$value['title']][] = $value2['title'];
@@ -474,7 +474,7 @@ class Api extends Common {
 
 	public function linksToPage($page,$namespace){
 
-		$pages = array();
+		$pages = [];
 
 		$params = [
 		  'action' 			=> 'query',
@@ -499,7 +499,7 @@ class Api extends Common {
 
 	public function pagesFromCategory($category,$namespace){
 
-		$pages = array();
+		$pages = [];
 
 		$params = [
 		  'action' 			=> 'query',
@@ -574,7 +574,7 @@ class Api extends Common {
 
 	private function startEditChecksum(){
 
-		$this->editChecksum = array();
+		$this->editChecksum = [];
 
 	}
 
@@ -599,7 +599,7 @@ class Api extends Common {
 
 		foreach ($result as $key => $value) {
 
-			$transclusions[$result[$key]['title']] = array();
+			$transclusions[$result[$key]['title']] = [];
 
 			foreach ($result[$key]['transcludedin'] as $key2 => $value2) {
 				$transclusions[$result[$key]['title']][] = $value2['title'];

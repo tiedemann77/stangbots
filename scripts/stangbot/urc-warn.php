@@ -16,7 +16,7 @@ class objects{
   private $objects;
 
   public function __construct(){
-    $this->objects = array();
+    $this->objects = [];
   }
 
   public function newEntry( $author, $file ){

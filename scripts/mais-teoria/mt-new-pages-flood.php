@@ -69,7 +69,7 @@ while( $day === 31){
     $file = fopen($file_path, 'r');
   
     // Onde salvar os valores
-    $users = array();
+    $users = [];
   
     $content = "
 Essa é uma lista de usuáries inscrites no evento {$value['evento']}, sincronizada automaticamente a partir do Outreach Dashboard. Por favor, não faça modificações manuais nesta página pois elas serão eliminadas na próxima atualização :)
