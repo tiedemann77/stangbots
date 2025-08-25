@@ -23,8 +23,22 @@ class Download
 		$errors = 0;
 		while($errors<3){
 			if(file_put_contents($filename, file_get_contents($this->url))) {
-				echo $this->log->log("Download de {$this->url} concluído!\r\n");
-				return true;
+
+				$error_string = 'This file is being generated. Please try again shortly.';
+
+				$file_content = file_get_contents($filename);
+
+				if(strpos($file_content, $error_string) !== false){
+					$errors++;
+					echo $this->log->log("Erro ao realizar download de {$this->url} (arquivo incompleto), tentativa {$errors}!\r\n");
+					//Aguarda 5 segundos
+					sleep(5);
+					
+				}else {
+					echo $this->log->log("Download de {$this->url} concluído!\r\n");
+					return true;
+				}
+
 			}else{
 				$errors++;
 				echo $this->log->log("Erro ao realizar download de {$this->url}, tentativa {$errors}!\r\n");
