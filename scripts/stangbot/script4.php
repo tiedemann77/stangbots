@@ -136,7 +136,7 @@ function secondReport(){
 
   $totalDB = $result[0][0];
 
-  $query = 'SELECT img_name, img_height, oi_name, oi_archive_name FROM image, oldimage WHERE img_name = oi_name ORDER BY img_name ASC;';
+  $query = 'SELECT img_name, oi_name FROM image, oldimage WHERE img_name = oi_name AND oi_deleted = 0 ORDER BY img_name ASC;';
 
   $result = $robot->sql->replicasQuery($query, $params=NULL);
 
